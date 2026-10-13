@@ -4,3 +4,6 @@ __pycache__/
 *.mp4
 *.pyc
 venv/
+data/uploaded_history.json
+data/playlist_info.json
+data/bhavy_counter.json

@@ -1,12 +1,11 @@
-# Final - Upload Until Quota + bhavy1,bhavy2 fallback
+# Final Fixed - No History Version
 
-Features:
-- Fetches ALL Instagram videos via pagination (not just last 10)
-- Sorts oldest first -> bhavy1 = oldest
-- If caption empty or only hashtags -> uses bhavy1, bhavy2, bhavy3 incremental
-- Counter saved in data/bhavy_counter.json + scans history for max bhavy number
-- Uploads until YouTube quota (10k units ~ 6 videos) is exceeded, then stops gracefully
-- GitHub Action runs 4x daily to finish all videos fast
-- All progress committed back to repo
+This is clean project without history files.
+On first run it will start from bhavy1 for all videos without title.
 
-Setup same as before, secrets same.
+- Handles missing media_url (fetches via single ID call)
+- Handles uploadLimitExceeded as quota
+- Skips non-downloadable videos and marks as SKIPPED
+- Uploads until quota finishes
+
+Push triggers workflow + manual dispatch + schedule 4x daily

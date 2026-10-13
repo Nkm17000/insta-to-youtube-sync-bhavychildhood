@@ -51,7 +51,6 @@ class CounterManager:
             with open(path, 'w') as f: json.dump({"bhavy_counter": 0}, f)
 
     def get_next_bhavy_number(self):
-        # First check from file
         try:
             with open(self.path, 'r') as f:
                 data = json.load(f)
@@ -59,12 +58,10 @@ class CounterManager:
         except:
             file_counter = 0
 
-        # Also scan history for max bhavy number already used
         max_from_history = 0
         history_data = self.history.load()
         for info in history_data.values():
             title = info.get("title", "")
-            # match bhavy1, bhavy2, bhavy 10, Bhavy-5 etc
             m = re.search(r'bhavy\s*[-_]*\s*(\d+)', title, re.IGNORECASE)
             if m:
                 try:

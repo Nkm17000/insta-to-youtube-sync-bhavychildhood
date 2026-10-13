@@ -3,7 +3,6 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
 from src.config import Config
-import time
 
 class QuotaExceededException(Exception):
     pass
@@ -34,7 +33,7 @@ class YouTubeUploader:
                     print(f"Found existing playlist: {item['id']}")
                     return item['id']
         except HttpError as e:
-            if 'quota' in str(e).lower():
+            if any(x in str(e).lower() for x in ['quota','exceeded','uploadlimit']):
                 raise QuotaExceededException(str(e))
 
         print(f"Creating new playlist: {title}")
@@ -47,12 +46,13 @@ class YouTubeUploader:
             print(f"Created playlist: {res['id']}")
             return res['id']
         except HttpError as e:
-            msg = str(e)
-            if 'quota' in msg.lower() or 'quotaExceeded' in msg:
-                raise QuotaExceededException(msg)
+            if any(x in str(e).lower() for x in ['quota','exceeded','uploadlimit']):
+                raise QuotaExceededException(str(e))
             raise
 
     def add_video_to_playlist(self, playlist_id, video_id):
+        if video_id.startswith("SKIPPED"):
+            return None
         body = {
             "snippet": {
                 "playlistId": playlist_id,
@@ -65,12 +65,12 @@ class YouTubeUploader:
             return res['id']
         except HttpError as e:
             msg = str(e).lower()
-            if 'quota' in msg or 'quotaexceeded' in msg:
+            if any(x in msg for x in ['quota','exceeded','uploadlimit']):
                 raise QuotaExceededException(str(e))
             if 'already' in msg or 'duplicate' in msg:
-                print(f"Video {video_id} already in playlist, skipping")
+                print(f"Video {video_id} already in playlist")
                 return None
-            print(f"Failed to add to playlist (non-quota): {e}")
+            print(f"Failed to add to playlist: {e}")
             return None
 
     def upload(self, file_path, title, description, tags=[]):
@@ -97,9 +97,9 @@ class YouTubeUploader:
             print(f"Upload OK: {response['id']} - {title}")
             return response['id']
         except HttpError as e:
-            err_text = str(e)
-            if 'quota' in err_text.lower() or 'quotaExceeded' in err_text or 'exceeded' in err_text.lower():
-                print(f"!!! YOUTUBE QUOTA EXCEEDED: {err_text}")
-                raise QuotaExceededException(err_text)
+            err_text = str(e).lower()
+            if any(x in err_text for x in ['quota','exceeded','uploadlimit','rate limit']):
+                print(f"!!! YOUTUBE LIMIT EXCEEDED: {e}")
+                raise QuotaExceededException(str(e))
             else:
                 raise
