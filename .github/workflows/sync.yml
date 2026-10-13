@@ -1,10 +1,15 @@
 name: Insta to YT - Upload Until Quota
 
 on:
+  push:
+    branches:
+      - main
+      - master
+      - '**'  # every push to any branch runs it
+  workflow_dispatch:  # allows manual trigger from Actions tab
   schedule:
-    # 4 times a day to finish all videos fast: 1 AM, 7 AM, 1 PM, 7 PM UTC
+    # 4 times a day to finish all videos fast: 1 AM, 7 AM, 1 PM, 7 PM UTC (6:30 AM, 12:30 PM, 6:30 PM, 12:30 AM IST)
     - cron: '0 1,7,13,19 * * *'
-  workflow_dispatch:
 
 jobs:
   sync:
@@ -15,18 +20,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run sync until quota
+      - name: Run sync until quota finishes
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -43,5 +50,10 @@ jobs:
           git config --global user.name "Insta-YT Bot"
           git config --global user.email "bot@github.com"
           git add data/uploaded_history.json data/playlist_info.json data/bhavy_counter.json || true
-          git diff --staged --quiet || git commit -m "Progress: quota-based sync + bhavy counter [skip ci]"
-          git push || echo "No changes"
+          # Prevent infinite loop: don't trigger another push workflow if only bot commit
+          if git diff --staged --quiet; then
+            echo "No new uploads to commit"
+          else
+            git commit -m "Progress: quota-based sync + bhavy counter [skip ci]"
+            git push || echo "Push failed - maybe no changes or quota commit already exists"
+          fi
