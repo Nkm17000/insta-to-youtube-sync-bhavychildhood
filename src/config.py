@@ -11,6 +11,7 @@ class Config:
     PLAYLIST_FILE = "data/playlist_info.json"
     COUNTER_FILE = "data/bhavy_counter.json"
     USAGE_FILE = "data/token_usage.json"
+    
     TEMP_DIR = "data/temp"
     ACCOUNTS_CONFIG = "config/youtube_accounts.json"
     VIDEOS_PER_RUN = int(os.getenv("VIDEOS_PER_RUN", "1"))  # ONE video at a time
