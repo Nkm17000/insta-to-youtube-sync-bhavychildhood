@@ -4,13 +4,6 @@
     "env_prefix": "YT1",
     "enabled": true,
     "description": "Main channel trailers bollywood",
-    "playlist_title": "bhavychildhood"
-  },
-  {
-    "id": "trailers_bollywood_backup",
-    "env_prefix": "YT2",
-    "enabled": false,
-    "description": "Backup channel (different Gmail) - enable when needed",
-    "playlist_title": "bhavychildhood"
+    "playlist_title": "trailers bollywood"
   }
 ]
