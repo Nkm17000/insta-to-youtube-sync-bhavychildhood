@@ -6,36 +6,44 @@ class InstagramFetcher:
         url=f"https://graph.facebook.com/v20.0/{self.user_id}/media"
         params={"fields":"id,caption,media_type,media_url,permalink,timestamp","access_token":self.token,"limit":50}
         all_videos=[]; next_url=url; first=True
-        print("[Instagram] Fetching...")
+        print("[Instagram] Fetching all reels (oldest first sorting after fetch)...")
         while next_url and len(all_videos)<max_fetch:
             res=requests.get(next_url, params=params if first else None, timeout=30).json()
             first=False
             if 'error' in res: raise Exception(f"IG Error: {res['error']}")
             for item in res.get('data', []):
-                if item.get('media_type') in ['VIDEO','REELS']: all_videos.append(item)
+                if item.get('media_type') in ['VIDEO','REELS']:
+                    all_videos.append(item)
             next_url=res.get('paging',{}).get('next')
             if not next_url: break
             time.sleep(0.3)
+        # OLDEST FIRST: sort by timestamp ascending
         all_videos.sort(key=lambda x: x.get('timestamp',''))
-        print(f"[Instagram] Total: {len(all_videos)}")
+        print(f"[Instagram] Total: {len(all_videos)} sorted oldest first")
+        if all_videos:
+            print(f"  Oldest: {all_videos[0]['id']} @ {all_videos[0].get('timestamp')} - {all_videos[0].get('caption','')[:40]}")
+            print(f"  Newest: {all_videos[-1]['id']} @ {all_videos[-1].get('timestamp')}")
         return all_videos
     def fetch_media_url(self, media_id):
+        # Refresh latest media_url
         url=f"https://graph.facebook.com/v20.0/{media_id}"
-        params={"fields":"id,media_type,media_url,permalink","access_token":self.token}
+        params={"fields":"id,media_type,media_url,permalink,timestamp","access_token":self.token}
         try:
             res=requests.get(url, params=params, timeout=30).json()
             if 'error' in res:
-                print(f"[Instagram] {media_id} -> No media_url: {res['error'].get('message')}")
+                print(f"[Instagram] {media_id} -> No media_url (error: {res['error'].get('message')[:100]})")
                 return None
             mu=res.get('media_url')
-            if mu: print(f"[Instagram] {media_id} -> media_url OK")
-            else: print(f"[Instagram] {media_id} -> No media_url (expired)")
+            if mu:
+                print(f"[Instagram] {media_id} -> Fresh media_url OK (refreshed latest)")
+            else:
+                print(f"[Instagram] {media_id} -> No media_url (expired/deleted)")
             return mu
         except Exception as e:
             print(f"[Instagram] {media_id} -> Exception: {e}")
             return None
     def download_video(self, media_url, dest_path):
-        print(f"[Instagram] Downloading...")
+        print(f"[Instagram] Downloading video...")
         r=requests.get(media_url, stream=True, timeout=180)
         r.raise_for_status()
         total=0

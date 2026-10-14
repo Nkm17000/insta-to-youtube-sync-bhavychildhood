@@ -1,4 +1,5 @@
 from google_auth_oauthlib.flow import InstalledAppFlow
+print('CLIENT_ID and SECRET only')
 CLIENT_ID=input('CLIENT_ID: ')
 CLIENT_SECRET=input('CLIENT_SECRET: ')
 SCOPES=['https://www.googleapis.com/auth/youtube.upload','https://www.googleapis.com/auth/youtube']

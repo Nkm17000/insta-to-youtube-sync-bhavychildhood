@@ -13,9 +13,10 @@ class Config:
     COUNTER_FILE = "data/bhavy_counter.json"
     TEMP_DIR = "data/temp"
     CHANNELS_CONFIG = "config/channels.json"
+    # Retry SKIPPED_NO_MEDIA after X hours
+    SKIPPED_RETRY_HOURS = int(os.getenv("SKIPPED_RETRY_HOURS", "24"))
     @staticmethod
     def load_channels():
-        print("[Config] Loading channels...")
         try:
             with open(Config.CHANNELS_CONFIG, 'r') as f: channels = json.load(f)
         except: channels = [{"id": "trailers_bollywood_main", "env_prefix": "YT1", "enabled": True, "playlist_title": Config.PLAYLIST_TITLE}]
@@ -31,9 +32,9 @@ class Config:
             cid=os.getenv(f"{prefix}_CLIENT_ID") or os.getenv("YOUTUBE_CLIENT_ID")
             csec=os.getenv(f"{prefix}_CLIENT_SECRET") or os.getenv("YOUTUBE_CLIENT_SECRET")
             rtok=os.getenv(f"{prefix}_REFRESH_TOKEN") or os.getenv("YOUTUBE_REFRESH_TOKEN")
-            if not (cid and csec and rtok and cid.strip() and csec.strip() and rtok.strip()): continue
+            if not (cid and csec and rtok and cid.strip()): continue
             ch['client_id']=cid.strip(); ch['client_secret']=csec.strip(); ch['refresh_token']=rtok.strip()
             ch['playlist_title']=ch.get('playlist_title', Config.PLAYLIST_TITLE)
             valid.append(ch)
-        print(f"[Config] Loaded {len(valid)} channel(s)")
+        print(f"[Config] Loaded {len(valid)} channel(s), VIDEOS_PER_RUN={Config.VIDEOS_PER_RUN}, SKIPPED_RETRY_HOURS={Config.SKIPPED_RETRY_HOURS}")
         return valid

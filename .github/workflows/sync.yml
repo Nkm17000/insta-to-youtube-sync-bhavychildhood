@@ -1,4 +1,4 @@
-name: Final v9 - Fix duplicate bhavy2 - Triple check
+name: Final v10 - Oldest first - Retry SKIPPED with fresh URL
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
         with: {python-version: '3.11'}
       - name: Install
         run: pip install -r requirements.txt
-      - name: Run - Fix duplicate bhavy2
+      - name: Run - Oldest first - Retry SKIPPED
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -35,10 +35,11 @@ jobs:
           YOUTUBE_PLAYLIST_DESCRIPTION: ${{ secrets.YOUTUBE_PLAYLIST_DESCRIPTION }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
           VIDEOS_PER_RUN: 1
+          SKIPPED_RETRY_HOURS: 24
         run: python -u -m src.main 2>&1 | tee data/last_run.log; cat data/last_run.log
       - name: Commit history
         run: |
           git config --global user.name "Insta-YT Bot"
           git config --global user.email "bot@github.com"
           git add data/
-          git diff --staged --quiet || git commit -m "Fix duplicate bhavy2 - history [skip ci]" && git push || echo "No push"
+          git diff --staged --quiet || git commit -m "Oldest first, retry SKIPPED with fresh URL [skip ci]" && git push || echo "No push"

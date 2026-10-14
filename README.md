@@ -1,34 +1,46 @@
-# FINAL V9 - Fix duplicate bhavy2 in screenshot
+# FINAL V10 - Oldest first, Retry SKIPPED_NO_MEDIA with fresh URL
 
-## Your screenshot issue:
-Playlist trailers bollywood shows bhavy2 twice (0:16 video) - duplicate upload.
+## Your requirements:
+1. Upload oldest video first (Instagram created descending older) so no media expire
+2. If error then don't run same youtube video
+3. If SKIPPED_NO_MEDIA due to expire media then refresh latest media url and try to post that again
 
-## Root cause:
-1. data/uploaded_history.json empty {} every run (fresh zip)
-2. So Already uploaded: 0 -> thinks bhavy2 new every time
-3. Uploads same Instagram ID again
+## Flow:
+1. Fetch IG all reels, sort by timestamp ASC (oldest first) - No YT API
+2. History check: 
+   - New videos (never tried)
+   - SKIPPED_NO_MEDIA retryable after 24h (SKIPPED_RETRY_HOURS env) -> will refresh latest media_url and try again
+   - FAILED_YOUTUBE -> don't retry same video (your requirement)
+   - Valid uploaded -> skip
+   Combined sorted oldest first
+3. For each video oldest first, fetch fresh media_url (refresh latest) - ONLY Instagram API, No YT API
+   - If no media_url: mark SKIPPED_NO_MEDIA with current date, will be retried after 24h
+   - If media_url OK: decide this video, break
+4. Only after deciding valid video with fresh media_url, call YouTube API
+   - Check playlist duplicate by permalink and title bhavy2
+   - Upload
+   - If YouTube error: mark FAILED_YOUTUBE so same video won't be retried (requirement)
+   - If success: mark valid
 
-## Fix v9 - Triple duplicate protection:
-1. History file check: insta_id in history.json? Skip
-2. YouTube playlist check: List all videos in playlist, check if Instagram permalink already in description OR title bhavy2 already exists
-3. Counter check: Next bhavy number calculated from max(file_counter, history_valid, youtube_max_bhavy) to avoid bhavy2 duplicate
+## Why no video uploaded before?
+Your history had 30 SKIPPED_NO_MEDIA - all old videos expired. Code marked them permanent, so no retry.
+Now v10: SKIPPED_NO_MEDIA retryable after 24h with fresh refresh.
 
-## Code changes:
-- src/youtube.py: Added list_playlist_videos() and check_duplicate()
-- src/history.py: CounterManager.get_next() now also checks youtube_existing_titles
-- src/main.py: Before upload, lists playlist videos and checks duplicate
-
-## How to fix existing duplicate bhavy2 in playlist:
-1. Go to YouTube Studio -> trailers bollywood channel -> Content
-2. Delete duplicate bhavy2 (keep one)
-3. Restore history file: Copy old uploaded_history.json with 12 entries from backup, or set bhavy_counter to correct number
-4. Push v9 code
+## How to clean history:
+Keep only 2 valid bhavy2, bhavy3, delete 30 SKIPPED entries, set bhavy_counter=3, commit.
 
 ## VIDEOS_PER_RUN from config default 1:
-VIDEOS_PER_RUN env, default 1
+Env VIDEOS_PER_RUN, default 1
+
+## SKIPPED_RETRY_HOURS:
+Env SKIPPED_RETRY_HOURS, default 24h. After 24h, SKIPPED_NO_MEDIA will be retried with fresh media_url refresh.
+
+## Oldest first:
+all_videos.sort(key=lambda x: x.get('timestamp','')) -> oldest first
+to_check sorted oldest first
 
 ## Logs:
-- [History] check no YouTube API
-- [Instagram] media_url check only Instagram API
-- [YouTube] Only after deciding video, calls YouTube API
-- Duplicate check logs: "DUPLICATE FOUND by permalink" or "No duplicate"
+- STEP 1,2,3 No YouTube API
+- STEP 3 shows oldest first check
+- STEP 3 shows refresh latest media_url
+- STEP 4 calls YouTube API

@@ -3,7 +3,6 @@
     "id": "trailers_bollywood_main",
     "env_prefix": "YT1",
     "enabled": true,
-    "playlist_title": "trailers bollywood",
-    "description": "trailers bollywood"
+    "playlist_title": "trailers bollywood"
   }
 ]
