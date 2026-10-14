@@ -1,127 +1,159 @@
-import os, re, time
+import os, re, time, json
 from src.config import Config
 from src.instagram import InstagramFetcher
-from src.youtube import SingleChannelMultiTokenManager, QuotaExceededException
-from src.history import HistoryManager, PlaylistManager, CounterManager, UsageTracker
+from src.youtube import YouTubeChannel, ChannelLimitError, QuotaError
+from src.history import HistoryManager, PlaylistManager, CounterManager
 
 def clean_title(caption, bhavy_number):
-    if not caption or caption.strip() == "": return f"bhavy{bhavy_number}"
+    if not caption or caption.strip() == "":
+        return f"bhavy{bhavy_number}"
     first_line = caption.split('\n')[0].strip()
     no_hash = re.sub(r'#\S+', '', first_line).strip()
     no_hash = re.sub(r'\s+', ' ', no_hash).strip()
-    if len(no_hash) < 3 or first_line.startswith('#'): return f"bhavy{bhavy_number}"
+    if len(no_hash) < 3 or first_line.startswith('#'):
+        return f"bhavy{bhavy_number}"
     return no_hash[:95]
 
 def run():
-    print("=== FINAL v5 - ONE VIDEO PER RUN - SINGLE CHANNEL MULTI-TOKEN ===")
-    print(f"Mode: {Config.VIDEOS_PER_RUN} video per run to avoid limit")
+    print("="*70)
+    print("FINAL PROJECT - SINGLE VIDEO PER RUN - MULTI-CHANNEL - NO DUPLICATES")
+    print("="*70)
+    print(f"Mode: {Config.VIDEOS_PER_RUN} video per run | History tracking enabled | Multi-channel")
+
     os.makedirs(Config.TEMP_DIR, exist_ok=True)
     os.makedirs("data", exist_ok=True)
 
+    # Init managers (history prevents duplicates)
     history = HistoryManager(Config.HISTORY_FILE)
     playlist_mgr = PlaylistManager(Config.PLAYLIST_FILE)
     counter_mgr = CounterManager(Config.COUNTER_FILE, history)
-    usage = UsageTracker(Config.USAGE_FILE)
 
-    tokens = Config.load_youtube_tokens()
-    if not tokens:
-        print("No tokens found - add YT1_* secrets")
+    # Load channels (different Gmail = separate limits)
+    channels_cfg = Config.load_channels()
+    if not channels_cfg:
+        print("ERROR: No channels configured. Add YT1_*, YT2_* secrets")
         return
-    yt_manager = SingleChannelMultiTokenManager(tokens)
 
+    channels = []
+    for cfg in channels_cfg:
+        try:
+            ch = YouTubeChannel(cfg)
+            channels.append(ch)
+        except Exception as e:
+            print(f"Failed to init channel {cfg['id']}: {e}")
+
+    if not channels:
+        print("No valid channels")
+        return
+
+    # Instagram
     ig = InstagramFetcher(Config.IG_USER_ID, Config.IG_ACCESS_TOKEN)
     all_videos = ig.get_all_reels(max_fetch=1000)
 
-    # Filter already uploaded - CRITICAL to save quota
+    # Filter already uploaded - CRITICAL to prevent duplicates
     new_videos = history.filter_new_videos(all_videos)
     if not new_videos:
-        print("All synced! Nothing new.")
+        print("\nAll videos already uploaded - nothing new. No duplicate upload.")
         return
 
-    next_bhavy = counter_mgr.get_next_bhavy_number()
-    print(f"Next bhavy: bhavy{next_bhavy} | Playlist: {Config.YOUTUBE_PLAYLIST_TITLE}")
+    # SINGLE VIDEO PER RUN
+    video = new_videos[0]  # Only first new video
+    next_bhavy = counter_mgr.get_next()
+    print(f"\n[Run] Will upload 1 video: {video['id']} as bhavy{next_bhavy} to one of {len(channels)} channel(s)")
 
-    # Get single playlist for same channel
-    playlist_id = playlist_mgr.get_playlist_id(Config.YOUTUBE_PLAYLIST_TITLE)
-    if not playlist_id:
-        for tok in yt_manager.tokens:
+    # Find available channel (round-robin, skip exhausted)
+    # Use counter to rotate channels: bhavy number % channel count
+    channel_index = (next_bhavy - 1) % len(channels)
+    # Try channels in rotation order
+    channels_ordered = channels[channel_index:] + channels[:channel_index]
+
+    uploaded = False
+    for ch in channels_ordered:
+        if ch.exhausted:
+            print(f"[{ch.id}] Skipped - exhausted today")
+            continue
+
+        print(f"\n--- Trying Channel: {ch.id} ({ch.channel_name}) ---")
+        playlist_id = playlist_mgr.get(ch.playlist_title, ch.id)
+        if not playlist_id:
             try:
-                playlist_id = tok.get_or_create_playlist(Config.YOUTUBE_PLAYLIST_TITLE, Config.YOUTUBE_PLAYLIST_DESCRIPTION, Config.YOUTUBE_PRIVACY)
-                playlist_mgr.save_playlist_id(Config.YOUTUBE_PLAYLIST_TITLE, playlist_id)
-                print(f"Playlist: {playlist_id}")
-                break
-            except QuotaExceededException:
+                playlist_id = ch.get_or_create_playlist(ch.playlist_title, Config.PLAYLIST_DESC, Config.PRIVACY)
+                playlist_mgr.save(ch.playlist_title, ch.id, playlist_id)
+            except (ChannelLimitError, QuotaError) as e:
+                print(f"[{ch.id}] Cannot create playlist: {e} - trying next channel")
+                ch.exhausted = True
                 continue
-    if not playlist_id:
-        print("Could not get playlist - all tokens exhausted")
-        return
-    print(f"Playlist URL: https://www.youtube.com/playlist?list={playlist_id}")
 
-    # ONE VIDEO AT A TIME
-    videos_to_upload = new_videos[:Config.VIDEOS_PER_RUN]
-    print(f"\nUploading {len(videos_to_upload)} video(s) this run (ONE at a time mode)...")
+        print(f"Playlist: https://www.youtube.com/playlist?list={playlist_id}")
 
-    uploaded = 0
-    for idx, video in enumerate(videos_to_upload):
-        insta_id = video['id']
-        print(f"\n[{idx+1}/{len(videos_to_upload)}] {insta_id}")
-        temp_file = f"{Config.TEMP_DIR}/{insta_id}.mp4"
+        temp_file = f"{Config.TEMP_DIR}/{video['id']}.mp4"
         raw_caption = video.get('caption','')
         title = clean_title(raw_caption, next_bhavy)
         is_bhavy = title.lower().startswith('bhavy')
         used_num = next_bhavy if is_bhavy else None
-        if is_bhavy: next_bhavy += 1
 
         description = f"""{raw_caption}
 
 Original: {video.get('permalink')}
 Playlist: https://www.youtube.com/playlist?list={playlist_id}
+Channel: {ch.channel_name}
 #bhavychildhood #bhavy
+Auto synced - Single video per run - No duplicates
 """
+
         try:
-            print(f"  Downloading...")
             ig.download_video(video['id'], video.get('media_url'), temp_file)
-            print(f"  Uploading as '{title}'...")
-            yt_id, token_used, token_obj = yt_manager.upload_with_rotation(temp_file, title, description, tags=["bhavychildhood", f"bhavy{used_num}" if used_num else "kids"], privacy=Config.YOUTUBE_PRIVACY)
+            yt_id = ch.upload_video(temp_file, title, description, tags=["bhavychildhood", f"bhavy{used_num}" if used_num else "kids"], privacy=Config.PRIVACY)
             try:
-                token_obj.add_to_playlist(playlist_id, yt_id)
-            except QuotaExceededException as qe:
-                if qe.is_channel_limit:
-                    print("Channel limit during playlist add, but video uploaded OK")
-            history.mark_uploaded(insta_id, yt_id, title, token_used)
-            if used_num: counter_mgr.increment_and_save(used_num)
-            usage.record(token_used, success=True)
-            uploaded += 1
-            print(f"  DONE: https://youtu.be/{yt_id} via {token_used}")
-            # ONE VIDEO DONE - STOP (important for one-at-a-time mode)
+                ch.add_to_playlist(playlist_id, yt_id)
+            except (ChannelLimitError, QuotaError):
+                print(f"Playlist add hit limit, but video uploaded: https://youtu.be/{yt_id}")
+
+            history.mark_uploaded(video['id'], yt_id, title, ch.id)
+            if used_num:
+                counter_mgr.save(used_num)
+
+            print(f"\n=== SUCCESS ===")
+            print(f"Video: {video['id']} -> https://youtu.be/{yt_id}")
+            print(f"Title: {title}")
+            print(f"Channel: {ch.channel_name} ({ch.id})")
+            print(f"Playlist: https://www.youtube.com/playlist?list={playlist_id}")
+            print(f"Next run will upload bhavy{next_bhavy+1 if is_bhavy else next_bhavy} (no duplicates)")
+
+            uploaded = True
             break
 
-        except QuotaExceededException as qe:
-            usage.record(qe.token_id if qe.token_id != "ALL" else "ALL", success=False, is_channel_limit=qe.is_channel_limit)
-            if qe.is_channel_limit:
-                print(f"\n*** CHANNEL DAILY LIMIT HIT - STOPPING ***")
-                print(f"Wait until 12:30 PM IST tomorrow. This run uploaded {uploaded} video.")
-            else:
-                print(f"\n*** QUOTA EXHAUSTED - STOPPING ***")
-            break
+        except (ChannelLimitError, QuotaError) as e:
+            print(f"[{ch.id}] Limit hit: {e} - trying next channel")
+            ch.exhausted = True
+            continue
         except Exception as e:
             if 'No media_url' in str(e):
-                print(f"  SKIP no media: {insta_id}")
-                history.mark_uploaded(insta_id, "SKIPPED_NO_MEDIA", title, "NONE")
-                if used_num: counter_mgr.increment_and_save(used_num)
-                uploaded += 1
+                print(f"SKIP {video['id']}: no media_url (expired)")
+                history.mark_uploaded(video['id'], "SKIPPED_NO_MEDIA", title, ch.id)
+                if used_num:
+                    counter_mgr.save(used_num)
+                uploaded = True
                 break
-            print(f"  FAILED: {e}")
+            print(f"FAILED {video['id']} on {ch.id}: {e}")
             import traceback; traceback.print_exc()
             break
         finally:
-            if os.path.exists(temp_file): os.remove(temp_file)
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
 
-    print(f"\n=== SUMMARY - ONE VIDEO PER RUN ===")
-    print(f"IG Total: {len(all_videos)} | Already: {len(all_videos)-len(new_videos)} | Uploaded this run: {uploaded}")
-    print(f"Next run will upload: bhavy{next_bhavy}")
-    print(f"Playlist: https://www.youtube.com/playlist?list={playlist_id}")
-    print(f"\nThis mode uploads 1 video per GitHub Action run, safe for quota.")
+    if not uploaded:
+        print("\n=== FAILED ===")
+        print("All channels exhausted today (15/day each). Wait until 12:30 PM IST reset.")
+        print("No video uploaded this run, will retry next run - no duplicates created.")
+    else:
+        print(f"\n=== SUMMARY ===")
+        print(f"IG Total: {len(all_videos)} | Already: {len(all_videos)-len(new_videos)} | Uploaded this run: 1")
+        print(f"Next bhavy: bhavy{counter_mgr.get_next()}")
+        for ch in channels:
+            pl_id = playlist_mgr.get(ch.playlist_title, ch.id)
+            if pl_id:
+                print(f"  {ch.id}: https://www.youtube.com/playlist?list={pl_id} (exhausted={ch.exhausted})")
 
 if __name__ == "__main__":
     run()

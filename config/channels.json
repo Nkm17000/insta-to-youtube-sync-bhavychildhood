@@ -1,0 +1,16 @@
+[
+  {
+    "id": "channel_old",
+    "env_prefix": "YT1",
+    "enabled": true,
+    "description": "Old channel bhavychildhood - Gmail 1",
+    "playlist_title": "bhavychildhood"
+  },
+  {
+    "id": "channel_new",
+    "env_prefix": "YT2",
+    "enabled": true,
+    "description": "New channel with different Gmail - separate 15/day limit",
+    "playlist_title": "bhavychildhood"
+  }
+]

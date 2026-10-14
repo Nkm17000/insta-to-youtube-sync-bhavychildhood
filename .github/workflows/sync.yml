@@ -1,9 +1,9 @@
-name: ONE Video Per Run FINAL v5
+name: Insta to YouTube - Single Video Per Run - Multi Channel
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1,7,13,19 * * *'  # 4 times/day = 4 videos/day = safe, never hits limit a
+    - cron: '0 1,7,13,19 * * *'  # 4 times/day = 4 videos/day, 1 per run
   push:
     branches: ['**']
 
@@ -14,12 +14,17 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - name: Install
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Run ONE video upload
+
+      - name: Run single video upload (no duplicates, multi-channel)
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -39,12 +44,14 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           YOUTUBE_PLAYLIST_TITLE: ${{ secrets.YOUTUBE_PLAYLIST_TITLE }}
+          YOUTUBE_PLAYLIST_DESCRIPTION: ${{ secrets.YOUTUBE_PLAYLIST_DESCRIPTION }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
           VIDEOS_PER_RUN: 1
         run: python -m src.main
-      - name: Commit progress
+
+      - name: Commit history (prevents duplicates)
         run: |
           git config --global user.name "Insta-YT Bot"
           git config --global user.email "bot@github.com"
           git add data/ config/
-          git diff --staged --quiet || git commit -m "Progress: uploaded 1 video [skip ci]" && git push || echo "No push"
+          git diff --staged --quiet || git commit -m "History: uploaded 1 video - no duplicates [skip ci]" && git push || echo "No changes to push"
