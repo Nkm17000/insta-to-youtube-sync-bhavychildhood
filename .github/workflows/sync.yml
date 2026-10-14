@@ -1,4 +1,4 @@
-name: Final v8 - No YT API until video decided - Heavy logs
+name: Final v9 - Fix duplicate bhavy2 - Triple check
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
         with: {python-version: '3.11'}
       - name: Install
         run: pip install -r requirements.txt
-      - name: Run - No YT API until video decided
+      - name: Run - Fix duplicate bhavy2
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -31,21 +31,14 @@ jobs:
           YT2_CLIENT_SECRET: ${{ secrets.YT2_CLIENT_SECRET }}
           YT2_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
           YT2_ENABLED: ${{ secrets.YT2_ENABLED }}
-          YT3_CLIENT_ID: ${{ secrets.YT3_CLIENT_ID }}
-          YT3_CLIENT_SECRET: ${{ secrets.YT3_CLIENT_SECRET }}
-          YT3_REFRESH_TOKEN: ${{ secrets.YT3_REFRESH_TOKEN }}
-          YT3_ENABLED: ${{ secrets.YT3_ENABLED }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           YOUTUBE_PLAYLIST_TITLE: ${{ secrets.YOUTUBE_PLAYLIST_TITLE }}
           YOUTUBE_PLAYLIST_DESCRIPTION: ${{ secrets.YOUTUBE_PLAYLIST_DESCRIPTION }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
           VIDEOS_PER_RUN: 1
         run: python -u -m src.main 2>&1 | tee data/last_run.log; cat data/last_run.log
-      - name: Commit history (prevents duplicates)
+      - name: Commit history
         run: |
           git config --global user.name "Insta-YT Bot"
           git config --global user.email "bot@github.com"
           git add data/
-          git diff --staged --quiet || git commit -m "History: 1 video, no YT API until decided [skip ci]" && git push || echo "No push"
+          git diff --staged --quiet || git commit -m "Fix duplicate bhavy2 - history [skip ci]" && git push || echo "No push"

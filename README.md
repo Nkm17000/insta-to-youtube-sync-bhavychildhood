@@ -1,36 +1,34 @@
-# FINAL v8 - No YouTube API until video decided
+# FINAL V9 - Fix duplicate bhavy2 in screenshot
 
-## Requirement:
-- If video not posted yet, post it, if duplicate skip and look for next
-- Until decide which video to post, don't call any YouTube API
-- Use history to check posted
+## Your screenshot issue:
+Playlist trailers bollywood shows bhavy2 twice (0:16 video) - duplicate upload.
 
-## Flow (YouTube API called ONLY in STEP 4):
-1. STEP 1: Fetch Instagram (Instagram API only)
-2. STEP 2: Check history file data/uploaded_history.json - skip duplicates (No YouTube API)
-3. STEP 3: For each new video, fetch Instagram media_url to check if valid (Instagram API only) - if expired, mark SKIPPED_NO_MEDIA in history and try next
-4. STEP 4: Only after deciding valid video, load YouTube channels and call YouTube API (playlist, upload)
+## Root cause:
+1. data/uploaded_history.json empty {} every run (fresh zip)
+2. So Already uploaded: 0 -> thinks bhavy2 new every time
+3. Uploads same Instagram ID again
+
+## Fix v9 - Triple duplicate protection:
+1. History file check: insta_id in history.json? Skip
+2. YouTube playlist check: List all videos in playlist, check if Instagram permalink already in description OR title bhavy2 already exists
+3. Counter check: Next bhavy number calculated from max(file_counter, history_valid, youtube_max_bhavy) to avoid bhavy2 duplicate
+
+## Code changes:
+- src/youtube.py: Added list_playlist_videos() and check_duplicate()
+- src/history.py: CounterManager.get_next() now also checks youtube_existing_titles
+- src/main.py: Before upload, lists playlist videos and checks duplicate
+
+## How to fix existing duplicate bhavy2 in playlist:
+1. Go to YouTube Studio -> trailers bollywood channel -> Content
+2. Delete duplicate bhavy2 (keep one)
+3. Restore history file: Copy old uploaded_history.json with 12 entries from backup, or set bhavy_counter to correct number
+4. Push v9 code
+
+## VIDEOS_PER_RUN from config default 1:
+VIDEOS_PER_RUN env, default 1
 
 ## Logs:
-- STEP 1,2,3 show "No YouTube API called yet"
-- STEP 4 shows "Now calling YouTube API for first time"
-
-## VIDEOS_PER_RUN from config:
-- Env VIDEOS_PER_RUN, default 1
-- Set in workflow env: VIDEOS_PER_RUN=1
-
-## History prevents duplicates:
-- data/uploaded_history.json tracks every insta_id
-- Filtered before any YouTube API
-
-## Project Structure:
-Same as before, but main.py restructured.
-
-## How to restore history if deleted:
-If data/uploaded_history.json empty, it will re-upload from start and try expired videos.
-Restore from backup or set bhavy_counter.
-
-## Token remaining logs:
-- YouTubeChannel logs channel name, ID, stats
-- Logs exhausted reason, uploaded today
-- Channel limit 15/day per channel, quota 10k per project
+- [History] check no YouTube API
+- [Instagram] media_url check only Instagram API
+- [YouTube] Only after deciding video, calls YouTube API
+- Duplicate check logs: "DUPLICATE FOUND by permalink" or "No duplicate"

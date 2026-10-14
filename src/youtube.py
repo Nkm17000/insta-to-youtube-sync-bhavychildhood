@@ -10,48 +10,72 @@ class QuotaError(Exception):
 
 class YouTubeChannel:
     def __init__(self, config):
-        self.id = config['id']
-        self.playlist_title = config['playlist_title']
-        creds = Credentials(None, refresh_token=config['refresh_token'], token_uri="https://oauth2.googleapis.com/token",
+        self.id=config['id']
+        self.playlist_title=config['playlist_title']
+        creds=Credentials(None, refresh_token=config['refresh_token'], token_uri="https://oauth2.googleapis.com/token",
             client_id=config['client_id'], client_secret=config['client_secret'],
             scopes=["https://www.googleapis.com/auth/youtube.upload","https://www.googleapis.com/auth/youtube"])
-        self.youtube = build('youtube', 'v3', credentials=creds)
-        self.exhausted = False
-        self.exhausted_reason = None
-        self.channel_name = self.id
-        self.youtube_channel_id = "unknown"
-        self.uploaded_today = 0
+        self.youtube=build('youtube','v3', credentials=creds)
+        self.exhausted=False; self.exhausted_reason=None
+        self.channel_name=self.id; self.youtube_channel_id="unknown"; self.uploaded_today=0
         try:
-            res = self.youtube.channels().list(part="snippet,statistics", mine=True).execute()
+            res=self.youtube.channels().list(part="snippet", mine=True).execute()
             if res.get('items'):
-                self.channel_name = res['items'][0]['snippet']['title']
-                self.youtube_channel_id = res['items'][0]['id']
+                self.channel_name=res['items'][0]['snippet']['title']
+                self.youtube_channel_id=res['items'][0]['id']
         except: pass
-        print(f"[YouTube:{self.id}] Ready -> '{self.channel_name}' ({self.youtube_channel_id})")
+        print(f"[YouTube:{self.id}] Ready -> '{self.channel_name}'")
+
+    def list_playlist_videos(self, playlist_id):
+        # List all videos in playlist to check duplicates
+        print(f"[YouTube:{self.id}] Listing videos in playlist {playlist_id} to check duplicates...")
+        videos=[]
+        next_token=None
+        try:
+            while True:
+                req=self.youtube.playlistItems().list(part="snippet,contentDetails", playlistId=playlist_id, maxResults=50, pageToken=next_token).execute()
+                for item in req.get('items', []):
+                    title=item['snippet']['title']
+                    desc=item['snippet'].get('description','')
+                    vid=item['contentDetails']['videoId']
+                    videos.append({"title":title,"description":desc,"videoId":vid})
+                next_token=req.get('nextPageToken')
+                if not next_token: break
+            print(f"[YouTube:{self.id}] Playlist has {len(videos)} videos: {[v['title'] for v in videos[:10]]}")
+            return videos
+        except Exception as e:
+            print(f"[YouTube:{self.id}] Failed to list playlist videos: {e}")
+            return []
+
+    def check_duplicate(self, playlist_id, insta_permalink, candidate_title):
+        # Check if Instagram permalink already in description or title already exists
+        existing=self.list_playlist_videos(playlist_id)
+        for v in existing:
+            if insta_permalink and insta_permalink in v['description']:
+                print(f"[YouTube:{self.id}] DUPLICATE FOUND by permalink: {insta_permalink} already in video {v['videoId']} title '{v['title']}'")
+                return True, v
+            if v['title'].lower().strip() == candidate_title.lower().strip():
+                print(f"[YouTube:{self.id}] DUPLICATE FOUND by title: '{candidate_title}' already exists as {v['videoId']}")
+                return True, v
+        print(f"[YouTube:{self.id}] No duplicate found for title '{candidate_title}' and permalink {insta_permalink}")
+        return False, None
 
     def get_or_create_playlist(self, title, description, privacy="public"):
-        print(f"[YouTube:{self.id}] Checking playlist '{title}' - Calling YouTube API now (after video decided)")
+        print(f"[YouTube:{self.id}] Checking playlist '{title}'")
         try:
-            res = self.youtube.playlists().list(part="snippet", mine=True, maxResults=50).execute()
+            res=self.youtube.playlists().list(part="snippet", mine=True, maxResults=50).execute()
             for item in res.get('items', []):
-                if item['snippet']['title'].lower() == title.lower():
-                    print(f"[YouTube:{self.id}] Found playlist: {item['id']}")
+                if item['snippet']['title'].lower()==title.lower():
+                    print(f"[YouTube:{self.id}] Found playlist {item['id']}")
                     return item['id']
         except HttpError as e:
             txt=str(e).lower()
             if 'uploadlimit' in txt: raise ChannelLimitError(str(e), self.id)
             if 'quota' in txt: raise QuotaError(str(e), self.id)
-
         print(f"[YouTube:{self.id}] Creating playlist '{title}'")
         body={"snippet":{"title":title,"description":description},"status":{"privacyStatus":privacy}}
-        try:
-            res=self.youtube.playlists().insert(part="snippet,status", body=body).execute()
-            return res['id']
-        except HttpError as e:
-            txt=str(e).lower()
-            if 'uploadlimit' in txt: raise ChannelLimitError(str(e), self.id)
-            if 'quota' in txt: raise QuotaError(str(e), self.id)
-            raise
+        res=self.youtube.playlists().insert(part="snippet,status", body=body).execute()
+        return res['id']
 
     def add_to_playlist(self, playlist_id, video_id):
         if video_id.startswith("SKIPPED"): return
@@ -60,14 +84,14 @@ class YouTubeChannel:
         print(f"[YouTube:{self.id}] Added {video_id} to playlist")
 
     def upload_video(self, file_path, title, description, tags=[], privacy="public"):
-        print(f"[YouTube:{self.id}] Uploading '{title}' - Calling YouTube API upload")
+        print(f"[YouTube:{self.id}] Uploading '{title}'")
         body={"snippet":{"title":title[:100],"description":description[:5000],"tags":tags[:15],"categoryId":"24"},"status":{"privacyStatus":privacy,"selfDeclaredMadeForKids":False}}
         media=MediaFileUpload(file_path, mimetype='video/mp4', resumable=True)
         try:
             request=self.youtube.videos().insert(part="snippet,status", body=body, media_body=media)
             response=None
             while response is None:
-                status, response = request.next_chunk()
+                status, response=request.next_chunk()
                 if status: print(f"[YouTube:{self.id}] Upload {int(status.progress()*100)}%")
             vid=response['id']
             self.uploaded_today+=1
