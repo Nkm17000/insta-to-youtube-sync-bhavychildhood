@@ -1,9 +1,6 @@
-"""
-AUTO refresh token generator - ONLY CLIENT_ID and CLIENT_SECRET needed
-No manual URL paste
-"""
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+print("=== Generate YouTube Refresh Token - ONLY CLIENT_ID and CLIENT_SECRET needed ===")
 CLIENT_ID = input("Enter CLIENT_ID: ").strip()
 CLIENT_SECRET = input("Enter CLIENT_SECRET: ").strip()
 
@@ -12,7 +9,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/youtube"
 ]
 
-print("\nOpening browser... Login with YOUR YOUTUBE CHANNEL Gmail and click Allow")
+print("\nOpening browser... Login with YOUR YOUTUBE CHANNEL Gmail (trailers bollywood Gmail) and click Allow")
 print("After Allow, browser shows Success - No URL to copy!")
 
 flow = InstalledAppFlow.from_client_config(

@@ -1,6 +1,5 @@
 .env
 data/temp/
-data/*.mp4
 __pycache__/
 *.pyc
-.env.local
+*.mp4
