@@ -1,14 +1,11 @@
-name: Insta to YT - Upload Until Quota
+name: ONE Video Per Run FINAL v5
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - '**'
   workflow_dispatch:
   schedule:
-    - cron: '0 1,7,13,19 * * *'
+    - cron: '0 1,7,13,19 * * *'  # 4 times/day = 4 videos/day = safe, never hits limit
+  push:
+    branches: ['**']
 
 jobs:
   sync:
@@ -16,41 +13,38 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run sync until quota finishes
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Run ONE video upload
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          YT1_CLIENT_ID: ${{ secrets.YT1_CLIENT_ID }}
+          YT1_CLIENT_SECRET: ${{ secrets.YT1_CLIENT_SECRET }}
+          YT1_REFRESH_TOKEN: ${{ secrets.YT1_REFRESH_TOKEN }}
+          YT1_ENABLED: ${{ secrets.YT1_ENABLED }}
+          YT2_CLIENT_ID: ${{ secrets.YT2_CLIENT_ID }}
+          YT2_CLIENT_SECRET: ${{ secrets.YT2_CLIENT_SECRET }}
+          YT2_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
+          YT2_ENABLED: ${{ secrets.YT2_ENABLED }}
+          YT3_CLIENT_ID: ${{ secrets.YT3_CLIENT_ID }}
+          YT3_CLIENT_SECRET: ${{ secrets.YT3_CLIENT_SECRET }}
+          YT3_REFRESH_TOKEN: ${{ secrets.YT3_REFRESH_TOKEN }}
+          YT3_ENABLED: ${{ secrets.YT3_ENABLED }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           YOUTUBE_PLAYLIST_TITLE: ${{ secrets.YOUTUBE_PLAYLIST_TITLE }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
-        run: |
-          python -m src.main
-
+          VIDEOS_PER_RUN: 1
+        run: python -m src.main
       - name: Commit progress
         run: |
           git config --global user.name "Insta-YT Bot"
           git config --global user.email "bot@github.com"
-          git add data/uploaded_history.json data/playlist_info.json data/bhavy_counter.json || true
-          if git diff --staged --quiet; then
-            echo "No new uploads to commit"
-          else
-            git commit -m "Progress: quota-based sync + bhavy counter [skip ci]"
-            git push || echo "Push failed"
-          fi
+          git add data/ config/
+          git diff --staged --quiet || git commit -m "Progress: uploaded 1 video [skip ci]" && git push || echo "No push"

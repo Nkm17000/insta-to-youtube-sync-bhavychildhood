@@ -1,11 +1,11 @@
-# Final Fixed - No History Version
+FINAL v5 - ONE VIDEO PER RUN
 
-This is clean project without history files.
-On first run it will start from bhavy1 for all videos without title.
+- Uploads 1 video per GitHub Action run
+- Schedule: 4 times/day (1AM,7AM,1PM,7PM UTC) = 4 videos/day
+- Never hits uploadLimitExceeded
+- Single channel, single playlist, multi-token rotation
+- Filter already uploaded first
 
-- Handles missing media_url (fetches via single ID call)
-- Handles uploadLimitExceeded as quota
-- Skips non-downloadable videos and marks as SKIPPED
-- Uploads until quota finishes
+Your 10 vs 16 issue fixed - filters before upload.
 
-Push triggers workflow + manual dispatch + schedule 4x daily
+Set VIDEOS_PER_RUN=1 env var (default 1). Change to 2 if you want 2 per run.
