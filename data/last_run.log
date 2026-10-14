@@ -10,186 +10,72 @@ Flow:
 
 [STEP 1] Fetching Instagram - Oldest first - No YouTube API
 [Instagram] Fetching all reels (oldest first sorting after fetch)...
-[Instagram] Total: 138 sorted oldest first
+[Instagram] Total: 140 sorted oldest first
   Oldest: 18061341392792119 @ 2026-10-04T17:23:46+0000 - 
-  Newest: 18647139691036962 @ 2026-10-13T19:38:11+0000
+  Newest: 18108385577217032 @ 2026-10-14T05:26:59+0000
 
 [STEP 2] Filtering history - Oldest first - Retry SKIPPED_NO_MEDIA after 24h - No YouTube API
+[History] Skipping recent SKIPPED 18061341392792119 (retry after 24h)
+[History] Skipping recent SKIPPED 18104043491571042 (retry after 24h)
+[History] Skipping recent SKIPPED 17870424810641956 (retry after 24h)
+[History] Skipping recent SKIPPED 18072759776744114 (retry after 24h)
+[History] Skipping recent SKIPPED 18117402323064126 (retry after 24h)
+[History] Skipping recent SKIPPED 17911944300531815 (retry after 24h)
+[History] Skipping recent SKIPPED 17895051957420770 (retry after 24h)
+[History] Skipping recent SKIPPED 17879451429549288 (retry after 24h)
+[History] Skipping recent SKIPPED 18354662908222704 (retry after 24h)
+[History] Skipping recent SKIPPED 17959754280231262 (retry after 24h)
+[History] Skipping recent SKIPPED 18114246049833040 (retry after 24h)
+[History] Skipping recent SKIPPED 18107431388187304 (retry after 24h)
+[History] Skipping recent SKIPPED 17959769166238979 (retry after 24h)
+[History] Skipping recent SKIPPED 18116974202092072 (retry after 24h)
+[History] Skipping recent SKIPPED 18098760392657425 (retry after 24h)
+[History] Skipping recent SKIPPED 18111970955157840 (retry after 24h)
+[History] Skipping recent SKIPPED 18113837204516038 (retry after 24h)
+[History] Skipping recent SKIPPED 18140736310522910 (retry after 24h)
+[History] Skipping recent SKIPPED 18462136150142692 (retry after 24h)
+[History] Skipping recent SKIPPED 17986764999118777 (retry after 24h)
+[History] Skipping recent SKIPPED 17930458005164298 (retry after 24h)
+[History] Skipping recent SKIPPED 17865164766677246 (retry after 24h)
+[History] Skipping recent SKIPPED 18145838107577479 (retry after 24h)
+[History] Skipping recent SKIPPED 17980561053066482 (retry after 24h)
+[History] Skipping recent SKIPPED 17975344929146569 (retry after 24h)
+[History] Skipping recent SKIPPED 17905365891594591 (retry after 24h)
+[History] Skipping recent SKIPPED 18107873936611429 (retry after 24h)
+[History] Skipping recent SKIPPED 18225351916339944 (retry after 24h)
+[History] Skipping recent SKIPPED 18081248882518913 (retry after 24h)
+[History] Skipping recent SKIPPED 18097717679558033 (retry after 24h)
+[History] Skipping recent SKIPPED 18039711989656290 (retry after 24h)
 ======================================================================
 [History] OLDEST FIRST - No YouTube API yet
-  IG Total: 138 | History total: 2 (valid=2, skipped=0, failed=0)
-  New (never tried): 136
+  IG Total: 140 | History total: 34 (valid=3, skipped=31, failed=0)
+  New (never tried): 106
   Retryable SKIPPED_NO_MEDIA (expired, will refresh media_url): 0
-  Combined to check (oldest first): 136
-  Oldest to try: 18061341392792119 @ 2026-10-04T17:23:46+0000
-  Newest in list: 18647139691036962 @ 2026-10-13T19:38:11+0000
+  Combined to check (oldest first): 106
+  Oldest to try: 18076899650427795 @ 2026-10-07T10:52:35+0000
+  Newest in list: 18108385577217032 @ 2026-10-14T05:26:59+0000
 ======================================================================
 
 [STEP 3] Finding valid video with fresh media_url - Oldest first - ONLY Instagram API, NO YouTube API
-[STEP 3] Checking 136 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
+[STEP 3] Checking 106 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
 
-[STEP 3] 1/136: 18061341392792119 @ 2026-10-04T17:23:46+0000 (oldest first)
-[Instagram] 18061341392792119 -> No media_url (expired/deleted)
+[STEP 3] 1/106: 18076899650427795 @ 2026-10-07T10:52:35+0000 (oldest first)
+[Instagram] 18076899650427795 -> No media_url (expired/deleted)
   -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18061341392792119 -> SKIPPED_NO_MEDIA (skipped_18061341392792119)
+[History] Marked 18076899650427795 -> SKIPPED_NO_MEDIA (skipped_18076899650427795)
 
-[STEP 3] 2/136: 18104043491571042 @ 2026-10-04T17:27:42+0000 (oldest first)
-[Instagram] 18104043491571042 -> No media_url (expired/deleted)
+[STEP 3] 2/106: 18026579798879687 @ 2026-10-07T12:01:17+0000 (oldest first)
+[Instagram] 18026579798879687 -> No media_url (expired/deleted)
   -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18104043491571042 -> SKIPPED_NO_MEDIA (skipped_18104043491571042)
+[History] Marked 18026579798879687 -> SKIPPED_NO_MEDIA (skipped_18026579798879687)
 
-[STEP 3] 3/136: 17870424810641956 @ 2026-10-04T17:41:18+0000 (oldest first)
-[Instagram] 17870424810641956 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17870424810641956 -> SKIPPED_NO_MEDIA (skipped_17870424810641956)
-
-[STEP 3] 4/136: 18072759776744114 @ 2026-10-04T17:57:24+0000 (oldest first)
-[Instagram] 18072759776744114 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18072759776744114 -> SKIPPED_NO_MEDIA (skipped_18072759776744114)
-
-[STEP 3] 5/136: 18117402323064126 @ 2026-10-04T18:05:00+0000 (oldest first)
-[Instagram] 18117402323064126 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18117402323064126 -> SKIPPED_NO_MEDIA (skipped_18117402323064126)
-
-[STEP 3] 6/136: 17911944300531815 @ 2026-10-04T18:06:57+0000 (oldest first)
-[Instagram] 17911944300531815 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17911944300531815 -> SKIPPED_NO_MEDIA (skipped_17911944300531815)
-
-[STEP 3] 7/136: 17895051957420770 @ 2026-10-04T18:10:35+0000 (oldest first)
-[Instagram] 17895051957420770 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17895051957420770 -> SKIPPED_NO_MEDIA (skipped_17895051957420770)
-
-[STEP 3] 8/136: 17879451429549288 @ 2026-10-04T18:13:32+0000 (oldest first)
-[Instagram] 17879451429549288 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17879451429549288 -> SKIPPED_NO_MEDIA (skipped_17879451429549288)
-
-[STEP 3] 9/136: 18354662908222704 @ 2026-10-04T18:14:56+0000 (oldest first)
-[Instagram] 18354662908222704 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18354662908222704 -> SKIPPED_NO_MEDIA (skipped_18354662908222704)
-
-[STEP 3] 10/136: 17959754280231262 @ 2026-10-04T18:16:42+0000 (oldest first)
-[Instagram] 17959754280231262 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17959754280231262 -> SKIPPED_NO_MEDIA (skipped_17959754280231262)
-
-[STEP 3] 11/136: 18114246049833040 @ 2026-10-04T18:20:26+0000 (oldest first)
-[Instagram] 18114246049833040 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18114246049833040 -> SKIPPED_NO_MEDIA (skipped_18114246049833040)
-
-[STEP 3] 12/136: 18107431388187304 @ 2026-10-04T18:41:57+0000 (oldest first)
-[Instagram] 18107431388187304 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18107431388187304 -> SKIPPED_NO_MEDIA (skipped_18107431388187304)
-
-[STEP 3] 13/136: 17959769166238979 @ 2026-10-05T04:07:30+0000 (oldest first)
-[Instagram] 17959769166238979 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17959769166238979 -> SKIPPED_NO_MEDIA (skipped_17959769166238979)
-
-[STEP 3] 14/136: 18116974202092072 @ 2026-10-05T04:17:43+0000 (oldest first)
-[Instagram] 18116974202092072 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18116974202092072 -> SKIPPED_NO_MEDIA (skipped_18116974202092072)
-
-[STEP 3] 15/136: 18098760392657425 @ 2026-10-05T13:08:08+0000 (oldest first)
-[Instagram] 18098760392657425 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18098760392657425 -> SKIPPED_NO_MEDIA (skipped_18098760392657425)
-
-[STEP 3] 16/136: 18111970955157840 @ 2026-10-05T17:17:26+0000 (oldest first)
-[Instagram] 18111970955157840 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18111970955157840 -> SKIPPED_NO_MEDIA (skipped_18111970955157840)
-
-[STEP 3] 17/136: 18113837204516038 @ 2026-10-05T17:18:52+0000 (oldest first)
-[Instagram] 18113837204516038 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18113837204516038 -> SKIPPED_NO_MEDIA (skipped_18113837204516038)
-
-[STEP 3] 18/136: 18140736310522910 @ 2026-10-06T04:16:31+0000 (oldest first)
-[Instagram] 18140736310522910 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18140736310522910 -> SKIPPED_NO_MEDIA (skipped_18140736310522910)
-
-[STEP 3] 19/136: 18462136150142692 @ 2026-10-06T12:33:01+0000 (oldest first)
-[Instagram] 18462136150142692 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18462136150142692 -> SKIPPED_NO_MEDIA (skipped_18462136150142692)
-
-[STEP 3] 20/136: 17986764999118777 @ 2026-10-06T12:36:20+0000 (oldest first)
-[Instagram] 17986764999118777 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17986764999118777 -> SKIPPED_NO_MEDIA (skipped_17986764999118777)
-
-[STEP 3] 21/136: 17930458005164298 @ 2026-10-06T12:46:21+0000 (oldest first)
-[Instagram] 17930458005164298 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17930458005164298 -> SKIPPED_NO_MEDIA (skipped_17930458005164298)
-
-[STEP 3] 22/136: 17865164766677246 @ 2026-10-06T12:48:07+0000 (oldest first)
-[Instagram] 17865164766677246 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17865164766677246 -> SKIPPED_NO_MEDIA (skipped_17865164766677246)
-
-[STEP 3] 23/136: 18145838107577479 @ 2026-10-06T12:57:57+0000 (oldest first)
-[Instagram] 18145838107577479 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18145838107577479 -> SKIPPED_NO_MEDIA (skipped_18145838107577479)
-
-[STEP 3] 24/136: 17980561053066482 @ 2026-10-06T13:07:44+0000 (oldest first)
-[Instagram] 17980561053066482 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17980561053066482 -> SKIPPED_NO_MEDIA (skipped_17980561053066482)
-
-[STEP 3] 25/136: 17975344929146569 @ 2026-10-06T14:08:53+0000 (oldest first)
-[Instagram] 17975344929146569 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17975344929146569 -> SKIPPED_NO_MEDIA (skipped_17975344929146569)
-
-[STEP 3] 26/136: 17905365891594591 @ 2026-10-06T14:23:23+0000 (oldest first)
-[Instagram] 17905365891594591 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17905365891594591 -> SKIPPED_NO_MEDIA (skipped_17905365891594591)
-
-[STEP 3] 27/136: 18107873936611429 @ 2026-10-07T06:43:38+0000 (oldest first)
-[Instagram] 18107873936611429 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18107873936611429 -> SKIPPED_NO_MEDIA (skipped_18107873936611429)
-
-[STEP 3] 28/136: 18225351916339944 @ 2026-10-07T06:44:47+0000 (oldest first)
-[Instagram] 18225351916339944 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18225351916339944 -> SKIPPED_NO_MEDIA (skipped_18225351916339944)
-
-[STEP 3] 29/136: 18081248882518913 @ 2026-10-07T06:47:02+0000 (oldest first)
-[Instagram] 18081248882518913 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18081248882518913 -> SKIPPED_NO_MEDIA (skipped_18081248882518913)
-
-[STEP 3] 30/136: 18097717679558033 @ 2026-10-07T08:06:22+0000 (oldest first)
-[Instagram] 18097717679558033 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18097717679558033 -> SKIPPED_NO_MEDIA (skipped_18097717679558033)
-
-[STEP 3] 31/136: 18039711989656290 @ 2026-10-07T08:18:29+0000 (oldest first)
-[Instagram] 18039711989656290 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 18039711989656290 -> SKIPPED_NO_MEDIA (skipped_18039711989656290)
-
-[STEP 3] 32/136: 18063339395788283 @ 2026-10-07T09:35:04+0000 (oldest first)
-[Instagram] 18063339395788283 -> Fresh media_url OK (refreshed latest)
+[STEP 3] 3/106: 18108520784231313 @ 2026-10-07T12:33:38+0000 (oldest first)
+[Instagram] 18108520784231313 -> Fresh media_url OK (refreshed latest)
   -> FOUND valid media_url (refreshed latest) - Will upload this oldest valid video
 
 ======================================================================
-[STEP 3] DECIDED oldest valid video: 18063339395788283 @ 2026-10-07T09:35:04+0000
-  Permalink: https://www.instagram.com/reel/DeMDIbcTrQ8/
+[STEP 3] DECIDED oldest valid video: 18108520784231313 @ 2026-10-07T12:33:38+0000
+  Permalink: https://www.instagram.com/reel/DeMXkA3TT5D/
   Fresh media_url refreshed OK
   Now calling YouTube API for first time
 ======================================================================
@@ -197,37 +83,35 @@ Flow:
 [STEP 4] Loading YouTube channels - First YouTube API call
 [Config] Loaded 1 channel(s), VIDEOS_PER_RUN=1, SKIPPED_RETRY_HOURS=24
 [YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood'
-[Counter] Next bhavy: bhavy4 (file=3, history_valid=2, youtube_max=0)
+[Counter] Next bhavy: bhavy5 (file=4, history_valid=3, youtube_max=0)
 
-[STEP 4] Initial next bhavy: bhavy4
+[STEP 4] Initial next bhavy: bhavy5
 
 --- Trying Channel: trailers_bollywood_main (trailers bollywood) ---
-[YouTube:trailers_bollywood_main] Checking/creating playlist 'trailers bollywood' - YouTube API call
-[YouTube:trailers_bollywood_main] Found playlist PLQL22VyKHWIc
 Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
 [YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 3 videos
-[Counter] Next bhavy: bhavy4 (file=3, history_valid=2, youtube_max=3)
-[STEP 4] Recalculated next bhavy after playlist check: bhavy4
+[YouTube:trailers_bollywood_main] Playlist has 4 videos
+[Counter] Next bhavy: bhavy5 (file=4, history_valid=3, youtube_max=4)
+[STEP 4] Recalculated next bhavy after playlist check: bhavy5
 [YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 3 videos
-[YouTube:trailers_bollywood_main] No duplicate for 'bhavy4'
+[YouTube:trailers_bollywood_main] Playlist has 4 videos
+[YouTube:trailers_bollywood_main] No duplicate for 'bhavy5'
 [Run] Downloading using fresh media_url
 [Instagram] Downloading video...
-[Instagram] Downloaded 4043162 bytes
-[YouTube:trailers_bollywood_main] Uploading 'bhavy4' - YouTube API upload
-[YouTube:trailers_bollywood_main] SUCCESS _PJ5ZDHFozk -> https://youtu.be/_PJ5ZDHFozk
-[YouTube:trailers_bollywood_main] Added _PJ5ZDHFozk to playlist
-[History] Marked 18063339395788283 -> _PJ5ZDHFozk (bhavy4)
+[Instagram] Downloaded 4789190 bytes
+[YouTube:trailers_bollywood_main] Uploading 'bhavy5' - YouTube API upload
+[YouTube:trailers_bollywood_main] SUCCESS Wdopjiq_atw -> https://youtu.be/Wdopjiq_atw
+[YouTube:trailers_bollywood_main] Added Wdopjiq_atw to playlist
+[History] Marked 18108520784231313 -> Wdopjiq_atw (bhavy5)
 
 ======================================================================
-SUCCESS! Oldest video 18063339395788283 @ 2026-10-07T09:35:04+0000 -> https://youtu.be/_PJ5ZDHFozk as bhavy4
+SUCCESS! Oldest video 18108520784231313 @ 2026-10-07T12:33:38+0000 -> https://youtu.be/Wdopjiq_atw as bhavy5
 Channel: trailers bollywood
 ======================================================================
 
 ======================================================================
-FINAL SUMMARY: IG Total 138 | History total 34 (valid=3, skipped=31, failed=0) | Uploaded this run: 1
-[Counter] Next bhavy: bhavy5 (file=4, history_valid=3, youtube_max=0)
-Next bhavy: bhavy5
+FINAL SUMMARY: IG Total 140 | History total 37 (valid=4, skipped=33, failed=0) | Uploaded this run: 1
+[Counter] Next bhavy: bhavy6 (file=5, history_valid=4, youtube_max=0)
+Next bhavy: bhavy6
 SKIPPED_NO_MEDIA will be retried after 24h with fresh media_url refresh
 ======================================================================
