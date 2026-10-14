@@ -1,0 +1,81 @@
+======================================================================
+FINAL v8 - NO YT API UNTIL VIDEO DECIDED - HISTORY CHECK FIRST
+======================================================================
+VIDEOS_PER_RUN: 1 (from env, default 1)
+Flow: 1. Fetch IG -> 2. Check history (no duplicates) -> 3. Check IG media_url valid -> 4. Only then call YouTube API
+======================================================================
+
+[STEP 1] Fetching Instagram videos - No YouTube API called yet
+[Instagram] Fetching all reels...
+[Instagram] Total: 138
+
+[STEP 2] Checking history to avoid duplicates - No YouTube API called yet
+======================================================================
+[History] CHECKING DUPLICATES - No YouTube API called yet
+  Total Instagram: 138
+  History total: 1 (valid=0, skipped=1)
+  Already uploaded IDs: 1
+  New (not in history): 137
+  Last uploaded IDs: ['18061341392792119']
+======================================================================
+
+[STEP 2] Found 137 new videos not in history
+
+[STEP 3] Finding which video has valid media_url - ONLY Instagram API, NO YouTube API yet
+[STEP 3] Will check up to 137 new videos for valid media_url
+
+[STEP 3] Checking 1/137: 18104043491571042 (timestamp: 2026-10-04T17:27:42+0000)
+[Instagram] 18104043491571042 -> No media_url (expired/deleted)
+  -> SKIP 18104043491571042: No media_url (expired/deleted) - marking as SKIPPED in history
+[History] Marked 18104043491571042 -> SKIPPED_NO_MEDIA on none
+
+[STEP 3] Checking 2/137: 17933205381406684 (timestamp: 2026-10-04T17:28:53+0000)
+[Instagram] 17933205381406684 -> media_url OK (https://scontent-sjc3-1.cdninstagram.com/o1/v/t2/f2/m86/AQNu...)
+  -> FOUND valid video: 17933205381406684 has media_url, will upload this one
+
+======================================================================
+[STEP 4] DECIDED to upload: 17933205381406684
+  Caption: 
+  Permalink: https://www.instagram.com/reel/DeFK-OMTKv7/
+  Media URL valid: Yes
+  Now calling YouTube API for first time
+======================================================================
+
+[STEP 4] Loading YouTube channels - First YouTube API call
+======================================================================
+[Config] Loading channels - VIDEOS_PER_RUN: 1
+======================================================================
+[Config] Loaded trailers_bollywood_main -> playlist 'trailers bollywood'
+[Config] Total channels: 1
+[YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood' (UCh7Mjux-jmT8ywtrs-ZFxDg)
+[Counter] Next bhavy: bhavy2 (file=1, history_valid=0)
+
+[STEP 4] Will upload as bhavy2
+[STEP 4] Channel order: ['trailers_bollywood_main']
+
+--- Uploading to Channel: trailers_bollywood_main (trailers bollywood) ---
+[YouTube:trailers_bollywood_main] Checking playlist 'trailers bollywood' - Calling YouTube API now (after video decided)
+[YouTube:trailers_bollywood_main] Creating playlist 'trailers bollywood'
+Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
+[Run] Downloading Instagram video (media_url already validated)
+[Instagram] Downloading from https://scontent-sjc3-1.cdninstagram.com/o1/v/t2/f2/m86/AQNuaStYqlRlHIP-YgueRqrf...
+[Instagram] Downloaded 3027687 bytes
+[YouTube:trailers_bollywood_main] Uploading 'bhavy2' - Calling YouTube API upload
+[YouTube:trailers_bollywood_main] SUCCESS U0ax2sH8fgY -> https://youtu.be/U0ax2sH8fgY
+[YouTube:trailers_bollywood_main] Added U0ax2sH8fgY to playlist
+[History] Marked 17933205381406684 -> U0ax2sH8fgY on trailers_bollywood_main
+
+======================================================================
+SUCCESS! Uploaded 17933205381406684 -> https://youtu.be/U0ax2sH8fgY
+Title: bhavy2 (bhavy2)
+Channel: trailers bollywood (trailers_bollywood_main)
+Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
+======================================================================
+
+======================================================================
+FINAL SUMMARY
+IG Total: 138 | History total: 3 (valid=1, skipped=2) | Uploaded this run: 1
+[Counter] Next bhavy: bhavy3 (file=2, history_valid=1)
+Next bhavy: bhavy3
+History file prevents duplicates - no YouTube API called until video decided
+======================================================================
