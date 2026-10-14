@@ -1,81 +1,209 @@
 ======================================================================
-FINAL v8 - NO YT API UNTIL VIDEO DECIDED - HISTORY CHECK FIRST
+FINAL V9 - FIX DUPLICATE BHAVY2 - Triple duplicate check
 ======================================================================
-VIDEOS_PER_RUN: 1 (from env, default 1)
-Flow: 1. Fetch IG -> 2. Check history (no duplicates) -> 3. Check IG media_url valid -> 4. Only then call YouTube API
+Flow: History check -> Instagram media_url valid check -> YouTube playlist duplicate check -> Upload
 ======================================================================
 
-[STEP 1] Fetching Instagram videos - No YouTube API called yet
-[Instagram] Fetching all reels...
+[STEP 1] Fetching Instagram - No YouTube API
+[Instagram] Fetching...
 [Instagram] Total: 138
 
-[STEP 2] Checking history to avoid duplicates - No YouTube API called yet
+[STEP 2] Checking history file for duplicates - No YouTube API
+[History] IG Total: 138 | History total: 3 (valid=1, skipped=2) | New: 135
+
+[STEP 3] Finding valid Instagram video with media_url - Only Instagram API, No YouTube API
+
+[STEP 3] Checking 1/135: 17870424810641956
+[Instagram] 17870424810641956 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17870424810641956 -> SKIPPED_NO_MEDIA (skipped_17870424810641956) on none
+
+[STEP 3] Checking 2/135: 18072759776744114
+[Instagram] 18072759776744114 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18072759776744114 -> SKIPPED_NO_MEDIA (skipped_18072759776744114) on none
+
+[STEP 3] Checking 3/135: 18117402323064126
+[Instagram] 18117402323064126 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18117402323064126 -> SKIPPED_NO_MEDIA (skipped_18117402323064126) on none
+
+[STEP 3] Checking 4/135: 17911944300531815
+[Instagram] 17911944300531815 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17911944300531815 -> SKIPPED_NO_MEDIA (skipped_17911944300531815) on none
+
+[STEP 3] Checking 5/135: 17895051957420770
+[Instagram] 17895051957420770 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17895051957420770 -> SKIPPED_NO_MEDIA (skipped_17895051957420770) on none
+
+[STEP 3] Checking 6/135: 17879451429549288
+[Instagram] 17879451429549288 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17879451429549288 -> SKIPPED_NO_MEDIA (skipped_17879451429549288) on none
+
+[STEP 3] Checking 7/135: 18354662908222704
+[Instagram] 18354662908222704 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18354662908222704 -> SKIPPED_NO_MEDIA (skipped_18354662908222704) on none
+
+[STEP 3] Checking 8/135: 17959754280231262
+[Instagram] 17959754280231262 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17959754280231262 -> SKIPPED_NO_MEDIA (skipped_17959754280231262) on none
+
+[STEP 3] Checking 9/135: 18114246049833040
+[Instagram] 18114246049833040 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18114246049833040 -> SKIPPED_NO_MEDIA (skipped_18114246049833040) on none
+
+[STEP 3] Checking 10/135: 18107431388187304
+[Instagram] 18107431388187304 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18107431388187304 -> SKIPPED_NO_MEDIA (skipped_18107431388187304) on none
+
+[STEP 3] Checking 11/135: 17959769166238979
+[Instagram] 17959769166238979 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17959769166238979 -> SKIPPED_NO_MEDIA (skipped_17959769166238979) on none
+
+[STEP 3] Checking 12/135: 18116974202092072
+[Instagram] 18116974202092072 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18116974202092072 -> SKIPPED_NO_MEDIA (skipped_18116974202092072) on none
+
+[STEP 3] Checking 13/135: 18098760392657425
+[Instagram] 18098760392657425 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18098760392657425 -> SKIPPED_NO_MEDIA (skipped_18098760392657425) on none
+
+[STEP 3] Checking 14/135: 18111970955157840
+[Instagram] 18111970955157840 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18111970955157840 -> SKIPPED_NO_MEDIA (skipped_18111970955157840) on none
+
+[STEP 3] Checking 15/135: 18113837204516038
+[Instagram] 18113837204516038 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18113837204516038 -> SKIPPED_NO_MEDIA (skipped_18113837204516038) on none
+
+[STEP 3] Checking 16/135: 18140736310522910
+[Instagram] 18140736310522910 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18140736310522910 -> SKIPPED_NO_MEDIA (skipped_18140736310522910) on none
+
+[STEP 3] Checking 17/135: 18462136150142692
+[Instagram] 18462136150142692 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18462136150142692 -> SKIPPED_NO_MEDIA (skipped_18462136150142692) on none
+
+[STEP 3] Checking 18/135: 17986764999118777
+[Instagram] 17986764999118777 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17986764999118777 -> SKIPPED_NO_MEDIA (skipped_17986764999118777) on none
+
+[STEP 3] Checking 19/135: 17930458005164298
+[Instagram] 17930458005164298 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17930458005164298 -> SKIPPED_NO_MEDIA (skipped_17930458005164298) on none
+
+[STEP 3] Checking 20/135: 17865164766677246
+[Instagram] 17865164766677246 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17865164766677246 -> SKIPPED_NO_MEDIA (skipped_17865164766677246) on none
+
+[STEP 3] Checking 21/135: 18145838107577479
+[Instagram] 18145838107577479 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18145838107577479 -> SKIPPED_NO_MEDIA (skipped_18145838107577479) on none
+
+[STEP 3] Checking 22/135: 17980561053066482
+[Instagram] 17980561053066482 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17980561053066482 -> SKIPPED_NO_MEDIA (skipped_17980561053066482) on none
+
+[STEP 3] Checking 23/135: 17975344929146569
+[Instagram] 17975344929146569 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17975344929146569 -> SKIPPED_NO_MEDIA (skipped_17975344929146569) on none
+
+[STEP 3] Checking 24/135: 17905365891594591
+[Instagram] 17905365891594591 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 17905365891594591 -> SKIPPED_NO_MEDIA (skipped_17905365891594591) on none
+
+[STEP 3] Checking 25/135: 18107873936611429
+[Instagram] 18107873936611429 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18107873936611429 -> SKIPPED_NO_MEDIA (skipped_18107873936611429) on none
+
+[STEP 3] Checking 26/135: 18225351916339944
+[Instagram] 18225351916339944 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18225351916339944 -> SKIPPED_NO_MEDIA (skipped_18225351916339944) on none
+
+[STEP 3] Checking 27/135: 18081248882518913
+[Instagram] 18081248882518913 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18081248882518913 -> SKIPPED_NO_MEDIA (skipped_18081248882518913) on none
+
+[STEP 3] Checking 28/135: 18097717679558033
+[Instagram] 18097717679558033 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18097717679558033 -> SKIPPED_NO_MEDIA (skipped_18097717679558033) on none
+
+[STEP 3] Checking 29/135: 18039711989656290
+[Instagram] 18039711989656290 -> No media_url (expired)
+  SKIP no media_url -> mark SKIPPED
+[History] Marked 18039711989656290 -> SKIPPED_NO_MEDIA (skipped_18039711989656290) on none
+
+[STEP 3] Checking 30/135: 17960426864996248
+[Instagram] 17960426864996248 -> media_url OK
+  FOUND valid: 17960426864996248
+
 ======================================================================
-[History] CHECKING DUPLICATES - No YouTube API called yet
-  Total Instagram: 138
-  History total: 1 (valid=0, skipped=1)
-  Already uploaded IDs: 1
-  New (not in history): 137
-  Last uploaded IDs: ['18061341392792119']
-======================================================================
-
-[STEP 2] Found 137 new videos not in history
-
-[STEP 3] Finding which video has valid media_url - ONLY Instagram API, NO YouTube API yet
-[STEP 3] Will check up to 137 new videos for valid media_url
-
-[STEP 3] Checking 1/137: 18104043491571042 (timestamp: 2026-10-04T17:27:42+0000)
-[Instagram] 18104043491571042 -> No media_url (expired/deleted)
-  -> SKIP 18104043491571042: No media_url (expired/deleted) - marking as SKIPPED in history
-[History] Marked 18104043491571042 -> SKIPPED_NO_MEDIA on none
-
-[STEP 3] Checking 2/137: 17933205381406684 (timestamp: 2026-10-04T17:28:53+0000)
-[Instagram] 17933205381406684 -> media_url OK (https://scontent-sjc3-1.cdninstagram.com/o1/v/t2/f2/m86/AQNu...)
-  -> FOUND valid video: 17933205381406684 has media_url, will upload this one
-
-======================================================================
-[STEP 4] DECIDED to upload: 17933205381406684
-  Caption: 
-  Permalink: https://www.instagram.com/reel/DeFK-OMTKv7/
-  Media URL valid: Yes
-  Now calling YouTube API for first time
+[STEP 3] DECIDED to upload: 17960426864996248 permalink https://www.instagram.com/reel/DeL8SiMRuMm/
+Now calling YouTube API for first time
 ======================================================================
 
 [STEP 4] Loading YouTube channels - First YouTube API call
-======================================================================
-[Config] Loading channels - VIDEOS_PER_RUN: 1
-======================================================================
-[Config] Loaded trailers_bollywood_main -> playlist 'trailers bollywood'
-[Config] Total channels: 1
-[YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood' (UCh7Mjux-jmT8ywtrs-ZFxDg)
-[Counter] Next bhavy: bhavy2 (file=1, history_valid=0)
+[Config] Loading channels...
+[Config] Loaded 1 channel(s)
+[YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood'
+[Counter] Next bhavy: bhavy3 (file=2, history_valid=1, youtube_max_bhavy=0)
 
-[STEP 4] Will upload as bhavy2
-[STEP 4] Channel order: ['trailers_bollywood_main']
+[STEP 4] Initial next bhavy: bhavy3
 
---- Uploading to Channel: trailers_bollywood_main (trailers bollywood) ---
-[YouTube:trailers_bollywood_main] Checking playlist 'trailers bollywood' - Calling YouTube API now (after video decided)
-[YouTube:trailers_bollywood_main] Creating playlist 'trailers bollywood'
+--- Trying Channel: trailers_bollywood_main (trailers bollywood) ---
 Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
-[Run] Downloading Instagram video (media_url already validated)
-[Instagram] Downloading from https://scontent-sjc3-1.cdninstagram.com/o1/v/t2/f2/m86/AQNuaStYqlRlHIP-YgueRqrf...
-[Instagram] Downloaded 3027687 bytes
-[YouTube:trailers_bollywood_main] Uploading 'bhavy2' - Calling YouTube API upload
-[YouTube:trailers_bollywood_main] SUCCESS U0ax2sH8fgY -> https://youtu.be/U0ax2sH8fgY
-[YouTube:trailers_bollywood_main] Added U0ax2sH8fgY to playlist
-[History] Marked 17933205381406684 -> U0ax2sH8fgY on trailers_bollywood_main
+[YouTube:trailers_bollywood_main] Listing videos in playlist PLQL22VyKHWIc to check duplicates...
+[YouTube:trailers_bollywood_main] Playlist has 2 videos: ['bhavy2', 'bhavy2']
+[Counter] Next bhavy: bhavy3 (file=2, history_valid=1, youtube_max_bhavy=2)
+[STEP 4] Recalculated next bhavy after checking YouTube playlist: bhavy3 (playlist has 2 videos)
+
+[Duplicate Check] Checking if 17960426864996248 already uploaded
+  History check: 17960426864996248 in history? False
+[YouTube:trailers_bollywood_main] Listing videos in playlist PLQL22VyKHWIc to check duplicates...
+[YouTube:trailers_bollywood_main] Playlist has 2 videos: ['bhavy2', 'bhavy2']
+[YouTube:trailers_bollywood_main] No duplicate found for title 'bhavy3' and permalink https://www.instagram.com/reel/DeL8SiMRuMm/
+  No duplicate - safe to upload as 'bhavy3'
+[Instagram] Downloading...
+[Instagram] Downloaded 10163740 bytes
+[YouTube:trailers_bollywood_main] Uploading 'bhavy3'
+[YouTube:trailers_bollywood_main] SUCCESS Gfrnz3bVUhk -> https://youtu.be/Gfrnz3bVUhk
+[YouTube:trailers_bollywood_main] Added Gfrnz3bVUhk to playlist
+[History] Marked 17960426864996248 -> Gfrnz3bVUhk (bhavy3) on trailers_bollywood_main
+[Counter] Saved 3
 
 ======================================================================
-SUCCESS! Uploaded 17933205381406684 -> https://youtu.be/U0ax2sH8fgY
-Title: bhavy2 (bhavy2)
-Channel: trailers bollywood (trailers_bollywood_main)
+SUCCESS! 17960426864996248 -> https://youtu.be/Gfrnz3bVUhk as bhavy3
+Channel: trailers bollywood
 Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
 ======================================================================
 
 ======================================================================
-FINAL SUMMARY
-IG Total: 138 | History total: 3 (valid=1, skipped=2) | Uploaded this run: 1
-[Counter] Next bhavy: bhavy3 (file=2, history_valid=1)
-Next bhavy: bhavy3
-History file prevents duplicates - no YouTube API called until video decided
+FINAL SUMMARY: IG Total 138 | History total 33 (valid=2, skipped=31) | Uploaded this run: 1
+[Counter] Next bhavy: bhavy4 (file=3, history_valid=2, youtube_max_bhavy=0)
+Next bhavy: bhavy4
 ======================================================================
