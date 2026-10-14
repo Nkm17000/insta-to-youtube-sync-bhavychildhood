@@ -3,7 +3,7 @@ name: ONE Video Per Run FINAL v5
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1,7,13,19 * * *'  # 4 times/day = 4 videos/day = safe, never hits limit
+    - cron: '0 1,7,13,19 * * *'  # 4 times/day = 4 videos/day = safe, never hits limit a
   push:
     branches: ['**']
 
