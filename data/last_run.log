@@ -10,9 +10,9 @@ Flow:
 
 [STEP 1] Fetching Instagram - Oldest first - No YouTube API
 [Instagram] Fetching all reels (oldest first sorting after fetch)...
-[Instagram] Total: 140 sorted oldest first
+[Instagram] Total: 147 sorted oldest first
   Oldest: 18061341392792119 @ 2026-10-04T17:23:46+0000 - 
-  Newest: 18108385577217032 @ 2026-10-14T05:26:59+0000
+  Newest: 17950373166055159 @ 2026-10-14T17:42:23+0000
 
 [STEP 2] Filtering history - Oldest first - Retry SKIPPED_NO_MEDIA after 24h - No YouTube API
 [History] Skipping recent SKIPPED 18061341392792119 (retry after 24h)
@@ -50,24 +50,29 @@ Flow:
 [History] Skipping recent SKIPPED 18026579798879687 (retry after 24h)
 ======================================================================
 [History] OLDEST FIRST - No YouTube API yet
-  IG Total: 140 | History total: 37 (valid=4, skipped=33, failed=0)
-  New (never tried): 103
+  IG Total: 147 | History total: 38 (valid=5, skipped=33, failed=0)
+  New (never tried): 109
   Retryable SKIPPED_NO_MEDIA (expired, will refresh media_url): 0
-  Combined to check (oldest first): 103
-  Oldest to try: 18167746744475686 @ 2026-10-07T12:37:44+0000
-  Newest in list: 18108385577217032 @ 2026-10-14T05:26:59+0000
+  Combined to check (oldest first): 109
+  Oldest to try: 17882336277525272 @ 2026-10-07T12:57:38+0000
+  Newest in list: 17950373166055159 @ 2026-10-14T17:42:23+0000
 ======================================================================
 
 [STEP 3] Finding valid video with fresh media_url - Oldest first - ONLY Instagram API, NO YouTube API
-[STEP 3] Checking 103 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
+[STEP 3] Checking 109 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
 
-[STEP 3] 1/103: 18167746744475686 @ 2026-10-07T12:37:44+0000 (oldest first)
-[Instagram] 18167746744475686 -> Fresh media_url OK (refreshed latest)
+[STEP 3] 1/109: 17882336277525272 @ 2026-10-07T12:57:38+0000 (oldest first)
+[Instagram] 17882336277525272 -> No media_url (expired/deleted)
+  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
+[History] Marked 17882336277525272 -> SKIPPED_NO_MEDIA (skipped_17882336277525272)
+
+[STEP 3] 2/109: 18083535713686687 @ 2026-10-07T13:15:39+0000 (oldest first)
+[Instagram] 18083535713686687 -> Fresh media_url OK (refreshed latest)
   -> FOUND valid media_url (refreshed latest) - Will upload this oldest valid video
 
 ======================================================================
-[STEP 3] DECIDED oldest valid video: 18167746744475686 @ 2026-10-07T12:37:44+0000
-  Permalink: https://www.instagram.com/reel/DeMYCXCTfr0/
+[STEP 3] DECIDED oldest valid video: 18083535713686687 @ 2026-10-07T13:15:39+0000
+  Permalink: https://www.instagram.com/reel/DeMcTtSTYRB/
   Fresh media_url refreshed OK
   Now calling YouTube API for first time
 ======================================================================
@@ -75,35 +80,35 @@ Flow:
 [STEP 4] Loading YouTube channels - First YouTube API call
 [Config] Loaded 1 channel(s), VIDEOS_PER_RUN=1, SKIPPED_RETRY_HOURS=24
 [YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood'
-[Counter] Next bhavy: bhavy6 (file=5, history_valid=4, youtube_max=0)
+[Counter] Next bhavy: bhavy7 (file=6, history_valid=5, youtube_max=0)
 
-[STEP 4] Initial next bhavy: bhavy6
+[STEP 4] Initial next bhavy: bhavy7
 
 --- Trying Channel: trailers_bollywood_main (trailers bollywood) ---
 Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
 [YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 5 videos
-[Counter] Next bhavy: bhavy6 (file=5, history_valid=4, youtube_max=5)
-[STEP 4] Recalculated next bhavy after playlist check: bhavy6
+[YouTube:trailers_bollywood_main] Playlist has 6 videos
+[Counter] Next bhavy: bhavy7 (file=6, history_valid=5, youtube_max=6)
+[STEP 4] Recalculated next bhavy after playlist check: bhavy7
 [YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 5 videos
-[YouTube:trailers_bollywood_main] No duplicate for 'bhavy6'
+[YouTube:trailers_bollywood_main] Playlist has 6 videos
+[YouTube:trailers_bollywood_main] No duplicate for 'bhavy7'
 [Run] Downloading using fresh media_url
 [Instagram] Downloading video...
-[Instagram] Downloaded 3079431 bytes
-[YouTube:trailers_bollywood_main] Uploading 'bhavy6' - YouTube API upload
-[YouTube:trailers_bollywood_main] SUCCESS M7S0GlEsi2A -> https://youtu.be/M7S0GlEsi2A
-[YouTube:trailers_bollywood_main] Added M7S0GlEsi2A to playlist
-[History] Marked 18167746744475686 -> M7S0GlEsi2A (bhavy6)
+[Instagram] Downloaded 9513235 bytes
+[YouTube:trailers_bollywood_main] Uploading 'bhavy7' - YouTube API upload
+[YouTube:trailers_bollywood_main] SUCCESS qKKJc3c4B5w -> https://youtu.be/qKKJc3c4B5w
+[YouTube:trailers_bollywood_main] Added qKKJc3c4B5w to playlist
+[History] Marked 18083535713686687 -> qKKJc3c4B5w (bhavy7)
 
 ======================================================================
-SUCCESS! Oldest video 18167746744475686 @ 2026-10-07T12:37:44+0000 -> https://youtu.be/M7S0GlEsi2A as bhavy6
+SUCCESS! Oldest video 18083535713686687 @ 2026-10-07T13:15:39+0000 -> https://youtu.be/qKKJc3c4B5w as bhavy7
 Channel: trailers bollywood
 ======================================================================
 
 ======================================================================
-FINAL SUMMARY: IG Total 140 | History total 38 (valid=5, skipped=33, failed=0) | Uploaded this run: 1
-[Counter] Next bhavy: bhavy7 (file=6, history_valid=5, youtube_max=0)
-Next bhavy: bhavy7
+FINAL SUMMARY: IG Total 147 | History total 40 (valid=6, skipped=34, failed=0) | Uploaded this run: 1
+[Counter] Next bhavy: bhavy8 (file=7, history_valid=6, youtube_max=0)
+Next bhavy: bhavy8
 SKIPPED_NO_MEDIA will be retried after 24h with fresh media_url refresh
 ======================================================================
