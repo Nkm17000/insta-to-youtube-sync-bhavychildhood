@@ -32,9 +32,11 @@
     ],
     "title_prefix": "",
     "playlist_id": "",
-    "playlist_required": false,
+    "playlist_required": true,
     "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
     "max_items_per_run": 20,
-    "playlist_title": "bhavychildhood"
+    "playlist_title": "bhavychildhood",
+    "playlist_env_prefix": "YT1",
+    "playlist_owner_channel_id": "UCh7Mjux-jmT8ywtrs-ZFxDg"
   }
 ]

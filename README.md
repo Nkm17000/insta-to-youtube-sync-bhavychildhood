@@ -140,3 +140,11 @@ The program does not automatically load `.env`; export the variables in your she
 - `MAX_ITEMS_PER_RUN` / channel `max_items_per_run` limits upload attempts, not metadata checks or skipped images/unsupported items. Skipped items do not consume the upload limit. Videos are prepared locally before the YouTube upload API is called.
 - Logs include per-run upload attempts/successes, image conversions, carousel child count, missing media, failures, channel destination, and YouTube URL. Uploads are still subject to Instagram API access, media availability, YouTube API limits, and rights to republish the content.
 
+## Parallel per-channel jobs and upload-limit handling
+
+- GitHub Actions builds a matrix from every `enabled: true` entry in `config/channels.json`. Each enabled channel runs in its own parallel job and sets `CHANNEL_CONFIG_ID`, so a failure in one channel cannot stop the other channel's job.
+- Per-channel histories are written to `data/channel_history/<config-id>.json`. The workflow collects each channel's history artifact and commits all changed histories once after every channel job finishes, avoiding concurrent Git pushes.
+- If YouTube returns `uploadLimitExceeded`, that channel is marked blocked for the remainder of the current **Asia/Kolkata calendar day** in its own history. Later scheduled runs that day skip that channel; the next local day the marker expires and the channel can try again. YouTube's actual quota reset is controlled by YouTube and may not match midnight exactly, so the next-day retry can still receive the same error.
+- The `bhavychildhood` playlist is managed with the `YT1` OAuth credentials for both configured channels. The second channel can upload with `YT2` credentials, while playlist insertion is performed with the `YT1` account that owns the playlist. The `playlist_owner_channel_id` setting is checked before uploads. Keep the YT1 OAuth account authorized to manage the playlist.
+- Required GitHub secrets: `IG_USER_ID`, `IG_ACCESS_TOKEN`, `YT1_CLIENT_ID`, `YT1_CLIENT_SECRET`, `YT1_REFRESH_TOKEN`, `YT2_CLIENT_ID`, `YT2_CLIENT_SECRET`, and `YT2_REFRESH_TOKEN`. A channel job skips/fails independently if its credentials are missing or point to the wrong YouTube channel.
+

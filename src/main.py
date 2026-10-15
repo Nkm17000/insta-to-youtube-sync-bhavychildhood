@@ -10,6 +10,7 @@ import sys
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Any
 
 import requests
@@ -46,6 +47,11 @@ def utc_now() -> datetime:
 
 def iso_now() -> str:
     return utc_now().isoformat()
+
+
+def upload_limit_day() -> str:
+    """Calendar day used for daily upload-limit suppression (India local time)."""
+    return datetime.now(ZoneInfo("Asia/Kolkata")).date().isoformat()
 
 
 def safe_id(value: str) -> str:
@@ -690,15 +696,29 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
     summary["youtube_channel_id"] = actual_id
     summary["youtube_channel_title"] = actual_title
 
+    # Playlist management can use a different OAuth account from the upload destination.
+    # This lets each channel upload independently while the playlist owner (YT1) adds every
+    # successful public video to the one shared bhavychildhood playlist.
+    playlist_env_prefix = str(channel.get("playlist_env_prefix", channel.get("env_prefix", ""))).strip()
+    upload_env_prefix = str(channel.get("env_prefix", "")).strip()
+    playlist_youtube = youtube
+    if playlist_env_prefix and playlist_env_prefix != upload_env_prefix:
+        playlist_account = {**channel, "env_prefix": playlist_env_prefix}
+        playlist_youtube = youtube_service(playlist_account)
+        expected_playlist_owner = str(channel.get("playlist_owner_channel_id", "")).strip()
+        if expected_playlist_owner:
+            owner_id, owner_title = verify_youtube_channel(playlist_youtube, expected_playlist_owner)
+            LOGGER.info("[Channel %s] Playlist manager verified: %s (%s)", channel_key, owner_title, owner_id)
+
     # Resolve and validate the required playlist BEFORE any video upload API call.
-    playlist_id = resolve_playlist_id(youtube, channel)
+    playlist_id = resolve_playlist_id(playlist_youtube, channel)
     summary["playlist_id"] = playlist_id or ""
     summary["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}" if playlist_id else ""
     present_in_playlist: set[str] = set()
     if playlist_id:
         LOGGER.info("[Channel %s] All new and previously uploaded videos will target playlist: https://www.youtube.com/playlist?list=%s",
                     channel_key, playlist_id)
-        present_in_playlist = playlist_video_ids(youtube, playlist_id)
+        present_in_playlist = playlist_video_ids(playlist_youtube, playlist_id)
         # Backfill all videos already marked uploaded in this channel's history.
         # This repairs earlier runs where upload succeeded but playlist insertion was never configured.
         backfilled = 0
@@ -710,7 +730,7 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
             if not saved_video_id or saved_video_id in present_in_playlist:
                 continue
             try:
-                add_to_playlist(youtube, saved_video_id, playlist_id)
+                add_to_playlist(playlist_youtube, saved_video_id, playlist_id)
                 present_in_playlist.add(saved_video_id)
                 saved_record["playlist_id"] = playlist_id
                 saved_record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
@@ -824,7 +844,7 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
             if playlist_id:
                 try:
                     if video_id not in present_in_playlist:
-                        add_to_playlist(youtube, video_id, playlist_id)
+                        add_to_playlist(playlist_youtube, video_id, playlist_id)
                         present_in_playlist.add(video_id)
                     record["playlist_id"] = playlist_id
                     record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
@@ -1017,7 +1037,20 @@ def main() -> int:
     summaries: list[dict[str, Any]] = []
     overall_status = "failed"
     try:
-        channels = load_config()
+        configured_channels = load_config()
+        target_id = os.getenv("CHANNEL_CONFIG_ID", "").strip()
+        if target_id:
+            matches = [ch for ch in configured_channels if str(ch.get("id")) == target_id]
+            if not matches:
+                raise RuntimeError(f"CHANNEL_CONFIG_ID={target_id!r} does not exist in config/channels.json")
+            channels = matches
+            LOGGER.info("[Run] Isolated channel job selected: %s", target_id)
+        else:
+            # Local/manual runs without CHANNEL_CONFIG_ID still process all enabled channels.
+            channels = configured_channels
+            LOGGER.warning("[Run] CHANNEL_CONFIG_ID is not set; processing enabled channels in this process. "
+                           "GitHub Actions uses one isolated job per channel.")
+
         enabled = [ch for ch in channels if bool(ch.get("enabled", False))]
         for ch in channels:
             summaries.append({
@@ -1031,25 +1064,56 @@ def main() -> int:
                 "playlist_add_failed_video_ids": [],
             })
         if not enabled:
-            LOGGER.warning("[Config] No enabled YouTube channels.")
+            LOGGER.warning("[Config] No enabled YouTube channels selected for this job.")
             overall_status = "no_enabled_channels"
-            return_code = 0
-            return return_code
+            return 0
+
+        # Suppress only the channel that hit uploadLimitExceeded, through the rest of the
+        # current Asia/Kolkata calendar day. Each channel has its own history and marker.
+        eligible: list[dict[str, Any]] = []
+        summary_by_id = {entry["channel_config_id"]: entry for entry in summaries}
+        today = upload_limit_day()
+        for ch in enabled:
+            summary = summary_by_id[str(ch["id"])]
+            try:
+                history = load_history(ch)
+                blocked_day = str(history.get("upload_limit_blocked_day", ""))
+                if blocked_day == today:
+                    summary["status"] = "skipped_upload_limit_blocked_today"
+                    summary["error"] = (f"This channel reached YouTube's upload limit earlier today ({today}, Asia/Kolkata); "
+                                         "skipping it until the next local day.")
+                    LOGGER.warning("[Channel %s] %s", ch["id"], summary["error"])
+                    continue
+                if blocked_day and blocked_day != today:
+                    history.pop("upload_limit_blocked_day", None)
+                    history.pop("upload_limit_error", None)
+                    save_history(ch, history)
+                    LOGGER.info("[Channel %s] Previous upload-limit block expired (%s); retrying on %s.",
+                                ch["id"], blocked_day, today)
+                eligible.append(ch)
+            except Exception as exc:
+                summary["status"] = "failed"
+                summary["error"] = str(exc)
+                LOGGER.exception("[Channel %s] Could not check per-channel upload-limit state", ch["id"])
+
+        if not eligible:
+            overall_status = "all_channels_skipped_or_failed"
+            return 1 if any(x.get("status") == "failed" for x in summaries) else 0
+
         ig_user_id = os.getenv("IG_USER_ID", "").strip()
         if not ig_user_id or not os.getenv("IG_ACCESS_TOKEN", "").strip():
             raise RuntimeError("IG_USER_ID and IG_ACCESS_TOKEN must be configured.")
-        # Fetch list once, then refresh each item's metadata again just before processing.
+
+        # Fetch Instagram list once per isolated job. Jobs run independently in GitHub Actions,
+        # so a channel failure cannot stop or cancel another channel's job.
         LOGGER.info("[Instagram] Fetching media list...")
         items = fetch_instagram_items()
         LOGGER.info("[Instagram] Total: %d sorted oldest first", len(items))
         if items:
             LOGGER.info("[Instagram] Oldest: %s @ %s", items[0].get("id"), items[0].get("timestamp"))
             LOGGER.info("[Instagram] Newest: %s @ %s", items[-1].get("id"), items[-1].get("timestamp"))
-        summary_by_id = {entry["channel_config_id"]: entry for entry in summaries}
-        for ch in channels:
-            if not ch.get("enabled", False):
-                LOGGER.info("[Config] %s: disabled", ch.get("id"))
-                continue
+
+        for ch in eligible:
             summary = summary_by_id[str(ch.get("id", "unknown"))]
             prefix = str(ch.get("env_prefix", ""))
             missing = [f"{prefix}_{suffix}" for suffix in
@@ -1066,24 +1130,31 @@ def main() -> int:
             try:
                 process_channel(ch, items, summary)
             except UploadLimitExceeded as exc:
+                # Persist the suppression marker in THIS channel's independent history. Other
+                # matrix jobs are unaffected and continue processing their own channel.
                 summary["status"] = "upload_limit_reached"
                 summary["error"] = str(exc)
-                overall_status = "stopped_upload_limit"
-                LOGGER.critical(
-                    "[Run] Stopped because YouTube uploadLimitExceeded was returned. "
-                    "No more channels or videos will be attempted in this run."
-                )
-                log_final_run_summary(summaries, overall_status)
-                return 1
+                try:
+                    history = load_history(ch)
+                    history["upload_limit_blocked_day"] = upload_limit_day()
+                    history["upload_limit_error"] = str(exc)
+                    save_history(ch, history)
+                    LOGGER.critical("[Channel %s] Marked blocked for the remainder of %s (Asia/Kolkata).",
+                                    ch["id"], history["upload_limit_blocked_day"])
+                except Exception:
+                    LOGGER.exception("[Channel %s] Could not persist upload-limit suppression marker", ch["id"])
+                # Do not return: in local multi-channel runs, continue to the next channel.
+                continue
             except Exception as exc:
                 summary["status"] = "failed"
                 summary["error"] = str(exc)
-                LOGGER.exception("[Channel %s] Channel failed; continuing to other channels", ch["id"])
+                LOGGER.exception("[Channel %s] Channel failed; other channels will continue", ch["id"])
+
         overall_status = "completed_with_errors" if any(
             item.get("status") in {"failed", "skipped_missing_credentials", "upload_limit_reached"}
             for item in summaries
         ) else "completed"
-        LOGGER.info("[Run] Finished.")
+        LOGGER.info("[Run] Finished channel job.")
         return 1 if overall_status == "completed_with_errors" else 0
     except Exception as exc:
         LOGGER.exception("[Run] Fatal error")

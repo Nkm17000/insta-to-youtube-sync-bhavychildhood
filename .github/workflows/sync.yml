@@ -9,23 +9,58 @@ on:
       - "**.md"
   workflow_dispatch:
   schedule:
-    # UTC: 01:00, 07:00, 13:00, 19:00 (06:30, 12:30, 18:30, 00:30 India time)
+    # UTC: 01:00, 07:00, 13:00, 19:00
     - cron: "0 1,7,13,19 * * *"
 
 permissions:
   contents: write
 
+# Prevent two complete workflow runs from racing to commit independent histories.
+# Jobs for different channels INSIDE one run still execute in parallel.
 concurrency:
   group: instagram-youtube-sync
   cancel-in-progress: false
 
 jobs:
-  sync:
-    name: Sync Instagram videos to enabled YouTube channels
+  prepare:
+    name: Prepare enabled channel matrix
+    runs-on: ubuntu-latest
+    outputs:
+      channels: ${{ steps.matrix.outputs.channels }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build matrix from enabled channel configs
+        id: matrix
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          with open("config/channels.json", encoding="utf-8") as f:
+              config = json.load(f)
+          ids = [
+              {"id": str(channel["id"])}
+              for channel in config
+              if channel.get("enabled", False)
+          ]
+          print("channels=" + json.dumps(ids, separators=(",", ":")))
+          print("Enabled channel jobs: " + (", ".join(x["id"] for x in ids) or "none"), file=__import__("sys").stderr)
+          PY
+
+  sync-channel:
+    name: Sync channel ${{ matrix.channel.id }}
+    needs: prepare
+    if: needs.prepare.outputs.channels != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        channel: ${{ fromJSON(needs.prepare.outputs.channels) }}
     env:
       PYTHONUNBUFFERED: "1"
+      CHANNEL_CONFIG_ID: ${{ matrix.channel.id }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -53,7 +88,7 @@ jobs:
       - name: Validate channel configuration
         run: python -m json.tool config/channels.json > /dev/null
 
-      - name: Run sync
+      - name: Run only this channel
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -67,23 +102,104 @@ jobs:
           YT2_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
           SKIPPED_RETRY_HOURS: "24"
-          # Maximum upload attempts per channel per run; skips do not consume this limit.
           MAX_ITEMS_PER_RUN: "20"
           IMAGE_VIDEO_DURATION_SECONDS: "8"
+        shell: bash
         run: |
           mkdir -p data/channel_history
           set -o pipefail
-          python -u -m src.main 2>&1 | tee data/last_run.log
+          python -u -m src.main 2>&1 | tee "data/last_run-${CHANNEL_CONFIG_ID}.log"
 
-      - name: Commit histories and log
+      - name: Add channel result to job summary
         if: always()
+        shell: bash
+        run: |
+          echo "## Channel result: ${CHANNEL_CONFIG_ID}" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "data/last_run-${CHANNEL_CONFIG_ID}.log" ]; then
+            grep '\[FINAL STATUS\]' "data/last_run-${CHANNEL_CONFIG_ID}.log" >> "$GITHUB_STEP_SUMMARY" || true
+          else
+            echo "No run log was created." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Stage this channel history for aggregation
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p channel-artifact
+          history_file="data/channel_history/${CHANNEL_CONFIG_ID}.json"
+          if [ -f "$history_file" ]; then
+            cp "$history_file" channel-artifact/
+          else
+            echo "No channel history file exists for ${CHANNEL_CONFIG_ID}; nothing to upload."
+          fi
+          run_log="data/last_run-${CHANNEL_CONFIG_ID}.log"
+          if [ -f "$run_log" ]; then
+            cp "$run_log" "channel-artifact/${CHANNEL_CONFIG_ID}.log"
+          fi
+
+      - name: Upload this channel history
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: channel-result-${{ matrix.channel.id }}
+          path: channel-artifact/*
+          if-no-files-found: ignore
+          retention-days: 7
+
+  finalize:
+    name: Merge channel histories and commit once
+    if: always()
+    needs: [prepare, sync-channel]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download channel history artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: channel-result-*
+          path: downloaded-results
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Merge per-channel histories and aggregate final status
+        shell: bash
+        run: |
+          mkdir -p data/channel_history
+          if [ -d downloaded-results ]; then
+            find downloaded-results -type f -name '*.json' -print -exec cp {} data/channel_history/ \;
+          fi
+          {
+            echo "## Instagram → YouTube: final status for all channel jobs"
+            echo
+            if [ -d downloaded-results ]; then
+              found=0
+              while IFS= read -r log_file; do
+                found=1
+                echo "### $(basename "$log_file" .log)"
+                grep '\[FINAL STATUS\]' "$log_file" || echo "No final-status lines found in this job log."
+                echo
+              done < <(find downloaded-results -type f -name '*.log' | sort)
+              if [ "$found" -eq 0 ]; then echo "No channel logs were uploaded."; fi
+            else
+              echo "No channel artifacts were available."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit histories once after all channel jobs finish
+        if: always()
+        shell: bash
         run: |
           git config user.name "Insta-YT Bot"
           git config user.email "bot@github.com"
-          git add data/
+          git add data/channel_history/
           if git diff --cached --quiet; then
-            echo "No history/log changes to commit."
+            echo "No channel history changes to commit."
             exit 0
           fi
           git commit -m "Update per-channel upload histories [skip ci]"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
