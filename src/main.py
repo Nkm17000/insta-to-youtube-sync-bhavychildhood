@@ -112,28 +112,108 @@ def verify_youtube_channel(youtube, expected_channel_id: str) -> tuple[str, str]
     return item.get("id", ""), item.get("snippet", {}).get("title", "(untitled)")
 
 
-def graph_base() -> str:
+_ACTIVE_IG_HOST: str | None = None
+_IG_HOST_FALLBACK_ATTEMPTED = False
+
+
+def _api_version() -> str:
     version = os.getenv("IG_GRAPH_API_VERSION", "v23.0").strip()
-    if not version.startswith("v"):
-        version = "v" + version
-    return f"https://graph.facebook.com/{version}"
+    if not version:
+        version = "v23.0"
+    return version if version.startswith("v") else "v" + version
 
 
-def instagram_get(path: str, params: dict[str, Any], timeout: int = 40) -> dict[str, Any]:
-    token = os.getenv("IG_ACCESS_TOKEN", "").strip()
-    if not token:
-        raise RuntimeError("Missing IG_ACCESS_TOKEN.")
-    response = requests.get(f"{graph_base()}/{path.lstrip('/')}",
-                            params={**params, "access_token": token}, timeout=timeout)
+def _configured_ig_mode() -> str:
+    mode = os.getenv("IG_API_MODE", "auto").strip().lower() or "auto"
+    if mode not in {"auto", "facebook_login", "instagram_login"}:
+        raise RuntimeError("IG_API_MODE must be auto, facebook_login, or instagram_login.")
+    return mode
+
+
+def graph_base(host: str | None = None) -> str:
+    """Return the Graph API base URL for the configured Instagram login method."""
+    global _ACTIVE_IG_HOST
+    if host is None and _ACTIVE_IG_HOST:
+        host = _ACTIVE_IG_HOST
+    if host is None:
+        mode = _configured_ig_mode()
+        host = "graph.instagram.com" if mode == "instagram_login" else "graph.facebook.com"
+    return f"https://{host}/{_api_version()}"
+
+
+def _instagram_request(host: str, path: str, params: dict[str, Any], token: str,
+                       timeout: int) -> tuple[requests.Response, dict[str, Any]]:
+    response = requests.get(
+        f"https://{host}/{_api_version()}/{path.lstrip('/')}",
+        params={**params, "access_token": token}, timeout=timeout,
+    )
     try:
         payload = response.json()
     except ValueError:
         payload = {"raw": response.text[:500]}
-    if response.status_code >= 400 or "error" in payload:
-        error = payload.get("error", {})
-        code = error.get("code", "unknown")
+    return response, payload
+
+
+def instagram_get(path: str, params: dict[str, Any], timeout: int = 40) -> dict[str, Any]:
+    """Call Instagram Graph API. In auto mode, try the alternate host on path error 2500.
+
+    The Facebook Login and Instagram Login products use different Graph API hosts. A token
+    valid for one product may not work against the other, so auto mode tries the alternate
+    host only when the first response indicates an unknown path (code 2500).
+    """
+    global _ACTIVE_IG_HOST, _IG_HOST_FALLBACK_ATTEMPTED
+    token = os.getenv("IG_ACCESS_TOKEN", "").strip()
+    if not token:
+        raise RuntimeError("Missing IG_ACCESS_TOKEN.")
+
+    mode = _configured_ig_mode()
+    if _ACTIVE_IG_HOST:
+        first_host = _ACTIVE_IG_HOST
+    elif mode == "instagram_login":
+        first_host = "graph.instagram.com"
+    else:
+        first_host = "graph.facebook.com"
+
+    response, payload = _instagram_request(first_host, path, params, token, timeout)
+    error = payload.get("error", {}) if isinstance(payload, dict) else {}
+    code = error.get("code")
+
+    if (response.status_code >= 400 or "error" in payload) and mode == "auto" and code == 2500 and not _IG_HOST_FALLBACK_ATTEMPTED:
+        _IG_HOST_FALLBACK_ATTEMPTED = True
+        alternate_host = "graph.instagram.com" if first_host == "graph.facebook.com" else "graph.facebook.com"
+        LOGGER.warning(
+            "[Instagram] API returned path error 2500 from %s; trying alternate host %s once. "
+            "This can happen when the token was issued for a different Instagram API login product.",
+            first_host, alternate_host,
+        )
+        alt_response, alt_payload = _instagram_request(alternate_host, path, params, token, timeout)
+        alt_error = alt_payload.get("error", {}) if isinstance(alt_payload, dict) else {}
+        if alt_response.status_code < 400 and "error" not in alt_payload:
+            _ACTIVE_IG_HOST = alternate_host
+            LOGGER.info("[Instagram] API host selected successfully: %s", alternate_host)
+            response, payload = alt_response, alt_payload
+            error = {}
+        else:
+            first_message = error.get("message", response.text[:300])
+            alt_message = alt_error.get("message", alt_response.text[:300])
+            raise RuntimeError(
+                "Instagram Graph API rejected the media path on both supported hosts. "
+                f"{first_host}: HTTP {response.status_code}, code {code}, {first_message}. "
+                f"{alternate_host}: HTTP {alt_response.status_code}, code {alt_error.get('code', 'unknown')}, {alt_message}. "
+                "Check that IG_USER_ID is the Instagram Professional Account ID for Facebook Login, "
+                "or set IG_API_MODE=instagram_login for an Instagram Login token. Also verify token type, "
+                "account linkage, permissions, and API version. Do not print or share the access token."
+            )
+    elif response.status_code >= 400 or "error" in payload:
         message = error.get("message", response.text[:300])
-        raise RuntimeError(f"Instagram Graph API error (HTTP {response.status_code}, code {code}): {message}")
+        raise RuntimeError(
+            f"Instagram Graph API error via {first_host} (HTTP {response.status_code}, "
+            f"code {code if code is not None else 'unknown'}): {message}. "
+            "If using an Instagram Login token, set IG_API_MODE=instagram_login; "
+            "if using Facebook Login, confirm IG_USER_ID is the Instagram Professional Account ID."
+        )
+    else:
+        _ACTIVE_IG_HOST = first_host
     return payload
 
 
@@ -156,7 +236,11 @@ def fetch_instagram_items() -> list[dict[str, Any]]:
         except ValueError:
             raise RuntimeError("Instagram paging response was not valid JSON.")
         if response.status_code >= 400 or "error" in payload:
-            raise RuntimeError(f"Instagram paging failed: {payload.get('error', {}).get('message', response.text[:300])}")
+            raise RuntimeError(
+                "Instagram paging failed: "
+                f"{payload.get('error', {}).get('message', response.text[:300])}. "
+                "Confirm the selected IG_API_MODE matches the token type and that the token has media-read permissions."
+            )
     # Oldest first, to preserve the existing project's processing behavior.
     items.sort(key=lambda x: x.get("timestamp", ""))
     return items

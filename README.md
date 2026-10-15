@@ -4,7 +4,7 @@ A GitHub Actions project that fetches Instagram professional-account media, refr
 
 ## Important notes
 
-- This is a complete replacement template based on the run log provided, not a patch against unseen original source files.
+- This is a complete replacement template based on the run log provided, not a patch against unseen original source files. The Instagram API caller now supports both Graph API hosts and reports actionable details if both reject the request.
 - Instagram Graph API access requires a supported professional Instagram account, correct permissions, a valid access token, and an API version supported by your Meta app. Set `IG_GRAPH_API_VERSION` to a currently supported version for your app.
 - A metadata refresh can get a fresh URL only while Instagram still exposes the media to the API. It cannot restore deleted media or bypass permissions.
 - YouTube uploads are uploaded to the channel authenticated by the channel-specific OAuth refresh token. The program verifies `channels.list(mine=true)` against `channel_id` before uploading.
@@ -32,7 +32,7 @@ In Meta developer settings, configure the Instagram Graph API for the profession
 - `IG_USER_ID`: Instagram professional account ID (not the username)
 - `IG_ACCESS_TOKEN`: access token for that account
 
-Optionally add repository variable `IG_GRAPH_API_VERSION` with the API version supported by your Meta app. The example default in code may need updating for your app.
+Optionally add repository variables `IG_GRAPH_API_VERSION` and `IG_API_MODE`. `IG_API_MODE` accepts `auto`, `facebook_login`, or `instagram_login`. `auto` tries `graph.facebook.com` first, then tries `graph.instagram.com` once if the first host returns Graph API error code 2500 (unknown path). If you know which login product issued your token, set the matching mode explicitly. Set the API version to one currently supported by your Meta app.
 
 ## 2. Set up each YouTube channel
 
