@@ -62,112 +62,196 @@
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:35.309764+00:00",
-      "instagram_media_id": "18061341392792119"
+      "updated_at": "2026-10-15T14:55:19.585575+00:00",
+      "instagram_media_id": "18061341392792119",
+      "last_attempt_at": "2026-10-15T14:55:19.164529+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFKWahTzFR/",
+      "instagram_timestamp": "2026-10-04T17:23:46+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18104043491571042": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:35.516087+00:00",
-      "instagram_media_id": "18104043491571042"
+      "updated_at": "2026-10-15T14:55:19.726266+00:00",
+      "instagram_media_id": "18104043491571042",
+      "last_attempt_at": "2026-10-15T14:55:19.586552+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFK1DjTwEv/",
+      "instagram_timestamp": "2026-10-04T17:27:42+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17870424810641956": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:35.650907+00:00",
-      "instagram_media_id": "17870424810641956"
+      "updated_at": "2026-10-15T14:55:20.008422+00:00",
+      "instagram_media_id": "17870424810641956",
+      "last_attempt_at": "2026-10-15T14:55:19.856710+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFMZNFTvPn/",
+      "instagram_timestamp": "2026-10-04T17:41:18+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18072759776744114": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:35.798640+00:00",
-      "instagram_media_id": "18072759776744114"
+      "updated_at": "2026-10-15T14:55:20.314272+00:00",
+      "instagram_media_id": "18072759776744114",
+      "last_attempt_at": "2026-10-15T14:55:20.136844+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFOL39TDqc/",
+      "instagram_timestamp": "2026-10-04T17:57:24+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18117402323064126": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:35.936918+00:00",
-      "instagram_media_id": "18117402323064126"
+      "updated_at": "2026-10-15T14:55:20.474711+00:00",
+      "instagram_media_id": "18117402323064126",
+      "last_attempt_at": "2026-10-15T14:55:20.315369+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFPFjBznvV/",
+      "instagram_timestamp": "2026-10-04T18:05:00+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17911944300531815": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.080926+00:00",
-      "instagram_media_id": "17911944300531815"
+      "updated_at": "2026-10-15T14:55:20.611180+00:00",
+      "instagram_media_id": "17911944300531815",
+      "last_attempt_at": "2026-10-15T14:55:20.475728+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFPUqlzMi9/",
+      "instagram_timestamp": "2026-10-04T18:06:57+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17895051957420770": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.202408+00:00",
-      "instagram_media_id": "17895051957420770"
+      "updated_at": "2026-10-15T14:55:20.758864+00:00",
+      "instagram_media_id": "17895051957420770",
+      "last_attempt_at": "2026-10-15T14:55:20.612185+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFPuskzQtK/",
+      "instagram_timestamp": "2026-10-04T18:10:35+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17879451429549288": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.344404+00:00",
-      "instagram_media_id": "17879451429549288"
+      "updated_at": "2026-10-15T14:55:20.911638+00:00",
+      "instagram_media_id": "17879451429549288",
+      "last_attempt_at": "2026-10-15T14:55:20.759845+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFQFQ0TWLT/",
+      "instagram_timestamp": "2026-10-04T18:13:32+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18354662908222704": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.470304+00:00",
-      "instagram_media_id": "18354662908222704"
+      "updated_at": "2026-10-15T14:55:21.075357+00:00",
+      "instagram_media_id": "18354662908222704",
+      "last_attempt_at": "2026-10-15T14:55:20.912656+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFQPfjTROi/",
+      "instagram_timestamp": "2026-10-04T18:14:56+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17959754280231262": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.664112+00:00",
-      "instagram_media_id": "17959754280231262"
+      "updated_at": "2026-10-15T14:55:21.289725+00:00",
+      "instagram_media_id": "17959754280231262",
+      "last_attempt_at": "2026-10-15T14:55:21.110482+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFQaQNzqXw/",
+      "instagram_timestamp": "2026-10-04T18:16:42+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18114246049833040": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.808453+00:00",
-      "instagram_media_id": "18114246049833040"
+      "updated_at": "2026-10-15T14:55:21.503257+00:00",
+      "instagram_media_id": "18114246049833040",
+      "last_attempt_at": "2026-10-15T14:55:21.314755+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFQ38JT3S8/",
+      "instagram_timestamp": "2026-10-04T18:20:26+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18107431388187304": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:36.939845+00:00",
-      "instagram_media_id": "18107431388187304"
+      "updated_at": "2026-10-15T14:55:21.922236+00:00",
+      "instagram_media_id": "18107431388187304",
+      "last_attempt_at": "2026-10-15T14:55:21.740516+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFTTmXzSmL/",
+      "instagram_timestamp": "2026-10-04T18:41:57+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "17959769166238979": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:37.178797+00:00",
-      "instagram_media_id": "17959769166238979"
+      "updated_at": "2026-10-15T14:55:22.081677+00:00",
+      "instagram_media_id": "17959769166238979",
+      "last_attempt_at": "2026-10-15T14:55:21.923371+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeGT-bYTqma/",
+      "instagram_timestamp": "2026-10-05T04:07:30+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18116974202092072": {
       "status": "SKIPPED_NO_MEDIA",
       "title": "",
       "youtube_id": "",
       "error": "Instagram media URL unavailable",
-      "updated_at": "2026-10-15T03:24:37.324387+00:00",
-      "instagram_media_id": "18116974202092072"
+      "updated_at": "2026-10-15T14:55:22.235784+00:00",
+      "instagram_media_id": "18116974202092072",
+      "last_attempt_at": "2026-10-15T14:55:22.082714+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeGVJwYTv_x/",
+      "instagram_timestamp": "2026-10-05T04:17:43+0000",
+      "last_error": "Instagram returned no media_url after refresh",
+      "retry_after_hours": 24
     },
     "18098760392657425": {
       "status": "SKIPPED_NO_MEDIA",
@@ -376,6 +460,66 @@
       "error": "",
       "updated_at": "2026-10-15T12:25:16.530081+00:00",
       "instagram_media_id": "18096111851439409"
+    },
+    "18113219846154212": {
+      "instagram_media_id": "18113219846154212",
+      "last_attempt_at": "2026-10-15T14:55:19.040153+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeFJVnjE6dv/",
+      "instagram_timestamp": "2026-10-04T17:14:19+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: IMAGE",
+      "updated_at": "2026-10-15T14:55:19.163531+00:00"
+    },
+    "18111079484138296": {
+      "instagram_media_id": "18111079484138296",
+      "last_attempt_at": "2026-10-15T14:55:19.727266+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeFLawrTFlr/",
+      "instagram_timestamp": "2026-10-04T17:32:32+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: IMAGE",
+      "updated_at": "2026-10-15T14:55:19.855633+00:00"
+    },
+    "17928553398411027": {
+      "instagram_media_id": "17928553398411027",
+      "last_attempt_at": "2026-10-15T14:55:20.009403+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeFMjIPzGqs/",
+      "instagram_timestamp": "2026-10-04T17:42:25+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: IMAGE",
+      "updated_at": "2026-10-15T14:55:20.135832+00:00"
+    },
+    "18111765941140246": {
+      "instagram_media_id": "18111765941140246",
+      "last_attempt_at": "2026-10-15T14:55:21.504292+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeFRNKHk0yB/",
+      "instagram_timestamp": "2026-10-04T18:23:04+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: CAROUSEL_ALBUM",
+      "updated_at": "2026-10-15T14:55:21.626263+00:00"
+    },
+    "18090117182674861": {
+      "instagram_media_id": "18090117182674861",
+      "last_attempt_at": "2026-10-15T14:55:21.627363+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeFS501TQoO/",
+      "instagram_timestamp": "2026-10-04T18:37:57+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: IMAGE",
+      "updated_at": "2026-10-15T14:55:21.739360+00:00"
+    },
+    "17959140084252686": {
+      "instagram_media_id": "17959140084252686",
+      "last_attempt_at": "2026-10-15T14:55:22.236951+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/p/DeGozijzrfg/",
+      "instagram_timestamp": "2026-10-05T07:08:34+0000",
+      "status": "SKIPPED_UNSUPPORTED_MEDIA",
+      "last_error": "Unsupported media_type: IMAGE",
+      "updated_at": "2026-10-15T14:55:22.358428+00:00"
     }
   }
 }

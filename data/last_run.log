@@ -1,36 +1,77 @@
-2026-10-15 14:50:35,361 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
-2026-10-15 14:50:39,250 INFO [Instagram] Total: 173 sorted oldest first
-2026-10-15 14:50:39,250 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
-2026-10-15 14:50:39,250 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
-2026-10-15 14:50:39,251 INFO [Config] trailers_bollywood_main: enabled
-2026-10-15 14:50:39,251 INFO ======================================================================
-2026-10-15 14:50:39,251 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
-2026-10-15 14:50:39,252 WARNING [History] Migrated legacy history format for channel trailers_bollywood_main; preserved original at trailers_bollywood_main.json.legacy-backup
-2026-10-15 14:50:39,252 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
-2026-10-15 14:50:39,253 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
-2026-10-15 14:50:39,379 ERROR [Channel trailers_bollywood_main] Channel failed; continuing to other channels
-Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 649, in main
-    process_channel(ch, items)
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 517, in process_channel
-    youtube = youtube_service(channel)
-              ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 91, in youtube_service
-    creds = credentials_for(channel)
-            ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 86, in credentials_for
-    creds.refresh(GoogleAuthRequest())
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/auth/credentials.py", line 519, in refresh
-    self._perform_refresh_token(request)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/credentials.py", line 437, in _perform_refresh_token
-    ) = reauth.refresh_grant(
-        ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/reauth.py", line 367, in refresh_grant
-    _client._handle_error_response(response_data, retryable_error)
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/_client.py", line 75, in _handle_error_response
-    raise exceptions.RefreshError(
-google.auth.exceptions.RefreshError: ('invalid_scope: Bad Request', {'error': 'invalid_scope', 'error_description': 'Bad Request'})
-2026-10-15 14:50:39,381 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:50:39,382 INFO [Run] Finished.
-,381 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:50:39,382 INFO [Run] Finished.
+2026-10-15 14:55:16,930 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
+2026-10-15 14:55:18,652 INFO [Instagram] Total: 173 sorted oldest first
+2026-10-15 14:55:18,652 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
+2026-10-15 14:55:18,652 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
+2026-10-15 14:55:18,652 INFO [Config] trailers_bollywood_main: enabled
+2026-10-15 14:55:18,653 INFO ======================================================================
+2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
+2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
+2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
+2026-10-15 14:55:19,039 INFO [Channel trailers_bollywood_main] OAuth verified destination: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 14:55:19,040 INFO [Channel trailers_bollywood_main] Checking Instagram item 18113219846154212
+2026-10-15 14:55:19,163 INFO [Instagram] 18113219846154212 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:19,164 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
+2026-10-15 14:55:19,164 INFO [Channel trailers_bollywood_main] Checking Instagram item 18061341392792119
+2026-10-15 14:55:19,585 WARNING [Instagram] 18061341392792119 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:19,586 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:19,586 INFO [Channel trailers_bollywood_main] Checking Instagram item 18104043491571042
+2026-10-15 14:55:19,725 WARNING [Instagram] 18104043491571042 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:19,727 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:19,727 INFO [Channel trailers_bollywood_main] Checking Instagram item 18111079484138296
+2026-10-15 14:55:19,855 INFO [Instagram] 18111079484138296 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:19,856 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
+2026-10-15 14:55:19,856 INFO [Channel trailers_bollywood_main] Checking Instagram item 17870424810641956
+2026-10-15 14:55:20,008 WARNING [Instagram] 17870424810641956 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,009 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,009 INFO [Channel trailers_bollywood_main] Checking Instagram item 17928553398411027
+2026-10-15 14:55:20,135 INFO [Instagram] 17928553398411027 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:20,136 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
+2026-10-15 14:55:20,136 INFO [Channel trailers_bollywood_main] Checking Instagram item 18072759776744114
+2026-10-15 14:55:20,313 WARNING [Instagram] 18072759776744114 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,315 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,315 INFO [Channel trailers_bollywood_main] Checking Instagram item 18117402323064126
+2026-10-15 14:55:20,474 WARNING [Instagram] 18117402323064126 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,475 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,475 INFO [Channel trailers_bollywood_main] Checking Instagram item 17911944300531815
+2026-10-15 14:55:20,610 WARNING [Instagram] 17911944300531815 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,612 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,612 INFO [Channel trailers_bollywood_main] Checking Instagram item 17895051957420770
+2026-10-15 14:55:20,758 WARNING [Instagram] 17895051957420770 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,759 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,759 INFO [Channel trailers_bollywood_main] Checking Instagram item 17879451429549288
+2026-10-15 14:55:20,911 WARNING [Instagram] 17879451429549288 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:20,912 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:20,912 INFO [Channel trailers_bollywood_main] Checking Instagram item 18354662908222704
+2026-10-15 14:55:21,075 WARNING [Instagram] 18354662908222704 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:21,110 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:21,110 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959754280231262
+2026-10-15 14:55:21,289 WARNING [Instagram] 17959754280231262 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:21,314 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:21,314 INFO [Channel trailers_bollywood_main] Checking Instagram item 18114246049833040
+2026-10-15 14:55:21,502 WARNING [Instagram] 18114246049833040 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:21,504 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:21,504 INFO [Channel trailers_bollywood_main] Checking Instagram item 18111765941140246
+2026-10-15 14:55:21,625 INFO [Instagram] 18111765941140246 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:21,627 INFO [Channel trailers_bollywood_main] Skip unsupported media type CAROUSEL_ALBUM
+2026-10-15 14:55:21,627 INFO [Channel trailers_bollywood_main] Checking Instagram item 18090117182674861
+2026-10-15 14:55:21,739 INFO [Instagram] 18090117182674861 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:21,740 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
+2026-10-15 14:55:21,740 INFO [Channel trailers_bollywood_main] Checking Instagram item 18107431388187304
+2026-10-15 14:55:21,921 WARNING [Instagram] 18107431388187304 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:21,923 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:21,923 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959769166238979
+2026-10-15 14:55:22,081 WARNING [Instagram] 17959769166238979 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:22,082 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:22,082 INFO [Channel trailers_bollywood_main] Checking Instagram item 18116974202092072
+2026-10-15 14:55:22,235 WARNING [Instagram] 18116974202092072 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 14:55:22,236 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
+2026-10-15 14:55:22,236 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959140084252686
+2026-10-15 14:55:22,358 INFO [Instagram] 17959140084252686 -> Fresh media_url OK (refreshed latest)
+2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
+2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Reached max_items_per_run=20
+2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Final history summary: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37, 'SKIPPED_UNSUPPORTED_MEDIA': 6}
+2026-10-15 14:55:22,359 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:55:22,359 INFO [Run] Finished.
+ORTED_MEDIA': 6}
+2026-10-15 14:55:22,359 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:55:22,359 INFO [Run] Finished.
