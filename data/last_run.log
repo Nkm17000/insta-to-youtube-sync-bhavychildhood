@@ -1,23 +1,44 @@
-2026-10-15 14:38:18,262 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
-2026-10-15 14:38:18,403 ERROR [Run] Fatal error
+2026-10-15 14:45:08,943 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
+2026-10-15 14:45:11,213 INFO [Instagram] Total: 173 sorted oldest first
+2026-10-15 14:45:11,213 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
+2026-10-15 14:45:11,214 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
+2026-10-15 14:45:11,214 INFO [Config] trailers_bollywood_main: enabled
+2026-10-15 14:45:11,214 INFO ======================================================================
+2026-10-15 14:45:11,214 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
+2026-10-15 14:45:11,214 ERROR [Channel trailers_bollywood_main] Channel failed; continuing to other channels
 Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 439, in main
-    items = fetch_instagram_items()
-            ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 145, in fetch_instagram_items
-    payload = instagram_get(f"{user_id}/media", {"fields": fields, "limit": 100})
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 136, in instagram_get
-    raise RuntimeError(f"Instagram Graph API error (HTTP {response.status_code}, code {code}): {message}")
-RuntimeError: Instagram Graph API error (HTTP 400, code 2500): Unknown path components: /17841424907226946/media
-2026-10-15 14:38:18,403 ERROR [Run] Fatal error
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 282, in load_history
+    raise ValueError("Unexpected history format")
+ValueError: Unexpected history format
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 439, in main
-    items = fetch_instagram_items()
-            ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 145, in fetch_instagram_items
-    payload = instagram_get(f"{user_id}/media", {"fields": fields, "limit": 100})
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 136, in instagram_get
-    raise RuntimeError(f"Instagram Graph API error (HTTP {response.status_code}, code {code}): {message}")
-RuntimeError: Instagram Graph API error (HTTP 400, code 2500): Unknown path components: /17841424907226946/media
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 541, in main
+    process_channel(ch, items)
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 401, in process_channel
+    history = load_history(channel)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 286, in load_history
+    raise RuntimeError(f"Cannot read history {path}: {exc}") from exc
+RuntimeError: Cannot read history /home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/data/channel_history/trailers_bollywood_main.json: Unexpected history format
+2026-10-15 14:45:11,215 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:45:11,215 INFO [Run] Finished.
+eback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 282, in load_history
+    raise ValueError("Unexpected history format")
+ValueError: Unexpected history format
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 541, in main
+    process_channel(ch, items)
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 401, in process_channel
+    history = load_history(channel)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 286, in load_history
+    raise RuntimeError(f"Cannot read history {path}: {exc}") from exc
+RuntimeError: Cannot read history /home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/data/channel_history/trailers_bollywood_main.json: Unexpected history format
+2026-10-15 14:45:11,215 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:45:11,215 INFO [Run] Finished.
