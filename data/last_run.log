@@ -1,44 +1,36 @@
-2026-10-15 14:45:08,943 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
-2026-10-15 14:45:11,213 INFO [Instagram] Total: 173 sorted oldest first
-2026-10-15 14:45:11,213 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
-2026-10-15 14:45:11,214 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
-2026-10-15 14:45:11,214 INFO [Config] trailers_bollywood_main: enabled
-2026-10-15 14:45:11,214 INFO ======================================================================
-2026-10-15 14:45:11,214 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
-2026-10-15 14:45:11,214 ERROR [Channel trailers_bollywood_main] Channel failed; continuing to other channels
+2026-10-15 14:50:35,361 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
+2026-10-15 14:50:39,250 INFO [Instagram] Total: 173 sorted oldest first
+2026-10-15 14:50:39,250 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
+2026-10-15 14:50:39,250 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
+2026-10-15 14:50:39,251 INFO [Config] trailers_bollywood_main: enabled
+2026-10-15 14:50:39,251 INFO ======================================================================
+2026-10-15 14:50:39,251 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
+2026-10-15 14:50:39,252 WARNING [History] Migrated legacy history format for channel trailers_bollywood_main; preserved original at trailers_bollywood_main.json.legacy-backup
+2026-10-15 14:50:39,252 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
+2026-10-15 14:50:39,253 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
+2026-10-15 14:50:39,379 ERROR [Channel trailers_bollywood_main] Channel failed; continuing to other channels
 Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 282, in load_history
-    raise ValueError("Unexpected history format")
-ValueError: Unexpected history format
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 541, in main
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 649, in main
     process_channel(ch, items)
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 401, in process_channel
-    history = load_history(channel)
-              ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 286, in load_history
-    raise RuntimeError(f"Cannot read history {path}: {exc}") from exc
-RuntimeError: Cannot read history /home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/data/channel_history/trailers_bollywood_main.json: Unexpected history format
-2026-10-15 14:45:11,215 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:45:11,215 INFO [Run] Finished.
-eback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 282, in load_history
-    raise ValueError("Unexpected history format")
-ValueError: Unexpected history format
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 541, in main
-    process_channel(ch, items)
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 401, in process_channel
-    history = load_history(channel)
-              ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 286, in load_history
-    raise RuntimeError(f"Cannot read history {path}: {exc}") from exc
-RuntimeError: Cannot read history /home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/data/channel_history/trailers_bollywood_main.json: Unexpected history format
-2026-10-15 14:45:11,215 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:45:11,215 INFO [Run] Finished.
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 517, in process_channel
+    youtube = youtube_service(channel)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 91, in youtube_service
+    creds = credentials_for(channel)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 86, in credentials_for
+    creds.refresh(GoogleAuthRequest())
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/auth/credentials.py", line 519, in refresh
+    self._perform_refresh_token(request)
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/credentials.py", line 437, in _perform_refresh_token
+    ) = reauth.refresh_grant(
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/reauth.py", line 367, in refresh_grant
+    _client._handle_error_response(response_data, retryable_error)
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/google/oauth2/_client.py", line 75, in _handle_error_response
+    raise exceptions.RefreshError(
+google.auth.exceptions.RefreshError: ('invalid_scope: Bad Request', {'error': 'invalid_scope', 'error_description': 'Bad Request'})
+2026-10-15 14:50:39,381 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:50:39,382 INFO [Run] Finished.
+,381 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 14:50:39,382 INFO [Run] Finished.
