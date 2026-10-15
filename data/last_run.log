@@ -10,9 +10,9 @@ Flow:
 
 [STEP 1] Fetching Instagram - Oldest first - No YouTube API
 [Instagram] Fetching all reels (oldest first sorting after fetch)...
-[Instagram] Total: 147 sorted oldest first
+[Instagram] Total: 145 sorted oldest first
   Oldest: 18061341392792119 @ 2026-10-04T17:23:46+0000 - 
-  Newest: 17950373166055159 @ 2026-10-14T17:42:23+0000
+  Newest: 18149426140562351 @ 2026-10-14T17:20:56+0000
 
 [STEP 2] Filtering history - Oldest first - Retry SKIPPED_NO_MEDIA after 24h - No YouTube API
 [History] Skipping recent SKIPPED 18061341392792119 (retry after 24h)
@@ -49,67 +49,71 @@ Flow:
 [History] Skipping recent SKIPPED 18076899650427795 (retry after 24h)
 [History] Skipping recent SKIPPED 18026579798879687 (retry after 24h)
 [History] Skipping recent SKIPPED 17882336277525272 (retry after 24h)
+[History] Skipping recent SKIPPED 17916695589461575 (retry after 24h)
 ======================================================================
 [History] OLDEST FIRST - No YouTube API yet
-  IG Total: 147 | History total: 40 (valid=6, skipped=34, failed=0)
-  New (never tried): 107
+  IG Total: 145 | History total: 42 (valid=7, skipped=35, failed=0)
+  New (never tried): 103
   Retryable SKIPPED_NO_MEDIA (expired, will refresh media_url): 0
-  Combined to check (oldest first): 107
-  Oldest to try: 17916695589461575 @ 2026-10-07T15:17:48+0000
-  Newest in list: 17950373166055159 @ 2026-10-14T17:42:23+0000
+  Combined to check (oldest first): 103
+  Oldest to try: 18087527936277438 @ 2026-10-07T15:36:22+0000
+  Newest in list: 18149426140562351 @ 2026-10-14T17:20:56+0000
 ======================================================================
 
 [STEP 3] Finding valid video with fresh media_url - Oldest first - ONLY Instagram API, NO YouTube API
-[STEP 3] Checking 107 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
+[STEP 3] Checking 103 videos oldest first, will refresh media_url for SKIPPED_NO_MEDIA
 
-[STEP 3] 1/107: 17916695589461575 @ 2026-10-07T15:17:48+0000 (oldest first)
-[Instagram] 17916695589461575 -> No media_url (expired/deleted)
-  -> No media_url (expired) - Marking SKIPPED_NO_MEDIA, will retry after 24h with fresh refresh
-[History] Marked 17916695589461575 -> SKIPPED_NO_MEDIA (skipped_17916695589461575)
-
-[STEP 3] 2/107: 18488096098110634 @ 2026-10-07T15:28:43+0000 (oldest first)
-[Instagram] 18488096098110634 -> Fresh media_url OK (refreshed latest)
+[STEP 3] 1/103: 18087527936277438 @ 2026-10-07T15:36:22+0000 (oldest first)
+[Instagram] 18087527936277438 -> Fresh media_url OK (refreshed latest)
   -> FOUND valid media_url (refreshed latest) - Will upload this oldest valid video
 
 ======================================================================
-[STEP 3] DECIDED oldest valid video: 18488096098110634 @ 2026-10-07T15:28:43+0000
-  Permalink: https://www.instagram.com/reel/DeMrmLFT6cz/
+[STEP 3] DECIDED oldest valid video: 18087527936277438 @ 2026-10-07T15:36:22+0000
+  Permalink: https://www.instagram.com/reel/DeMsdZ6TR_Q/
   Fresh media_url refreshed OK
   Now calling YouTube API for first time
 ======================================================================
 
 [STEP 4] Loading YouTube channels - First YouTube API call
-[Config] Loaded 1 channel(s), VIDEOS_PER_RUN=1, SKIPPED_RETRY_HOURS=24
+[Config] Loaded 2 channel(s), VIDEOS_PER_RUN=1, SKIPPED_RETRY_HOURS=24
 [YouTube:trailers_bollywood_main] Ready -> 'trailers bollywood'
-[Counter] Next bhavy: bhavy8 (file=7, history_valid=6, youtube_max=0)
+[YouTube:bhavychildhood_main] Ready -> 'SMART LEARNING LAB COMMUNITY '
+[Counter] Next bhavy: bhavy9 (file=8, history_valid=7, youtube_max=0)
 
-[STEP 4] Initial next bhavy: bhavy8
+[STEP 4] Initial next bhavy: bhavy9
 
 --- Trying Channel: trailers_bollywood_main (trailers bollywood) ---
-Playlist: https://www.youtube.com/playlist?list=PLQL22VyKHWIc
-[YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 7 videos
-[Counter] Next bhavy: bhavy8 (file=7, history_valid=6, youtube_max=7)
-[STEP 4] Recalculated next bhavy after playlist check: bhavy8
-[YouTube:trailers_bollywood_main] Listing playlist PLQL22VyKHWIc to avoid duplicate bhavy2
-[YouTube:trailers_bollywood_main] Playlist has 7 videos
-[YouTube:trailers_bollywood_main] No duplicate for 'bhavy8'
+[YouTube:trailers_bollywood_main] Checking/creating playlist 'bhavychildhood' - YouTube API call
+[YouTube:trailers_bollywood_main] Found playlist PLN_W_X8ML6AU
+Playlist: https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
+[YouTube:trailers_bollywood_main] Listing playlist PLN_W_X8ML6AU to avoid duplicate bhavy2
+[YouTube:trailers_bollywood_main] Playlist has 2 videos
+[Counter] Next bhavy: bhavy9 (file=8, history_valid=7, youtube_max=3)
+[STEP 4] Recalculated next bhavy after playlist check: bhavy9
+[YouTube:trailers_bollywood_main] Listing playlist PLN_W_X8ML6AU to avoid duplicate bhavy2
+[YouTube:trailers_bollywood_main] Playlist has 2 videos
+[YouTube:trailers_bollywood_main] No duplicate for 'bhavy9'
 [Run] Downloading using fresh media_url
 [Instagram] Downloading video...
-[Instagram] Downloaded 3027624 bytes
-[YouTube:trailers_bollywood_main] Uploading 'bhavy8' - YouTube API upload
-[YouTube:trailers_bollywood_main] SUCCESS vnG2Qdf4CTc -> https://youtu.be/vnG2Qdf4CTc
-[YouTube:trailers_bollywood_main] Added vnG2Qdf4CTc to playlist
-[History] Marked 18488096098110634 -> vnG2Qdf4CTc (bhavy8)
+[Instagram] Downloaded 3180727 bytes
+[YouTube:trailers_bollywood_main] Uploading 'bhavy9' - YouTube API upload
+[trailers_bollywood_main] Limit hit: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">, trying next channel
 
-======================================================================
-SUCCESS! Oldest video 18488096098110634 @ 2026-10-07T15:28:43+0000 -> https://youtu.be/vnG2Qdf4CTc as bhavy8
-Channel: trailers bollywood
-======================================================================
-
-======================================================================
-FINAL SUMMARY: IG Total 147 | History total 42 (valid=7, skipped=35, failed=0) | Uploaded this run: 1
+--- Trying Channel: bhavychildhood_main (SMART LEARNING LAB COMMUNITY ) ---
+[YouTube:bhavychildhood_main] Checking/creating playlist 'bhavychildhood' - YouTube API call
+[YouTube:bhavychildhood_main] Found playlist PLDIFVPTnQdbM
+Playlist: https://www.youtube.com/playlist?list=PLDIFVPTnQdbM
+[YouTube:bhavychildhood_main] Listing playlist PLDIFVPTnQdbM to avoid duplicate bhavy2
+[YouTube:bhavychildhood_main] Playlist has 10 videos
 [Counter] Next bhavy: bhavy9 (file=8, history_valid=7, youtube_max=0)
-Next bhavy: bhavy9
-SKIPPED_NO_MEDIA will be retried after 24h with fresh media_url refresh
-======================================================================
+[STEP 4] Recalculated next bhavy after playlist check: bhavy9
+[YouTube:bhavychildhood_main] Listing playlist PLDIFVPTnQdbM to avoid duplicate bhavy2
+[YouTube:bhavychildhood_main] Playlist has 10 videos
+[YouTube:bhavychildhood_main] No duplicate for 'bhavy9'
+[Run] Downloading using fresh media_url
+[Instagram] Downloading video...
+[Instagram] Downloaded 3180727 bytes
+[YouTube:bhavychildhood_main] Uploading 'bhavy9' - YouTube API upload
+[bhavychildhood_main] Limit hit: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">, trying next channel
+
+[RESULT] Failed to upload
