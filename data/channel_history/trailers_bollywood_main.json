@@ -991,6 +991,16 @@
       "status": "FAILED_UPLOAD_LIMIT",
       "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
       "updated_at": "2026-10-15T15:38:52.033067+00:00"
+    },
+    "17924492835429466": {
+      "instagram_media_id": "17924492835429466",
+      "last_attempt_at": "2026-10-15T15:41:04.649718+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeSAICHTZtt/",
+      "instagram_timestamp": "2026-10-09T17:04:18+0000",
+      "status": "FAILED_UPLOAD_LIMIT",
+      "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
+      "updated_at": "2026-10-15T15:41:05.905670+00:00"
     }
   }
 }

@@ -1,41 +1,41 @@
-2026-10-15 15:38:47,892 INFO [Instagram] Fetching media list...
-2026-10-15 15:38:49,977 INFO [Instagram] Total: 173 sorted oldest first
-2026-10-15 15:38:49,978 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
-2026-10-15 15:38:49,978 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
-2026-10-15 15:38:49,978 INFO [Config] trailers_bollywood_main: enabled
-2026-10-15 15:38:49,978 INFO ======================================================================
-2026-10-15 15:38:49,978 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
-2026-10-15 15:38:49,978 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
-2026-10-15 15:38:49,979 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 17, 'SKIPPED_NO_MEDIA': 40, 'SKIPPED_UNSUPPORTED_MEDIA': 6, 'FAILED': 13, 'FAILED_UPLOAD_LIMIT': 2}
-2026-10-15 15:38:50,232 INFO [Channel trailers_bollywood_main] OAuth verified destination: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
-2026-10-15 15:38:50,359 INFO [YouTube] Resolved required playlist 'bhavychildhood': https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
-2026-10-15 15:38:50,359 INFO [Channel trailers_bollywood_main] All new and previously uploaded videos will target playlist: https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
-2026-10-15 15:38:50,507 INFO [Channel trailers_bollywood_main] Playlist backfill complete: added=0 failed=0 already_present=14
-2026-10-15 15:38:50,916 INFO [Instagram] 18094827218670701 -> Fresh media_url OK (refreshed latest)
-2026-10-15 15:38:51,715 INFO [Instagram] Downloaded 1521820 bytes for 18094827218670701
-2026-10-15 15:38:51,716 INFO [Channel trailers_bollywood_main] READY: Instagram 18094827218670701 (VIDEO) -> instagram-18094827218670701.mp4
-2026-10-15 15:38:51,716 INFO [Channel trailers_bollywood_main] File size: 1521820 bytes
-2026-10-15 15:38:52,034 CRITICAL [Channel trailers_bollywood_main] YouTube upload limit reached for Instagram item 18094827218670701. Stopping the entire workflow immediately; no further YouTube uploads will be attempted.
-2026-10-15 15:38:52,034 CRITICAL [Run] Stopped because YouTube uploadLimitExceeded was returned. No more channels or videos will be attempted in this run.
-2026-10-15 15:38:52,034 INFO ================================================================================
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Overall run status: STOPPED_UPLOAD_LIMIT
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel config=trailers_bollywood_main | status=upload_limit_reached | YouTube channel=trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg) | uploaded successfully this run=0 | playlist=https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded video IDs: none
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel error: YouTube returned uploadLimitExceeded for channel trailers_bollywood_main; stopped immediately.
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel config=bhavychildhood_main | status=disabled | YouTube channel=not verified (YOUR_SECOND_YOUTUBE_CHANNEL_ID) | uploaded successfully this run=0 | playlist=not configured
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded video IDs: none
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
-2026-10-15 15:38:52,034 INFO ================================================================================
-2026-10-15 15:38:52,034 INFO ================================================================================
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Overall run status: STOPPED_UPLOAD_LIMIT
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel config=trailers_bollywood_main | status=upload_limit_reached | YouTube channel=trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg) | uploaded successfully this run=0 | playlist=https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded video IDs: none
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel error: YouTube returned uploadLimitExceeded for channel trailers_bollywood_main; stopped immediately.
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Channel config=bhavychildhood_main | status=disabled | YouTube channel=not verified (YOUR_SECOND_YOUTUBE_CHANNEL_ID) | uploaded successfully this run=0 | playlist=not configured
-2026-10-15 15:38:52,034 INFO [FINAL STATUS] Newly uploaded video IDs: none
-2026-10-15 15:38:52,035 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
-2026-10-15 15:38:52,035 INFO ================================================================================
+2026-10-15 15:41:01,741 INFO [Instagram] Fetching media list...
+2026-10-15 15:41:04,206 INFO [Instagram] Total: 173 sorted oldest first
+2026-10-15 15:41:04,206 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
+2026-10-15 15:41:04,206 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
+2026-10-15 15:41:04,206 INFO [Config] trailers_bollywood_main: enabled
+2026-10-15 15:41:04,206 INFO ======================================================================
+2026-10-15 15:41:04,206 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
+2026-10-15 15:41:04,207 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
+2026-10-15 15:41:04,207 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 17, 'SKIPPED_NO_MEDIA': 40, 'SKIPPED_UNSUPPORTED_MEDIA': 6, 'FAILED': 13, 'FAILED_UPLOAD_LIMIT': 3}
+2026-10-15 15:41:04,428 INFO [Channel trailers_bollywood_main] OAuth verified destination: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:41:04,531 INFO [YouTube] Resolved required playlist 'bhavychildhood': https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
+2026-10-15 15:41:04,531 INFO [Channel trailers_bollywood_main] All new and previously uploaded videos will target playlist: https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
+2026-10-15 15:41:04,649 INFO [Channel trailers_bollywood_main] Playlist backfill complete: added=0 failed=0 already_present=14
+2026-10-15 15:41:05,057 INFO [Instagram] 17924492835429466 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:41:05,716 INFO [Instagram] Downloaded 2414130 bytes for 17924492835429466
+2026-10-15 15:41:05,718 INFO [Channel trailers_bollywood_main] READY: Instagram 17924492835429466 (VIDEO) -> instagram-17924492835429466.mp4
+2026-10-15 15:41:05,718 INFO [Channel trailers_bollywood_main] File size: 2414130 bytes
+2026-10-15 15:41:05,907 CRITICAL [Channel trailers_bollywood_main] YouTube upload limit reached for Instagram item 17924492835429466. Stopping the entire workflow immediately; no further YouTube uploads will be attempted.
+2026-10-15 15:41:05,907 CRITICAL [Run] Stopped because YouTube uploadLimitExceeded was returned. No more channels or videos will be attempted in this run.
+2026-10-15 15:41:05,907 INFO ================================================================================
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Overall run status: STOPPED_UPLOAD_LIMIT
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Channel config=trailers_bollywood_main | status=upload_limit_reached | YouTube channel=trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg) | uploaded successfully this run=0 | playlist=https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Newly uploaded video IDs: none
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Channel error: YouTube returned uploadLimitExceeded for channel trailers_bollywood_main; stopped immediately.
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Channel config=bhavychildhood_main | status=not_started | YouTube channel=not verified (UCwXgJ9WyTh9BgMP6csXjHRA) | uploaded successfully this run=0 | playlist=not configured
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Newly uploaded video IDs: none
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
+2026-10-15 15:41:05,907 INFO ================================================================================
+2026-10-15 15:41:05,907 INFO ================================================================================
+2026-10-15 15:41:05,907 INFO [FINAL STATUS] Overall run status: STOPPED_UPLOAD_LIMIT
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Channel config=trailers_bollywood_main | status=upload_limit_reached | YouTube channel=trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg) | uploaded successfully this run=0 | playlist=https://www.youtube.com/playlist?list=PLN_W_X8ML6AU
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Newly uploaded video IDs: none
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Channel error: YouTube returned uploadLimitExceeded for channel trailers_bollywood_main; stopped immediately.
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Channel config=bhavychildhood_main | status=not_started | YouTube channel=not verified (UCwXgJ9WyTh9BgMP6csXjHRA) | uploaded successfully this run=0 | playlist=not configured
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Newly uploaded video IDs: none
+2026-10-15 15:41:05,908 INFO [FINAL STATUS] Newly uploaded videos successfully in playlist=0 (none); old videos backfilled=0 (none); playlist additions failed=0 (none)
+2026-10-15 15:41:05,908 INFO ================================================================================
 ld videos backfilled=0 (none); playlist additions failed=0 (none)
-2026-10-15 15:38:52,035 INFO ================================================================================
+2026-10-15 15:41:05,908 INFO ================================================================================
