@@ -299,5 +299,26 @@
     "youtube_id": "nFtO3Al-HPU",
     "error": "",
     "updated_at": "2026-10-15T03:24:46.366666+00:00"
+  },
+  "18091123373201988": {
+    "status": "SKIPPED_NO_MEDIA",
+    "title": "",
+    "youtube_id": "",
+    "error": "Instagram media URL unavailable",
+    "updated_at": "2026-10-15T05:30:15.822833+00:00"
+  },
+  "18420137716154773": {
+    "status": "SKIPPED_NO_MEDIA",
+    "title": "",
+    "youtube_id": "",
+    "error": "Instagram media URL unavailable",
+    "updated_at": "2026-10-15T05:30:15.921656+00:00"
+  },
+  "18150977467544457": {
+    "status": "UPLOADED",
+    "title": "video-18150977467544457",
+    "youtube_id": "rReWpeERPfw",
+    "error": "",
+    "updated_at": "2026-10-15T05:30:19.121301+00:00"
   }
 }
