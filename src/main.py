@@ -270,6 +270,95 @@ def history_path(channel: dict[str, Any]) -> Path:
     return HISTORY_DIR / f"{safe_id(str(channel['id']))}.json"
 
 
+def _history_record_id(record: Any, fallback_id: Any = None) -> str:
+    """Get an Instagram media ID from current or legacy history record shapes."""
+    if isinstance(record, str):
+        return record.strip() or str(fallback_id or "")
+    if isinstance(record, dict):
+        for key in ("instagram_media_id", "media_id", "instagram_id", "id"):
+            candidate = record.get(key)
+            if candidate is not None and str(candidate).strip():
+                return str(candidate).strip()
+    return str(fallback_id or "").strip()
+
+
+def _normalize_history(value: Any, channel: dict[str, Any]) -> dict[str, Any] | None:
+    """Normalize known legacy history layouts without discarding uploaded markers.
+
+    Returns None only when no recognizable history structure is present.
+    """
+    channel_id = str(channel["channel_id"])
+    normalized: dict[str, Any] = {"channel_id": channel_id, "items": {}}
+    if isinstance(value, dict) and isinstance(value.get("items"), dict):
+        normalized.update({k: v for k, v in value.items() if k != "items"})
+        normalized["channel_id"] = channel_id
+        normalized["items"] = {
+            str(media_id): record if isinstance(record, dict) else {"status": "UPLOADED" if record else "UNKNOWN"}
+            for media_id, record in value["items"].items() if str(media_id).strip()
+        }
+        return normalized
+
+    # Older versions sometimes saved the list of uploaded IDs under a named key.
+    if isinstance(value, dict):
+        for key in ("uploaded_ids", "uploaded", "processed_ids", "completed_ids", "media_ids"):
+            entries = value.get(key)
+            if isinstance(entries, list):
+                for entry in entries:
+                    media_id = _history_record_id(entry)
+                    if media_id:
+                        rec = entry if isinstance(entry, dict) else {}
+                        normalized["items"][media_id] = {**rec, "instagram_media_id": media_id,
+                                                          "status": "UPLOADED" if key in ("uploaded_ids", "uploaded", "completed_ids") else "PROCESSED"}
+        # Some old formats stored a list of records directly in "items", or under history/records.
+        for key in ("items", "history", "records"):
+            entries = value.get(key)
+            if isinstance(entries, list):
+                for entry in entries:
+                    media_id = _history_record_id(entry)
+                    if media_id:
+                        rec = dict(entry) if isinstance(entry, dict) else {}
+                        status = str(rec.get("status", "UNKNOWN")).upper()
+                        if status in {"SUCCESS", "DONE", "COMPLETE", "COMPLETED"}:
+                            status = "UPLOADED"
+                        rec.update(instagram_media_id=media_id, status=status)
+                        normalized["items"][media_id] = rec
+        # Legacy top-level mapping: media ID -> record/status.
+        reserved = {"channel_id", "channel", "uploaded_ids", "uploaded", "processed_ids",
+                    "completed_ids", "media_ids", "items", "history", "records", "version", "updated_at"}
+        for media_id, record in value.items():
+            if media_id in reserved or not str(media_id).strip():
+                continue
+            if isinstance(record, dict):
+                rec = dict(record)
+                status = str(rec.get("status", "UNKNOWN")).upper()
+                if status in {"SUCCESS", "DONE", "COMPLETE", "COMPLETED"}:
+                    status = "UPLOADED"
+                rec.update(instagram_media_id=str(media_id), status=status)
+                normalized["items"][str(media_id)] = rec
+            elif isinstance(record, str) and record.upper() in {"UPLOADED", "SUCCESS", "DONE", "COMPLETE", "COMPLETED"}:
+                normalized["items"][str(media_id)] = {"instagram_media_id": str(media_id), "status": "UPLOADED"}
+        if normalized["items"]:
+            return normalized
+
+    # Older history files were occasionally just a list of uploaded IDs/records.
+    if isinstance(value, list):
+        for entry in value:
+            media_id = _history_record_id(entry)
+            if not media_id:
+                continue
+            if isinstance(entry, dict):
+                rec = dict(entry)
+                status = str(rec.get("status", "UPLOADED")).upper()
+                if status in {"SUCCESS", "DONE", "COMPLETE", "COMPLETED"}:
+                    status = "UPLOADED"
+                rec.update(instagram_media_id=media_id, status=status)
+            else:
+                rec = {"instagram_media_id": media_id, "status": "UPLOADED"}
+            normalized["items"][media_id] = rec
+        return normalized
+    return None
+
+
 def load_history(channel: dict[str, Any]) -> dict[str, Any]:
     path = history_path(channel)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -278,12 +367,31 @@ def load_history(channel: dict[str, Any]) -> dict[str, Any]:
     try:
         with path.open(encoding="utf-8") as f:
             value = json.load(f)
-        if not isinstance(value, dict) or not isinstance(value.get("items"), dict):
-            raise ValueError("Unexpected history format")
-        return value
     except Exception as exc:
-        # Never silently overwrite a damaged history file.
-        raise RuntimeError(f"Cannot read history {path}: {exc}") from exc
+        # Keep the original file intact; a malformed history must not be silently replaced.
+        raise RuntimeError(f"Cannot parse history JSON {path}: {exc}") from exc
+
+    normalized = _normalize_history(value, channel)
+    if normalized is not None:
+        if not (isinstance(value, dict) and isinstance(value.get("items"), dict)):
+            backup = path.with_name(path.name + ".legacy-backup")
+            if not backup.exists():
+                backup.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            LOGGER.warning("[History] Migrated legacy history format for channel %s; preserved original at %s",
+                           channel["id"], backup.name)
+            save_history(channel, normalized)
+        return normalized
+
+    # Unknown but valid JSON: preserve it and proceed with a clean history so this channel
+    # does not block all remaining videos. Warn loudly because unknown data may contain upload markers.
+    backup = path.with_name(path.name + ".unrecognized-backup")
+    if not backup.exists():
+        backup.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    LOGGER.error("[History] Unrecognized history format for channel %s. Original preserved at %s. "
+                 "Starting a new history; verify prior uploads to avoid duplicates.", channel["id"], backup.name)
+    fresh = {"channel_id": str(channel["channel_id"]), "items": {}}
+    save_history(channel, fresh)
+    return fresh
 
 
 def save_history(channel: dict[str, Any], history: dict[str, Any]) -> None:
