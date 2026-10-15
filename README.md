@@ -36,7 +36,7 @@ Optionally add repository variables `IG_GRAPH_API_VERSION` and `IG_API_MODE`. `I
 
 ## 2. Set up each YouTube channel
 
-Create OAuth credentials in Google Cloud for YouTube Data API v3 and obtain an offline refresh token for the Google account that controls the target YouTube channel. The refresh token must be authorized with the scopes needed by this project (`youtube.upload`, `youtube.readonly`, `youtube`).
+Create OAuth credentials in Google Cloud for YouTube Data API v3 and obtain an offline refresh token for the Google account that controls the target YouTube channel. The refresh token must be created with offline access and authorized for the scopes needed by this project (`youtube.upload`, `youtube.readonly`, `youtube`). During refresh, the script reuses the token’s existing grant instead of trying to request new scopes. If Google still returns `invalid_scope`, generate a new refresh token using the same OAuth Client ID/Secret and grant those YouTube scopes, then update the matching GitHub secret.
 
 Add GitHub repository secrets for every configured `env_prefix`. For `YT1`, add:
 

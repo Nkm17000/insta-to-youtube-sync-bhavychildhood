@@ -12,6 +12,7 @@ from typing import Any
 
 import requests
 from google.auth.transport.requests import Request as GoogleAuthRequest
+from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -79,11 +80,30 @@ def credentials_for(channel: dict[str, Any]) -> Credentials:
     ] if not value]
     if missing:
         raise RuntimeError("Missing YouTube credential secret(s): " + ", ".join(missing))
+    # A refresh token is bound to the scopes granted during its original OAuth consent.
+    # Sending a new/expanded scopes list during refresh can cause Google's
+    # `invalid_scope` error. Leave scopes unset here so the refresh request uses the
+    # token's existing grant; re-authorize the token if that grant lacks permissions.
     creds = Credentials(
         token=None, refresh_token=refresh_token, token_uri="https://oauth2.googleapis.com/token",
-        client_id=client_id, client_secret=client_secret, scopes=SCOPES
+        client_id=client_id, client_secret=client_secret
     )
-    creds.refresh(GoogleAuthRequest())
+    try:
+        creds.refresh(GoogleAuthRequest())
+    except RefreshError as exc:
+        message = str(exc)
+        if "invalid_scope" in message.lower():
+            raise RuntimeError(
+                f"Google OAuth refresh failed for {prefix}_REFRESH_TOKEN with invalid_scope. "
+                "The refresh token may have been issued with incompatible OAuth scopes or a different OAuth client. "
+                "Create a new offline refresh token using the same Client ID/Client Secret configured here and "
+                "grant YouTube Data API access (youtube.upload, youtube.readonly, and youtube). "
+                "Update the matching GitHub Actions secret, then rerun. Do not share the token publicly."
+            ) from exc
+        raise RuntimeError(
+            f"Google OAuth refresh failed for channel prefix {prefix}: {message}. "
+            "Check the client ID, client secret, refresh token, and OAuth consent grant."
+        ) from exc
     return creds
 
 
