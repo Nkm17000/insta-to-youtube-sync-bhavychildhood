@@ -3,6 +3,12 @@
     "id": "trailers_bollywood_main",
     "env_prefix": "YT1",
     "enabled": true,
-    "playlist_title": "trailers bollywood"
+    "playlist_title": "bhavychildhood"
+  },
+  {
+    "id": "bhavychildhood_main",
+    "env_prefix": "YT2",
+    "enabled": true,
+    "playlist_title": "bhavychildhood"
   }
 ]
