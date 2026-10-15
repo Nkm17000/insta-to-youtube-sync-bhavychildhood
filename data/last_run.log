@@ -8,21 +8,15 @@
 ======================================================================
 [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
 [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
-[Channel trailers_bollywood_main] current history: {'UPLOADED': 8, 'SKIPPED_NO_MEDIA': 35}
-[trailers_bollywood_main] Checking oldest eligible Instagram item 18091123373201988
-[Instagram] 18091123373201988 -> No media_url (expired/deleted)
-[trailers_bollywood_main] No media URL; retry eligible after 24h
-[trailers_bollywood_main] Checking oldest eligible Instagram item 18420137716154773
-[Instagram] 18420137716154773 -> No media_url (expired/deleted)
-[trailers_bollywood_main] No media URL; retry eligible after 24h
-[trailers_bollywood_main] Checking oldest eligible Instagram item 18150977467544457
-[Instagram] 18150977467544457 -> Fresh media_url OK (refreshed latest)
+[Channel trailers_bollywood_main] current history: {'UPLOADED': 9, 'SKIPPED_NO_MEDIA': 37}
+[trailers_bollywood_main] Checking oldest eligible Instagram item 18096111851439409
+[Instagram] 18096111851439409 -> Fresh media_url OK (refreshed latest)
 [Instagram] Downloading video...
-[Instagram] Downloaded 3014083 bytes
-[Channel trailers_bollywood_main] READY: 18150977467544457 -> video-18150977467544457
-[Channel trailers_bollywood_main] File size: 3014083 bytes
+[Instagram] Downloaded 19912199 bytes
+[Channel trailers_bollywood_main] READY: 18096111851439409 -> video-18096111851439409
+[Channel trailers_bollywood_main] File size: 19912199 bytes
 [Channel trailers_bollywood_main] First and only YouTube API operation will be videos.insert upload.
-[Channel trailers_bollywood_main] SUCCESS https://youtu.be/rReWpeERPfw
+[Channel trailers_bollywood_main] SUCCESS https://youtu.be/cIulNeZueeE
 
 [Run] Finished. Per-channel history summaries:
-  trailers_bollywood_main: {'UPLOADED': 9, 'SKIPPED_NO_MEDIA': 37}
+  trailers_bollywood_main: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
