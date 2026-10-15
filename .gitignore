@@ -1,6 +1,11 @@
 .env
-data/temp/
-data/channel_history/*.tmp
+.env.*
+!.env.example
 __pycache__/
-*.pyc
-*.mp4
+*.py[cod]
+.venv/
+venv/
+downloads/
+token.json
+client_secret*.json
+data/last_run.log

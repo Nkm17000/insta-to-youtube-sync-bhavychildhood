@@ -1,53 +1,130 @@
-# Instagram → multi-channel YouTube uploader
+# Instagram to YouTube multi-channel sync
 
-Uploads the oldest eligible Instagram Reel to each configured, enabled YouTube channel. Every channel has a separate history file and separate OAuth credentials.
+A GitHub Actions project that fetches Instagram professional-account media, refreshes media metadata immediately before downloading, and uploads ready videos to independently configured YouTube channels. Each channel has its own history file and errors in one channel do not stop the next channel.
 
-## Key behavior
+## Important notes
 
-- `config/channels.json` is the source of truth for channel enablement. `enabled: false` means no upload attempt for that channel.
-- Each enabled channel must have `id`, actual `channel_id`, `env_prefix`, and its own `{PREFIX}_CLIENT_ID`, `{PREFIX}_CLIENT_SECRET`, and `{PREFIX}_REFRESH_TOKEN` environment variables.
-- Credentials are intentionally **not** inherited from shared `YOUTUBE_CLIENT_ID` / `YOUTUBE_REFRESH_TOKEN` variables.
-- History is stored separately in `data/channel_history/<id>.json`. Upload success/failure for one channel does not update another channel's history.
-- The app does not call YouTube to list channels, inspect playlists, or check duplicates. It selects an Instagram candidate, refreshes the Instagram media URL, downloads and validates the complete local file, and only then creates the YouTube client and calls `videos.insert` to upload.
-- If no candidate can be downloaded, no YouTube API request is made for that channel.
-- An upload failure is recorded as `FAILED_YOUTUBE` for that channel and is not automatically retried. `SKIPPED_NO_MEDIA` entries can be retried after `SKIPPED_RETRY_HOURS`.
-- The workflow is scheduled/manual only; a code push will not accidentally trigger uploads.
+- This is a complete replacement template based on the run log provided, not a patch against unseen original source files.
+- Instagram Graph API access requires a supported professional Instagram account, correct permissions, a valid access token, and an API version supported by your Meta app. Set `IG_GRAPH_API_VERSION` to a currently supported version for your app.
+- A metadata refresh can get a fresh URL only while Instagram still exposes the media to the API. It cannot restore deleted media or bypass permissions.
+- YouTube uploads are uploaded to the channel authenticated by the channel-specific OAuth refresh token. The program verifies `channels.list(mine=true)` against `channel_id` before uploading.
+- YouTube playlists are optional. Set `playlist_id` per channel to add videos after upload. A video upload and playlist insertion are separate API calls.
+- If privacy is `private`, you will only see the video while signed in to the owning account. `unlisted` videos do not normally appear in channel browse/search. `public` videos may still take time to process or appear.
+- The program never claims a playlist was updated unless `playlistItems.insert` succeeds.
+- History records the YouTube video ID, URL, verified channel, privacy, playlist outcome, timestamps, and errors.
 
-## Important YouTube channel identity note
+## Repository layout
 
-The YouTube Data API chooses the target channel from the Google account represented by the OAuth refresh token. `channel_id` in the JSON is used as the configured channel identity/history label; it cannot force an OAuth token to upload to that channel. For every config entry, create the refresh token while signed into the intended YouTube channel's Google account, and set `channel_id` to that account's channel ID. Since this design avoids pre-upload YouTube API calls, it does not make a `channels.list` call to verify that mapping.
-
-## Setup
-
-1. Copy `.env.example` values into local environment variables or GitHub Actions repository secrets.
-2. Update `config/channels.json` with real channel IDs. Set `enabled` to `true` only for channels you want to process.
-3. Generate a distinct refresh token for each channel using `python get_refresh_token.py`; use that channel's OAuth client credentials and Google account.
-4. Install dependencies: `pip install -r requirements.txt`.
-5. Run: `python -m src.main`.
-
-## Enable or disable a channel
-
-Edit `config/channels.json`:
-
-```json
-{
-  "id": "example_channel",
-  "channel_id": "UCxxxxxxxxxxxxxxxxxxxxxx",
-  "env_prefix": "YT3",
-  "enabled": true,
-  "privacy": "private",
-  "category_id": "24",
-  "made_for_kids": false,
-  "tags": ["reels"]
-}
+```text
+.
+├── .github/workflows/sync.yml
+├── config/channels.json
+├── data/channel_history/        # generated per-channel history
+├── src/main.py
+├── requirements.txt
+└── .env.example
 ```
 
-Add `YT3_CLIENT_ID`, `YT3_CLIENT_SECRET`, and `YT3_REFRESH_TOKEN` to the environment. A disabled channel is ignored even if credentials are present.
+## 1. Set up Instagram API credentials
 
-## History operations
+In Meta developer settings, configure the Instagram Graph API for the professional Instagram account. The token needs permission to read the account's media. Add repository secrets:
 
-History files use Instagram media IDs as keys and statuses such as `UPLOADED`, `FAILED_YOUTUBE`, and `SKIPPED_NO_MEDIA`. To intentionally retry a terminal item, edit/remove that Instagram ID from only the desired channel's JSON history file. Never copy one channel's history over another's.
+- `IG_USER_ID`: Instagram professional account ID (not the username)
+- `IG_ACCESS_TOKEN`: access token for that account
 
-## Limitations
+Optionally add repository variable `IG_GRAPH_API_VERSION` with the API version supported by your Meta app. The example default in code may need updating for your app.
 
-Because no pre-upload YouTube API calls are made, the program does not automatically check for duplicates already present on YouTube and cannot independently verify that an OAuth token maps to the configured `channel_id`. Keep channel credentials correctly mapped. YouTube's `videos.insert` upload call may still incur API quota and channel upload limits.
+## 2. Set up each YouTube channel
+
+Create OAuth credentials in Google Cloud for YouTube Data API v3 and obtain an offline refresh token for the Google account that controls the target YouTube channel. The refresh token must be authorized with the scopes needed by this project (`youtube.upload`, `youtube.readonly`, `youtube`).
+
+Add GitHub repository secrets for every configured `env_prefix`. For `YT1`, add:
+
+- `YT1_CLIENT_ID`
+- `YT1_CLIENT_SECRET`
+- `YT1_REFRESH_TOKEN`
+
+For `YT2`, add:
+
+- `YT2_CLIENT_ID`
+- `YT2_CLIENT_SECRET`
+- `YT2_REFRESH_TOKEN`
+
+Each refresh token must authenticate the intended channel. The program verifies the OAuth destination against the configured `channel_id` and skips that channel if they do not match. If a brand account/channel is involved, ensure OAuth authorization selected the correct channel.
+
+## 3. Configure channels
+
+Edit `config/channels.json`. For each channel:
+
+- `id`: unique internal identifier; used for the history filename.
+- `channel_id`: actual YouTube channel ID, typically starts with `UC`.
+- `env_prefix`: prefix used to read the channel's OAuth secrets.
+- `enabled`: `true` or `false`.
+- `privacy`: `public`, `unlisted`, or `private`.
+- `playlist_id`: playlist ID (the value after `list=` in a playlist URL), or empty string.
+- `playlist_required`: if true, record `UPLOADED_PLAYLIST_FAILED` if adding to the playlist fails or no playlist is configured.
+- `max_items_per_run`: maximum eligible items attempted for that channel each run.
+
+Do not enable the second sample channel until its channel ID and all `YT2_*` secrets are correct. Set `privacy` intentionally; `private` can explain why an upload is not visible publicly.
+
+### Playlist example
+
+A playlist URL like `https://www.youtube.com/playlist?list=PLxxxxxxxx` has playlist ID `PLxxxxxxxx`. Set:
+
+```json
+"playlist_id": "PLxxxxxxxx",
+"playlist_required": true
+```
+
+The authenticated account must have permission to add videos to that playlist.
+
+## 4. GitHub Actions
+
+Workflow triggers:
+- push to `main`, except changes only under `data/**` or Markdown files;
+- manual run via **Actions → Instagram to YouTube channel sync → Run workflow**;
+- scheduled runs at `01:00, 07:00, 13:00, 19:00 UTC`.
+
+If your default branch is `master`, change `main` in `.github/workflows/sync.yml`. GitHub Actions schedule uses UTC. Ensure Actions are enabled in repository settings. The workflow needs `contents: write` to commit history/log files.
+
+## 5. Run locally (optional)
+
+```bash
+python -m venv .venv
+# Windows PowerShell:
+.venv\\Scripts\\Activate.ps1
+# macOS/Linux:
+source .venv/bin/activate
+pip install -r requirements.txt
+# Set the environment variables from .env.example in your shell.
+python -u -m src.main
+```
+
+The program does not automatically load `.env`; export the variables in your shell or configure them as GitHub Actions secrets. Never commit real tokens or client secrets.
+
+## 6. Where to see results
+
+- `data/last_run.log`: latest run log.
+- `data/channel_history/<channel-id>.json`: per-channel history.
+- A successful record includes `youtube_video_url`, `youtube_channel_title`, `youtube_channel_id`, `privacy_status`, and `playlist_url` if it was added.
+- `SKIPPED_NO_MEDIA`: API did not return a media URL after re-query; retried after `SKIPPED_RETRY_HOURS`.
+- `FAILED`: processing/upload failed; retried on the next run.
+- `UPLOADED`: upload succeeded (and playlist insertion succeeded if configured).
+- `UPLOADED_PLAYLIST_FAILED`: video upload succeeded but playlist insertion failed; check `playlist_error`.
+
+## 7. Common reasons a video appears missing
+
+1. Check the exact `youtube_video_url` in the history JSON.
+2. Confirm the `youtube_channel_title` and `youtube_channel_id` recorded in the history.
+3. Check `privacy_status`: private/unlisted videos will not be publicly discoverable.
+4. Check YouTube Studio → Content on the verified channel and allow time for processing.
+5. Check `playlist_url` and `playlist_error` separately; uploading does not automatically select a playlist.
+6. If `channels.list(mine=true)` returns the wrong channel, replace that channel's OAuth refresh token with one authorized for the intended channel.
+
+## 8. Security and behavior
+
+- Never commit access tokens or OAuth secrets.
+- Instagram media URLs are treated as temporary and re-fetched before download.
+- Per-channel histories prevent duplicate uploads for already uploaded Instagram media IDs.
+- A media ID that lacks a fresh URL is retried after the configured retry interval.
+- YouTube API failures are logged and do not stop processing other channels.

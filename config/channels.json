@@ -10,11 +10,16 @@
     "tags": [
       "trailers bollywood",
       "bhavychildhood"
-    ]
+    ],
+    "title_prefix": "",
+    "playlist_id": "",
+    "playlist_required": false,
+    "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
+    "max_items_per_run": 20
   },
   {
     "id": "bhavychildhood_main",
-    "channel_id": "UCwXgJ9WyTh9BgMP6csXjHRA",
+    "channel_id": "YOUR_SECOND_YOUTUBE_CHANNEL_ID",
     "env_prefix": "YT2",
     "enabled": false,
     "privacy": "public",
@@ -23,6 +28,11 @@
     "tags": [
       "bhavychildhood",
       "kids"
-    ]
+    ],
+    "title_prefix": "",
+    "playlist_id": "",
+    "playlist_required": false,
+    "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
+    "max_items_per_run": 20
   }
 ]
