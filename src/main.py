@@ -30,6 +30,16 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload",
 LOGGER = logging.getLogger("insta_youtube_sync")
 
 
+class UploadLimitExceeded(RuntimeError):
+    """Raised when YouTube rejects uploads because the channel/account limit is reached."""
+
+
+def is_upload_limit_error(exc: BaseException) -> bool:
+    """Recognize YouTube's uploadLimitExceeded response, including resumable-upload wrappers."""
+    details = str(exc).lower()
+    return "uploadlimitexceeded" in details or "exceeded the number of videos they may upload" in details
+
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -585,6 +595,71 @@ def upload_video(youtube, item: dict[str, Any], channel: dict[str, Any],
     return video_id
 
 
+def resolve_playlist_id(youtube, channel: dict[str, Any]) -> str:
+    """Resolve a configured playlist ID or exact playlist title owned by this channel."""
+    configured_id = str(channel.get("playlist_id", "")).strip()
+    if configured_id and configured_id != "${BHAVYCHILDHOOD_PLAYLIST_ID}":
+        return configured_id
+    title = str(channel.get("playlist_title", "")).strip()
+    if not title:
+        if channel.get("playlist_required", False):
+            raise RuntimeError(
+                f"Channel {channel.get('id')} requires a playlist, but playlist_id/playlist_title is not configured."
+            )
+        return ""
+
+    matches = []
+    page_token = None
+    while True:
+        response = youtube.playlists().list(
+            part="id,snippet", mine=True, maxResults=50, pageToken=page_token
+        ).execute()
+        for playlist in response.get("items", []):
+            playlist_title = str(playlist.get("snippet", {}).get("title", "")).strip()
+            if playlist_title.casefold() == title.casefold():
+                matches.append(playlist)
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+    if not matches:
+        raise RuntimeError(
+            f"Required playlist '{title}' was not found among playlists owned by authenticated channel. "
+            "No videos were uploaded. Check the playlist name and YouTube OAuth permissions."
+        )
+    if len(matches) > 1:
+        details = ", ".join(
+            f"{m.get('snippet', {}).get('title', title)} ({m.get('id', 'no-id')})" for m in matches
+        )
+        raise RuntimeError(
+            f"More than one owned playlist exactly matches '{title}': {details}. "
+            "Set playlist_id explicitly in config/channels.json to avoid choosing the wrong playlist."
+        )
+    playlist_id = str(matches[0].get("id", "")).strip()
+    if not playlist_id:
+        raise RuntimeError(f"Playlist '{title}' was found but YouTube returned no playlist ID.")
+    LOGGER.info("[YouTube] Resolved required playlist '%s': https://www.youtube.com/playlist?list=%s", title, playlist_id)
+    return playlist_id
+
+
+def playlist_video_ids(youtube, playlist_id: str) -> set[str]:
+    """Return video IDs already present in the playlist to make backfill idempotent."""
+    video_ids: set[str] = set()
+    page_token = None
+    while True:
+        response = youtube.playlistItems().list(
+            part="snippet,contentDetails", playlistId=playlist_id, maxResults=50, pageToken=page_token
+        ).execute()
+        for item in response.get("items", []):
+            video_id = (item.get("contentDetails", {}).get("videoId")
+                        or item.get("snippet", {}).get("resourceId", {}).get("videoId"))
+            if video_id:
+                video_ids.add(str(video_id))
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+    return video_ids
+
+
 def add_to_playlist(youtube, video_id: str, playlist_id: str) -> None:
     youtube.playlistItems().insert(
         part="snippet",
@@ -612,6 +687,44 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
     youtube = youtube_service(channel)
     actual_id, actual_title = verify_youtube_channel(youtube, configured_channel_id)
     LOGGER.info("[Channel %s] OAuth verified destination: %s (%s)", channel_key, actual_title, actual_id)
+
+    # Resolve and validate the required playlist BEFORE any video upload API call.
+    playlist_id = resolve_playlist_id(youtube, channel)
+    present_in_playlist: set[str] = set()
+    if playlist_id:
+        LOGGER.info("[Channel %s] All new and previously uploaded videos will target playlist: https://www.youtube.com/playlist?list=%s",
+                    channel_key, playlist_id)
+        present_in_playlist = playlist_video_ids(youtube, playlist_id)
+        # Backfill all videos already marked uploaded in this channel's history.
+        # This repairs earlier runs where upload succeeded but playlist insertion was never configured.
+        backfilled = 0
+        backfill_failed = 0
+        for history_key, saved_record in history["items"].items():
+            if not isinstance(saved_record, dict) or saved_record.get("status") != "UPLOADED":
+                continue
+            saved_video_id = str(saved_record.get("youtube_video_id", "")).strip()
+            if not saved_video_id or saved_video_id in present_in_playlist:
+                continue
+            try:
+                add_to_playlist(youtube, saved_video_id, playlist_id)
+                present_in_playlist.add(saved_video_id)
+                saved_record["playlist_id"] = playlist_id
+                saved_record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
+                saved_record.pop("playlist_error", None)
+                saved_record["updated_at"] = iso_now()
+                history["items"][history_key] = saved_record
+                backfilled += 1
+            except Exception as playlist_exc:
+                saved_record["playlist_error"] = str(playlist_exc)
+                saved_record["updated_at"] = iso_now()
+                history["items"][history_key] = saved_record
+                backfill_failed += 1
+                LOGGER.exception("[Channel %s] Could not add previous upload %s to required playlist %s",
+                                 channel_key, saved_video_id, playlist_id)
+        if backfilled or backfill_failed:
+            save_history(channel, history)
+        LOGGER.info("[Channel %s] Playlist backfill complete: added=%d failed=%d already_present=%d",
+                    channel_key, backfilled, backfill_failed, len(present_in_playlist))
 
     retry_hours = int(os.getenv("SKIPPED_RETRY_HOURS", "24"))
     max_upload_attempts = max(1, int(channel.get("max_items_per_run", os.getenv("MAX_ITEMS_PER_RUN", "20"))))
@@ -702,18 +815,19 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                           playlist_id=None, playlist_url=None, last_error=None, uploaded_at=iso_now(),
                           source_media_type=media_type, image_converted=(outcome == "IMAGE_CONVERTED"),
                           updated_at=iso_now())
-            playlist_id = str(channel.get("playlist_id", "")).strip()
             if playlist_id:
                 try:
-                    add_to_playlist(youtube, video_id, playlist_id)
+                    if video_id not in present_in_playlist:
+                        add_to_playlist(youtube, video_id, playlist_id)
+                        present_in_playlist.add(video_id)
                     record["playlist_id"] = playlist_id
                     record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
+                    record.pop("playlist_error", None)
                 except Exception as playlist_exc:
+                    # Preserve the successful upload in history; next run retries playlist insertion.
                     record["playlist_error"] = str(playlist_exc)
-                    LOGGER.exception("[Channel %s] Video uploaded but playlist insertion failed", channel_key)
-            elif channel.get("playlist_required", False):
-                record["playlist_error"] = "playlist_required=true but playlist_id is empty"
-                LOGGER.error("[Channel %s] Video uploaded, but playlist is required and no playlist_id is configured", channel_key)
+                    LOGGER.exception("[Channel %s] Video uploaded but required playlist insertion failed; it will be retried next run",
+                                     channel_key)
             history["items"][history_key] = record
             save_history(channel, history)
             run_stats["uploads_succeeded"] += 1
@@ -728,6 +842,20 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                 LOGGER.info("[Channel %s] Playlist: not configured / not added", channel_key)
             return "uploaded"
         except Exception as exc:
+            if is_upload_limit_error(exc):
+                # Do not keep trying: YouTube will reject every subsequent upload until its
+                # account/channel upload allowance resets or is otherwise resolved.
+                record.update(status="FAILED_UPLOAD_LIMIT", last_error=str(exc), updated_at=iso_now())
+                history["items"][history_key] = record
+                save_history(channel, history)
+                LOGGER.critical(
+                    "[Channel %s] YouTube upload limit reached for Instagram item %s. "
+                    "Stopping the entire workflow immediately; no further YouTube uploads will be attempted.",
+                    channel_key, asset_id,
+                )
+                raise UploadLimitExceeded(
+                    f"YouTube returned uploadLimitExceeded for channel {channel_key}; stopped immediately."
+                ) from exc
             run_stats["failed"] += 1
             LOGGER.exception("[Channel %s] FAILED for Instagram item %s: %s", channel_key, asset_id, exc)
             record.update(status="FAILED", last_error=str(exc), updated_at=iso_now())
@@ -810,6 +938,9 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                              "child_count": len(children), "last_attempt_at": iso_now(), "updated_at": iso_now()}
             history["items"][media_id] = parent_record
             save_history(channel, history)
+        except UploadLimitExceeded:
+            # Never swallow a hard upload-limit stop inside carousel processing.
+            raise
         except Exception as exc:
             run_stats["failed"] += 1
             LOGGER.exception("[Channel %s] Could not process carousel %s: %s", channel_key, media_id, exc)
@@ -859,6 +990,15 @@ def main() -> int:
             LOGGER.info("[Config] %s: enabled", ch["id"])
             try:
                 process_channel(ch, items)
+            except UploadLimitExceeded:
+                # This is a hard stop for the full workflow, not just this channel.
+                # Avoid trying another configured channel after YouTube has explicitly
+                # said that uploads are over the allowed limit.
+                LOGGER.critical(
+                    "[Run] Stopped because YouTube uploadLimitExceeded was returned. "
+                    "No more channels or videos will be attempted in this run."
+                )
+                return 1
             except Exception:
                 LOGGER.exception("[Channel %s] Channel failed; continuing to other channels", ch["id"])
         LOGGER.info("[Run] Finished.")

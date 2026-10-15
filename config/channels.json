@@ -13,9 +13,10 @@
     ],
     "title_prefix": "",
     "playlist_id": "",
-    "playlist_required": false,
+    "playlist_required": true,
     "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
-    "max_items_per_run": 20
+    "max_items_per_run": 20,
+    "playlist_title": "bhavychildhood"
   },
   {
     "id": "bhavychildhood_main",

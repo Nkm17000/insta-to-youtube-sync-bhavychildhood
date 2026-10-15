@@ -61,22 +61,24 @@ Edit `config/channels.json`. For each channel:
 - `env_prefix`: prefix used to read the channel's OAuth secrets.
 - `enabled`: `true` or `false`.
 - `privacy`: `public`, `unlisted`, or `private`.
-- `playlist_id`: playlist ID (the value after `list=` in a playlist URL), or empty string.
-- `playlist_required`: if true, record `UPLOADED_PLAYLIST_FAILED` if adding to the playlist fails or no playlist is configured.
+- `playlist_id`: optional explicit playlist ID (the value after `list=` in a playlist URL).
+- `playlist_title`: exact playlist title to resolve when `playlist_id` is empty.
+- `playlist_required`: if true, playlist resolution must succeed before any upload begins.
 - `max_items_per_run`: maximum eligible items attempted for that channel each run.
 
 Do not enable the second sample channel until its channel ID and all `YT2_*` secrets are correct. Set `privacy` intentionally; `private` can explain why an upload is not visible publicly.
 
-### Playlist example
+### Playlist configuration
 
-A playlist URL like `https://www.youtube.com/playlist?list=PLxxxxxxxx` has playlist ID `PLxxxxxxxx`. Set:
+The supplied config targets the playlist titled `bhavychildhood`:
 
 ```json
-"playlist_id": "PLxxxxxxxx",
+"playlist_id": "",
+"playlist_title": "bhavychildhood",
 "playlist_required": true
 ```
 
-The authenticated account must have permission to add videos to that playlist.
+The authenticated YouTube channel must own that playlist, and its OAuth refresh token must have YouTube Data API permissions to read playlists and insert playlist items. If the playlist is owned by another channel, configure the credentials for the channel that owns the playlist and its matching channel ID. For an exact ID-based configuration, set `playlist_id` to the value after `list=` in the playlist URL.
 
 ## 4. GitHub Actions
 
@@ -109,8 +111,7 @@ The program does not automatically load `.env`; export the variables in your she
 - A successful record includes `youtube_video_url`, `youtube_channel_title`, `youtube_channel_id`, `privacy_status`, and `playlist_url` if it was added.
 - `SKIPPED_NO_MEDIA`: API did not return a media URL after re-query; retried after `SKIPPED_RETRY_HOURS`.
 - `FAILED`: processing/upload failed; retried on the next run.
-- `UPLOADED`: upload succeeded (and playlist insertion succeeded if configured).
-- `UPLOADED_PLAYLIST_FAILED`: video upload succeeded but playlist insertion failed; check `playlist_error`.
+- `UPLOADED`: video upload succeeded. Check `playlist_url` to confirm the playlist target; if insertion fails, `playlist_error` is saved and the next run retries.
 
 ## 7. Common reasons a video appears missing
 
@@ -118,7 +119,7 @@ The program does not automatically load `.env`; export the variables in your she
 2. Confirm the `youtube_channel_title` and `youtube_channel_id` recorded in the history.
 3. Check `privacy_status`: private/unlisted videos will not be publicly discoverable.
 4. Check YouTube Studio → Content on the verified channel and allow time for processing.
-5. Check `playlist_url` and `playlist_error` separately; uploading does not automatically select a playlist.
+5. Check `playlist_url` and `playlist_error` separately; upload and playlist insertion are distinct API operations. Previously uploaded history entries are automatically backfilled when possible.
 6. If `channels.list(mine=true)` returns the wrong channel, replace that channel's OAuth refresh token with one authorized for the intended channel.
 
 ## 8. Security and behavior
