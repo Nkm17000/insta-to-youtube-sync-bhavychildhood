@@ -39,6 +39,12 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
 
+      - name: Install system media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n 1
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -61,7 +67,9 @@ jobs:
           YT2_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
           YOUTUBE_PRIVACY_STATUS: ${{ secrets.YOUTUBE_PRIVACY_STATUS }}
           SKIPPED_RETRY_HOURS: "24"
+          # Maximum upload attempts per channel per run; skips do not consume this limit.
           MAX_ITEMS_PER_RUN: "20"
+          IMAGE_VIDEO_DURATION_SECONDS: "8"
         run: |
           mkdir -p data/channel_history
           set -o pipefail

@@ -4,6 +4,8 @@ import json
 import logging
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone, timedelta
@@ -436,26 +438,99 @@ def should_retry(record: dict[str, Any], retry_hours: int) -> bool:
     return utc_now() - attempted >= timedelta(hours=retry_hours)
 
 
-def download_video(url: str, media_id: str, download_dir: Path) -> Path:
+def download_remote_asset(url: str, media_id: str, download_dir: Path, *, kind: str) -> Path:
+    """Download a refreshed Instagram asset to a temporary local file."""
     download_dir.mkdir(parents=True, exist_ok=True)
-    destination = download_dir / f"instagram-{safe_id(media_id)}.mp4"
-    partial = destination.with_suffix(".mp4.part")
+    suffix = ".mp4" if kind == "video" else ".image"
+    destination = download_dir / f"instagram-{safe_id(media_id)}{suffix}"
+    partial = destination.with_suffix(destination.suffix + ".part")
     with requests.get(url, stream=True, timeout=(30, 180), allow_redirects=True) as response:
         response.raise_for_status()
         content_type = response.headers.get("content-type", "").lower()
         if "text/html" in content_type or "application/json" in content_type:
-            raise RuntimeError(f"Instagram media URL returned non-video content type: {content_type}")
+            raise RuntimeError(f"Instagram media URL returned non-media content type: {content_type}")
         size = 0
         with partial.open("wb") as f:
             for chunk in response.iter_content(chunk_size=1024 * 1024):
                 if chunk:
                     f.write(chunk)
                     size += len(chunk)
-        if size < 10_000:
-            raise RuntimeError(f"Downloaded file is too small to be a valid video ({size} bytes).")
+        if size < 2_000:
+            raise RuntimeError(f"Downloaded asset is too small to be valid ({size} bytes).")
     partial.replace(destination)
-    LOGGER.info("[Instagram] Downloaded %d bytes", destination.stat().st_size)
+    LOGGER.info("[Instagram] Downloaded %d bytes for %s", destination.stat().st_size, media_id)
     return destination
+
+
+def convert_image_to_video(image_path: Path, media_id: str, download_dir: Path) -> Path:
+    """Turn a still image into an 8-second MP4 with letterboxing, ready for YouTube."""
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise RuntimeError("ffmpeg is not installed; install ffmpeg to convert Instagram images to MP4.")
+    try:
+        duration = max(3, min(60, int(os.getenv("IMAGE_VIDEO_DURATION_SECONDS", "8"))))
+    except ValueError:
+        duration = 8
+    output = download_dir / f"instagram-{safe_id(media_id)}-image-video.mp4"
+    command = [
+        ffmpeg, "-y", "-hide_banner", "-loglevel", "error",
+        "-loop", "1", "-i", str(image_path), "-t", str(duration),
+        "-vf", "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,format=yuv420p",
+        "-r", "30", "-an", "-c:v", "libx264", "-preset", "veryfast",
+        "-movflags", "+faststart", str(output),
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, timeout=240)
+    if result.returncode != 0 or not output.exists() or output.stat().st_size < 10_000:
+        detail = (result.stderr or result.stdout or "ffmpeg produced no output")[-1200:]
+        raise RuntimeError(f"Image-to-video conversion failed for {media_id}: {detail}")
+    LOGGER.info("[Media] Converted Instagram image %s into %s (%d seconds)",
+                media_id, output.name, duration)
+    return output
+
+
+def prepare_upload_media(item: dict[str, Any], media_id: str, download_dir: Path) -> tuple[Path | None, str]:
+    """Return (video_path, outcome); images are converted to MP4, videos downloaded directly."""
+    media_type = str(item.get("media_type", "")).upper()
+    if media_type == "VIDEO":
+        media_url = item.get("media_url")
+        if not media_url:
+            return None, "NO_MEDIA"
+        return download_remote_asset(str(media_url), media_id, download_dir, kind="video"), "VIDEO"
+    if media_type == "IMAGE":
+        # Prefer media_url; thumbnail_url is a fallback when Instagram omits media_url.
+        image_url = item.get("media_url") or item.get("thumbnail_url")
+        if not image_url:
+            return None, "NO_MEDIA"
+        image_path = download_remote_asset(str(image_url), media_id, download_dir, kind="image")
+        try:
+            video_path = convert_image_to_video(image_path, media_id, download_dir)
+        finally:
+            try:
+                image_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+        return video_path, "IMAGE_CONVERTED"
+    return None, "UNSUPPORTED"
+
+
+def fetch_carousel_children(media_id: str) -> list[dict[str, Any]]:
+    """Fetch carousel children, including child videos and images."""
+    fields = "id,media_type,media_url,permalink,timestamp,caption,thumbnail_url"
+    payload = instagram_get(f"{media_id}/children", {"fields": fields, "limit": 100})
+    children = list(payload.get("data", []))
+    while payload.get("paging", {}).get("next"):
+        next_url = payload["paging"]["next"]
+        response = requests.get(next_url, timeout=40)
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            raise RuntimeError("Instagram carousel paging response was not valid JSON.") from exc
+        if response.status_code >= 400 or "error" in payload:
+            err = payload.get("error", {}) if isinstance(payload, dict) else {}
+            raise RuntimeError(f"Instagram carousel paging failed: {err.get('message', response.text[:300])}")
+        children.extend(payload.get("data", []))
+    LOGGER.info("[Instagram] Carousel %s has %d child item(s)", media_id, len(children))
+    return children
 
 
 def build_title(item: dict[str, Any], channel: dict[str, Any]) -> str:
@@ -530,7 +605,7 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
     LOGGER.info("[Channel %s] independent history: %s", channel_key, history_path(channel).relative_to(ROOT))
     counts: dict[str, int] = {}
     for record in history["items"].values():
-        status = record.get("status", "UNKNOWN")
+        status = record.get("status", "UNKNOWN") if isinstance(record, dict) else "UNKNOWN"
         counts[status] = counts.get(status, 0) + 1
     LOGGER.info("[Channel %s] current history: %s", channel_key, counts)
 
@@ -539,60 +614,93 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
     LOGGER.info("[Channel %s] OAuth verified destination: %s (%s)", channel_key, actual_title, actual_id)
 
     retry_hours = int(os.getenv("SKIPPED_RETRY_HOURS", "24"))
-    max_items = int(channel.get("max_items_per_run", os.getenv("MAX_ITEMS_PER_RUN", "20")))
+    max_upload_attempts = max(1, int(channel.get("max_items_per_run", os.getenv("MAX_ITEMS_PER_RUN", "20"))))
     download_dir = ROOT / os.getenv("DOWNLOAD_DIR", "downloads")
-    processed_this_run = 0
+    upload_attempts = 0
+    run_stats = {"uploads_succeeded": 0, "upload_attempts": 0, "images_converted": 0,
+                 "carousel_children_seen": 0, "no_media": 0, "unsupported": 0,
+                 "failed": 0, "skipped_already_uploaded": 0, "deferred_by_retry": 0}
+    stop_for_limit = False
 
-    for original in items:
-        media_id = str(original.get("id", ""))
-        if not media_id:
-            continue
-        existing = history["items"].get(media_id, {})
+    def process_asset(asset: dict[str, Any], history_key: str, *, parent_id: str | None = None) -> str:
+        """Process one video/image. Returns uploaded, skipped, failed, or limit."""
+        nonlocal upload_attempts, stop_for_limit
+        asset_id = str(asset.get("id", ""))
+        if not asset_id:
+            run_stats["unsupported"] += 1
+            return "skipped"
+        existing = history["items"].get(history_key, {})
+        if not isinstance(existing, dict):
+            existing = {}
         if existing.get("status") == "UPLOADED":
-            continue
-        if not should_retry(existing, retry_hours):
-            continue
-        if processed_this_run >= max_items:
-            LOGGER.info("[Channel %s] Reached max_items_per_run=%s", channel_key, max_items)
-            break
-        processed_this_run += 1
-        LOGGER.info("[Channel %s] Checking Instagram item %s", channel_key, media_id)
-        now = iso_now()
-        record = {**existing, "instagram_media_id": media_id, "last_attempt_at": now,
-                  "attempt_count": int(existing.get("attempt_count", 0)) + 1,
-                  "instagram_permalink": original.get("permalink", ""),
-                  "instagram_timestamp": original.get("timestamp", "")}
-        video_path = None
-        try:
-            item = refresh_media_metadata(original)
-            media_type = str(item.get("media_type", ""))
-            if media_type != "VIDEO":
-                record.update(status="SKIPPED_UNSUPPORTED_MEDIA", last_error=f"Unsupported media_type: {media_type}",
-                              updated_at=iso_now())
-                history["items"][media_id] = record
-                save_history(channel, history)
-                LOGGER.info("[Channel %s] Skip unsupported media type %s", channel_key, media_type)
-                continue
-            media_url = item.get("media_url")
-            if not media_url:
-                record.update(status="SKIPPED_NO_MEDIA", last_error="Instagram returned no media_url after refresh",
-                              retry_after_hours=retry_hours, updated_at=iso_now())
-                history["items"][media_id] = record
-                save_history(channel, history)
-                LOGGER.warning("[Channel %s] No media URL; retry eligible after %s hours", channel_key, retry_hours)
-                continue
+            run_stats["skipped_already_uploaded"] += 1
+            return "skipped"
+        # Old versions marked still images and carousel parents unsupported. Revisit those
+        # immediately now that image-to-video and carousel-child handling are supported.
+        current_type = str(asset.get("media_type", "")).upper()
+        legacy_unsupported_now_supported = (
+            existing.get("status") == "SKIPPED_UNSUPPORTED_MEDIA"
+            and current_type in {"IMAGE", "VIDEO", "CAROUSEL_ALBUM"}
+        )
+        if not legacy_unsupported_now_supported and not should_retry(existing, retry_hours):
+            run_stats["deferred_by_retry"] += 1
+            return "skipped"
 
-            LOGGER.info("[Instagram] Downloading video...")
-            video_path = download_video(str(media_url), media_id, download_dir)
-            LOGGER.info("[Channel %s] READY: %s -> %s", channel_key, media_id, video_path.name)
-            LOGGER.info("[Channel %s] File size: %s bytes", channel_key, video_path.stat().st_size)
-            # First upload-related YouTube API call occurs only after the video is downloaded and validated.
+        now = iso_now()
+        record = {**existing, "instagram_media_id": asset_id, "last_attempt_at": now,
+                  "attempt_count": int(existing.get("attempt_count", 0)) + 1,
+                  "instagram_permalink": asset.get("permalink", ""),
+                  "instagram_timestamp": asset.get("timestamp", "")}
+        if parent_id:
+            record["instagram_parent_media_id"] = parent_id
+        video_path: Path | None = None
+        try:
+            item = refresh_media_metadata(asset)
+            media_type = str(item.get("media_type", "")).upper()
+            # Some API responses omit media_type on refresh; retain the original value.
+            if not media_type:
+                media_type = str(asset.get("media_type", "")).upper()
+                item["media_type"] = media_type
+            if media_type not in {"VIDEO", "IMAGE"}:
+                record.update(status="SKIPPED_UNSUPPORTED_MEDIA", last_error=f"Unsupported media_type: {media_type or 'missing'}",
+                              retry_after_hours=retry_hours, updated_at=iso_now())
+                history["items"][history_key] = record
+                save_history(channel, history)
+                run_stats["unsupported"] += 1
+                LOGGER.info("[Channel %s] Unsupported media type %s for Instagram item %s", channel_key, media_type or "(missing)", asset_id)
+                return "skipped"
+
+            # If the upload-attempt cap is reached, continue skipping metadata-only items but do not
+            # download/convert another eligible asset. Its history is left unchanged for the next run.
+            if upload_attempts >= max_upload_attempts:
+                stop_for_limit = True
+                return "limit"
+
+            video_path, outcome = prepare_upload_media(item, asset_id, download_dir)
+            if outcome == "NO_MEDIA" or video_path is None:
+                record.update(status="SKIPPED_NO_MEDIA", last_error="Instagram returned no usable media_url/thumbnail_url after refresh",
+                              retry_after_hours=retry_hours, updated_at=iso_now())
+                history["items"][history_key] = record
+                save_history(channel, history)
+                run_stats["no_media"] += 1
+                LOGGER.warning("[Channel %s] No usable media URL for %s (%s); retry eligible after %s hours",
+                               channel_key, asset_id, media_type, retry_hours)
+                return "skipped"
+            if outcome == "IMAGE_CONVERTED":
+                run_stats["images_converted"] += 1
+
+            LOGGER.info("[Channel %s] READY: Instagram %s (%s) -> %s", channel_key, asset_id, outcome, video_path.name)
+            LOGGER.info("[Channel %s] File size: %d bytes", channel_key, video_path.stat().st_size)
+            upload_attempts += 1
+            run_stats["upload_attempts"] += 1
+            # First upload-related YouTube API call happens only after the complete MP4 is ready.
             video_id = upload_video(youtube, item, channel, video_path)
             video_url = f"https://youtu.be/{video_id}"
             record.update(status="UPLOADED", youtube_video_id=video_id, youtube_video_url=video_url,
                           youtube_channel_id=actual_id, youtube_channel_title=actual_title,
                           privacy_status=channel.get("privacy", os.getenv("YOUTUBE_PRIVACY_STATUS", "private")),
                           playlist_id=None, playlist_url=None, last_error=None, uploaded_at=iso_now(),
+                          source_media_type=media_type, image_converted=(outcome == "IMAGE_CONVERTED"),
                           updated_at=iso_now())
             playlist_id = str(channel.get("playlist_id", "")).strip()
             if playlist_id:
@@ -603,24 +711,29 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                 except Exception as playlist_exc:
                     record["playlist_error"] = str(playlist_exc)
                     LOGGER.exception("[Channel %s] Video uploaded but playlist insertion failed", channel_key)
-                    # The video itself is already uploaded. Keep status UPLOADED so a later
-                    # run never uploads a duplicate merely because playlist insertion failed.
             elif channel.get("playlist_required", False):
                 record["playlist_error"] = "playlist_required=true but playlist_id is empty"
                 LOGGER.error("[Channel %s] Video uploaded, but playlist is required and no playlist_id is configured", channel_key)
-            history["items"][media_id] = record
+            history["items"][history_key] = record
             save_history(channel, history)
+            run_stats["uploads_succeeded"] += 1
             LOGGER.info("[Channel %s] SUCCESS %s", channel_key, video_url)
             LOGGER.info("[Channel %s] YouTube channel: %s (%s)", channel_key, actual_title, actual_id)
+            LOGGER.info("[Channel %s] Instagram source: %s (%s)", channel_key, asset_id, media_type)
+            if outcome == "IMAGE_CONVERTED":
+                LOGGER.info("[Channel %s] Upload type: image converted to MP4", channel_key)
             if record.get("playlist_url"):
                 LOGGER.info("[Channel %s] Playlist: %s", channel_key, record["playlist_url"])
             else:
                 LOGGER.info("[Channel %s] Playlist: not configured / not added", channel_key)
+            return "uploaded"
         except Exception as exc:
-            LOGGER.exception("[Channel %s] FAILED for Instagram item %s: %s", channel_key, media_id, exc)
+            run_stats["failed"] += 1
+            LOGGER.exception("[Channel %s] FAILED for Instagram item %s: %s", channel_key, asset_id, exc)
             record.update(status="FAILED", last_error=str(exc), updated_at=iso_now())
-            history["items"][media_id] = record
+            history["items"][history_key] = record
             save_history(channel, history)
+            return "failed"
         finally:
             if video_path and video_path.exists():
                 try:
@@ -628,11 +741,90 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                 except OSError:
                     LOGGER.warning("Could not remove temporary video file %s", video_path)
 
+    # Prioritize actual videos/reels, then carousels, then still images. Preserve oldest-first
+    # order within each type. Skipped items do not consume the upload-attempt limit.
+    priority = {"VIDEO": 0, "CAROUSEL_ALBUM": 1, "IMAGE": 2}
+    ordered_items = sorted(items, key=lambda x: (priority.get(str(x.get("media_type", "")).upper(), 3),
+                                                 str(x.get("timestamp", ""))))
+    for original in ordered_items:
+        media_id = str(original.get("id", ""))
+        if not media_id:
+            continue
+        if stop_for_limit:
+            LOGGER.info("[Channel %s] Reached max upload attempts per run=%s", channel_key, max_upload_attempts)
+            break
+        original_type = str(original.get("media_type", "")).upper()
+        if original_type != "CAROUSEL_ALBUM":
+            process_asset(original, media_id)
+            continue
+
+        # A carousel parent has multiple child assets. Each child gets its own history key so
+        # uploaded children are never uploaded again if a later child fails or the run limit hits.
+        parent_existing = history["items"].get(media_id, {})
+        if isinstance(parent_existing, dict) and parent_existing.get("status") == "UPLOADED":
+            continue
+        parent_status = parent_existing.get("status") if isinstance(parent_existing, dict) else None
+        legacy_unsupported_carousel = parent_status == "SKIPPED_UNSUPPORTED_MEDIA"
+        pending_carousel = parent_status == "PENDING_CAROUSEL_CHILDREN"
+        if (not legacy_unsupported_carousel and not pending_carousel
+                and isinstance(parent_existing, dict) and not should_retry(parent_existing, retry_hours)):
+            run_stats["deferred_by_retry"] += 1
+            continue
+        try:
+            parent = refresh_media_metadata(original)
+            children = fetch_carousel_children(media_id)
+            if not children:
+                record = {**(parent_existing if isinstance(parent_existing, dict) else {}),
+                          "instagram_media_id": media_id, "status": "SKIPPED_NO_MEDIA",
+                          "last_attempt_at": iso_now(), "last_error": "Carousel returned no child items",
+                          "retry_after_hours": retry_hours, "updated_at": iso_now()}
+                history["items"][media_id] = record
+                save_history(channel, history)
+                run_stats["no_media"] += 1
+                LOGGER.warning("[Channel %s] Carousel %s has no accessible children; retry after %s hours",
+                               channel_key, media_id, retry_hours)
+                continue
+            parent_caption = parent.get("caption", original.get("caption", ""))
+            parent_permalink = parent.get("permalink", original.get("permalink", ""))
+            completed_all = True
+            for child in children:
+                if stop_for_limit:
+                    completed_all = False
+                    break
+                child = {**child}
+                child.setdefault("caption", parent_caption)
+                child.setdefault("permalink", parent_permalink)
+                child_id = str(child.get("id", ""))
+                if not child_id:
+                    run_stats["unsupported"] += 1
+                    continue
+                run_stats["carousel_children_seen"] += 1
+                child_key = f"{media_id}::{child_id}"
+                result = process_asset(child, child_key, parent_id=media_id)
+                if result == "limit":
+                    completed_all = False
+                    break
+            parent_record = {**(parent_existing if isinstance(parent_existing, dict) else {}),
+                             "instagram_media_id": media_id,
+                             "status": "PROCESSED_CAROUSEL" if completed_all else "PENDING_CAROUSEL_CHILDREN",
+                             "child_count": len(children), "last_attempt_at": iso_now(), "updated_at": iso_now()}
+            history["items"][media_id] = parent_record
+            save_history(channel, history)
+        except Exception as exc:
+            run_stats["failed"] += 1
+            LOGGER.exception("[Channel %s] Could not process carousel %s: %s", channel_key, media_id, exc)
+            existing_parent = parent_existing if isinstance(parent_existing, dict) else {}
+            history["items"][media_id] = {**existing_parent, "instagram_media_id": media_id,
+                "status": "FAILED", "last_attempt_at": iso_now(), "last_error": str(exc), "updated_at": iso_now()}
+            save_history(channel, history)
+
     counts = {}
     for record in history["items"].values():
-        status = record.get("status", "UNKNOWN")
+        status = record.get("status", "UNKNOWN") if isinstance(record, dict) else "UNKNOWN"
         counts[status] = counts.get(status, 0) + 1
     LOGGER.info("[Channel %s] Final history summary: %s", channel_key, counts)
+    LOGGER.info("[Channel %s] Run summary: %s", channel_key, run_stats)
+    LOGGER.info("[Channel %s] Upload attempts this run: %d/%d", channel_key, upload_attempts, max_upload_attempts)
 
 
 def main() -> int:
@@ -647,7 +839,7 @@ def main() -> int:
         if not ig_user_id or not os.getenv("IG_ACCESS_TOKEN", "").strip():
             raise RuntimeError("IG_USER_ID and IG_ACCESS_TOKEN must be configured.")
         # Fetch list once, then refresh each item's metadata again just before processing.
-        LOGGER.info("[Instagram] Fetching media list (oldest first sorting after fetch)...")
+        LOGGER.info("[Instagram] Fetching media list...")
         items = fetch_instagram_items()
         LOGGER.info("[Instagram] Total: %d sorted oldest first", len(items))
         if items:

@@ -128,3 +128,14 @@ The program does not automatically load `.env`; export the variables in your she
 - Per-channel histories prevent duplicate uploads for already uploaded Instagram media IDs.
 - A media ID that lacks a fresh URL is retried after the configured retry interval.
 - YouTube API failures are logged and do not stop processing other channels.
+
+
+## Media handling and upload limits
+
+- Instagram `VIDEO` items (including Reels returned as videos) are prioritized first, followed by `CAROUSEL_ALBUM`, then still `IMAGE` items. Items remain oldest-first within each type.
+- Still images are downloaded and converted into silent 1280x720 MP4 videos using `ffmpeg`; the default duration is 8 seconds. Set `IMAGE_VIDEO_DURATION_SECONDS` to a value from 3 to 60 if you want a different duration. This can be configured as a workflow environment value or repository variable/secret if you wire it into the workflow.
+- Carousel albums are expanded through the Instagram `children` endpoint. Each child video is uploaded as a video; each child image is converted to an MP4. Child history is tracked separately from the carousel parent so an already-uploaded child is not uploaded again if another child fails or the run limit is reached.
+- If Instagram returns no usable `media_url` for a video, the item is marked `SKIPPED_NO_MEDIA` and retried after `SKIPPED_RETRY_HOURS` (default 24). For still images, `thumbnail_url` is used as a fallback if `media_url` is absent. A missing/expired URL cannot be repaired by guessing a different URL; the script refreshes the metadata before trying again.
+- `MAX_ITEMS_PER_RUN` / channel `max_items_per_run` limits upload attempts, not metadata checks or skipped images/unsupported items. Skipped items do not consume the upload limit. Videos are prepared locally before the YouTube upload API is called.
+- Logs include per-run upload attempts/successes, image conversions, carousel child count, missing media, failures, channel destination, and YouTube URL. Uploads are still subject to Instagram API access, media availability, YouTube API limits, and rights to republish the content.
+
