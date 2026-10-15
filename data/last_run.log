@@ -1,22 +1,23 @@
-[Config] bhavychildhood_main: disabled
-[Config] 1 enabled channel(s) with complete credentials
-[Instagram] Fetching all reels (oldest first sorting after fetch)...
-[Instagram] Total: 146 sorted oldest first
-  Oldest: 18061341392792119 @ 2026-10-04T17:23:46+0000 - 
-  Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
-
-======================================================================
-[Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
-[Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
-[Channel trailers_bollywood_main] current history: {'UPLOADED': 9, 'SKIPPED_NO_MEDIA': 37}
-[trailers_bollywood_main] Checking oldest eligible Instagram item 18096111851439409
-[Instagram] 18096111851439409 -> Fresh media_url OK (refreshed latest)
-[Instagram] Downloading video...
-[Instagram] Downloaded 19912199 bytes
-[Channel trailers_bollywood_main] READY: 18096111851439409 -> video-18096111851439409
-[Channel trailers_bollywood_main] File size: 19912199 bytes
-[Channel trailers_bollywood_main] First and only YouTube API operation will be videos.insert upload.
-[Channel trailers_bollywood_main] SUCCESS https://youtu.be/cIulNeZueeE
-
-[Run] Finished. Per-channel history summaries:
-  trailers_bollywood_main: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
+2026-10-15 14:38:18,262 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
+2026-10-15 14:38:18,403 ERROR [Run] Fatal error
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 439, in main
+    items = fetch_instagram_items()
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 145, in fetch_instagram_items
+    payload = instagram_get(f"{user_id}/media", {"fields": fields, "limit": 100})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 136, in instagram_get
+    raise RuntimeError(f"Instagram Graph API error (HTTP {response.status_code}, code {code}): {message}")
+RuntimeError: Instagram Graph API error (HTTP 400, code 2500): Unknown path components: /17841424907226946/media
+2026-10-15 14:38:18,403 ERROR [Run] Fatal error
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 439, in main
+    items = fetch_instagram_items()
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 145, in fetch_instagram_items
+    payload = instagram_get(f"{user_id}/media", {"fields": fields, "limit": 100})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 136, in instagram_get
+    raise RuntimeError(f"Instagram Graph API error (HTTP {response.status_code}, code {code}): {message}")
+RuntimeError: Instagram Graph API error (HTTP 400, code 2500): Unknown path components: /17841424907226946/media
