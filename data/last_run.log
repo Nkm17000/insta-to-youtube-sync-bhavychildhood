@@ -1,77 +1,380 @@
-2026-10-15 14:55:16,930 INFO [Instagram] Fetching media list (oldest first sorting after fetch)...
-2026-10-15 14:55:18,652 INFO [Instagram] Total: 173 sorted oldest first
-2026-10-15 14:55:18,652 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
-2026-10-15 14:55:18,652 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
-2026-10-15 14:55:18,652 INFO [Config] trailers_bollywood_main: enabled
-2026-10-15 14:55:18,653 INFO ======================================================================
-2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
-2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
-2026-10-15 14:55:18,653 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37}
-2026-10-15 14:55:19,039 INFO [Channel trailers_bollywood_main] OAuth verified destination: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
-2026-10-15 14:55:19,040 INFO [Channel trailers_bollywood_main] Checking Instagram item 18113219846154212
-2026-10-15 14:55:19,163 INFO [Instagram] 18113219846154212 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:19,164 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
-2026-10-15 14:55:19,164 INFO [Channel trailers_bollywood_main] Checking Instagram item 18061341392792119
-2026-10-15 14:55:19,585 WARNING [Instagram] 18061341392792119 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:19,586 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:19,586 INFO [Channel trailers_bollywood_main] Checking Instagram item 18104043491571042
-2026-10-15 14:55:19,725 WARNING [Instagram] 18104043491571042 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:19,727 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:19,727 INFO [Channel trailers_bollywood_main] Checking Instagram item 18111079484138296
-2026-10-15 14:55:19,855 INFO [Instagram] 18111079484138296 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:19,856 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
-2026-10-15 14:55:19,856 INFO [Channel trailers_bollywood_main] Checking Instagram item 17870424810641956
-2026-10-15 14:55:20,008 WARNING [Instagram] 17870424810641956 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,009 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,009 INFO [Channel trailers_bollywood_main] Checking Instagram item 17928553398411027
-2026-10-15 14:55:20,135 INFO [Instagram] 17928553398411027 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:20,136 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
-2026-10-15 14:55:20,136 INFO [Channel trailers_bollywood_main] Checking Instagram item 18072759776744114
-2026-10-15 14:55:20,313 WARNING [Instagram] 18072759776744114 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,315 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,315 INFO [Channel trailers_bollywood_main] Checking Instagram item 18117402323064126
-2026-10-15 14:55:20,474 WARNING [Instagram] 18117402323064126 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,475 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,475 INFO [Channel trailers_bollywood_main] Checking Instagram item 17911944300531815
-2026-10-15 14:55:20,610 WARNING [Instagram] 17911944300531815 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,612 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,612 INFO [Channel trailers_bollywood_main] Checking Instagram item 17895051957420770
-2026-10-15 14:55:20,758 WARNING [Instagram] 17895051957420770 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,759 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,759 INFO [Channel trailers_bollywood_main] Checking Instagram item 17879451429549288
-2026-10-15 14:55:20,911 WARNING [Instagram] 17879451429549288 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:20,912 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:20,912 INFO [Channel trailers_bollywood_main] Checking Instagram item 18354662908222704
-2026-10-15 14:55:21,075 WARNING [Instagram] 18354662908222704 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:21,110 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:21,110 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959754280231262
-2026-10-15 14:55:21,289 WARNING [Instagram] 17959754280231262 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:21,314 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:21,314 INFO [Channel trailers_bollywood_main] Checking Instagram item 18114246049833040
-2026-10-15 14:55:21,502 WARNING [Instagram] 18114246049833040 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:21,504 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:21,504 INFO [Channel trailers_bollywood_main] Checking Instagram item 18111765941140246
-2026-10-15 14:55:21,625 INFO [Instagram] 18111765941140246 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:21,627 INFO [Channel trailers_bollywood_main] Skip unsupported media type CAROUSEL_ALBUM
-2026-10-15 14:55:21,627 INFO [Channel trailers_bollywood_main] Checking Instagram item 18090117182674861
-2026-10-15 14:55:21,739 INFO [Instagram] 18090117182674861 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:21,740 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
-2026-10-15 14:55:21,740 INFO [Channel trailers_bollywood_main] Checking Instagram item 18107431388187304
-2026-10-15 14:55:21,921 WARNING [Instagram] 18107431388187304 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:21,923 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:21,923 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959769166238979
-2026-10-15 14:55:22,081 WARNING [Instagram] 17959769166238979 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:22,082 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:22,082 INFO [Channel trailers_bollywood_main] Checking Instagram item 18116974202092072
-2026-10-15 14:55:22,235 WARNING [Instagram] 18116974202092072 -> No media_url after refresh (unavailable/unsupported/permissions)
-2026-10-15 14:55:22,236 WARNING [Channel trailers_bollywood_main] No media URL; retry eligible after 24 hours
-2026-10-15 14:55:22,236 INFO [Channel trailers_bollywood_main] Checking Instagram item 17959140084252686
-2026-10-15 14:55:22,358 INFO [Instagram] 17959140084252686 -> Fresh media_url OK (refreshed latest)
-2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Skip unsupported media type IMAGE
-2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Reached max_items_per_run=20
-2026-10-15 14:55:22,359 INFO [Channel trailers_bollywood_main] Final history summary: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37, 'SKIPPED_UNSUPPORTED_MEDIA': 6}
-2026-10-15 14:55:22,359 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:55:22,359 INFO [Run] Finished.
-ORTED_MEDIA': 6}
-2026-10-15 14:55:22,359 INFO [Config] bhavychildhood_main: disabled
-2026-10-15 14:55:22,359 INFO [Run] Finished.
+2026-10-15 15:08:07,161 INFO [Instagram] Fetching media list...
+2026-10-15 15:08:14,795 INFO [Instagram] Total: 173 sorted oldest first
+2026-10-15 15:08:14,796 INFO [Instagram] Oldest: 18113219846154212 @ 2026-10-04T17:14:19+0000
+2026-10-15 15:08:14,796 INFO [Instagram] Newest: 18208406776371064 @ 2026-10-15T05:28:19+0000
+2026-10-15 15:08:14,796 INFO [Config] trailers_bollywood_main: enabled
+2026-10-15 15:08:14,796 INFO ======================================================================
+2026-10-15 15:08:14,796 INFO [Channel trailers_bollywood_main] configured YouTube channel ID: UCh7Mjux-jmT8ywtrs-ZFxDg
+2026-10-15 15:08:14,796 INFO [Channel trailers_bollywood_main] independent history: data/channel_history/trailers_bollywood_main.json
+2026-10-15 15:08:14,796 INFO [Channel trailers_bollywood_main] current history: {'UPLOADED': 10, 'SKIPPED_NO_MEDIA': 37, 'SKIPPED_UNSUPPORTED_MEDIA': 6}
+2026-10-15 15:08:15,121 INFO [Channel trailers_bollywood_main] OAuth verified destination: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:15,422 WARNING [Instagram] 18098760392657425 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:15,423 WARNING [Channel trailers_bollywood_main] No usable media URL for 18098760392657425 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:15,720 WARNING [Instagram] 18111970955157840 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:15,721 WARNING [Channel trailers_bollywood_main] No usable media URL for 18111970955157840 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:16,053 WARNING [Instagram] 18113837204516038 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:16,054 WARNING [Channel trailers_bollywood_main] No usable media URL for 18113837204516038 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:16,313 WARNING [Instagram] 18140736310522910 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:16,314 WARNING [Channel trailers_bollywood_main] No usable media URL for 18140736310522910 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:16,633 WARNING [Instagram] 18462136150142692 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:16,939 WARNING [Channel trailers_bollywood_main] No usable media URL for 18462136150142692 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:17,221 WARNING [Instagram] 17986764999118777 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:17,222 WARNING [Channel trailers_bollywood_main] No usable media URL for 17986764999118777 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:17,596 WARNING [Instagram] 17930458005164298 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:17,598 WARNING [Channel trailers_bollywood_main] No usable media URL for 17930458005164298 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:17,924 WARNING [Instagram] 17865164766677246 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:17,925 WARNING [Channel trailers_bollywood_main] No usable media URL for 17865164766677246 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:18,278 WARNING [Instagram] 18145838107577479 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:18,279 WARNING [Channel trailers_bollywood_main] No usable media URL for 18145838107577479 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:18,575 WARNING [Instagram] 17980561053066482 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:18,576 WARNING [Channel trailers_bollywood_main] No usable media URL for 17980561053066482 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:18,920 WARNING [Instagram] 17975344929146569 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:18,922 WARNING [Channel trailers_bollywood_main] No usable media URL for 17975344929146569 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:19,333 WARNING [Instagram] 17905365891594591 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:19,334 WARNING [Channel trailers_bollywood_main] No usable media URL for 17905365891594591 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:19,735 WARNING [Instagram] 18107873936611429 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:19,736 WARNING [Channel trailers_bollywood_main] No usable media URL for 18107873936611429 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:20,079 WARNING [Instagram] 18225351916339944 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:20,080 WARNING [Channel trailers_bollywood_main] No usable media URL for 18225351916339944 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:20,437 WARNING [Instagram] 18081248882518913 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:20,438 WARNING [Channel trailers_bollywood_main] No usable media URL for 18081248882518913 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:20,771 WARNING [Instagram] 18097717679558033 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:20,772 WARNING [Channel trailers_bollywood_main] No usable media URL for 18097717679558033 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:21,134 WARNING [Instagram] 18039711989656290 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:21,135 WARNING [Channel trailers_bollywood_main] No usable media URL for 18039711989656290 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:21,440 WARNING [Instagram] 18076899650427795 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:21,442 WARNING [Channel trailers_bollywood_main] No usable media URL for 18076899650427795 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:21,974 WARNING [Instagram] 18026579798879687 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:21,975 WARNING [Channel trailers_bollywood_main] No usable media URL for 18026579798879687 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:22,436 WARNING [Instagram] 17882336277525272 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:22,437 WARNING [Channel trailers_bollywood_main] No usable media URL for 17882336277525272 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:22,852 WARNING [Instagram] 17916695589461575 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:22,853 WARNING [Channel trailers_bollywood_main] No usable media URL for 17916695589461575 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:23,510 WARNING [Instagram] 18091123373201988 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:23,511 WARNING [Channel trailers_bollywood_main] No usable media URL for 18091123373201988 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:23,904 WARNING [Instagram] 18420137716154773 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:23,905 WARNING [Channel trailers_bollywood_main] No usable media URL for 18420137716154773 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:24,178 INFO [Instagram] 17992822179103515 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:24,731 INFO [Instagram] Downloaded 3056702 bytes for 17992822179103515
+2026-10-15 15:08:24,732 INFO [Channel trailers_bollywood_main] READY: Instagram 17992822179103515 (VIDEO) -> instagram-17992822179103515.mp4
+2026-10-15 15:08:24,733 INFO [Channel trailers_bollywood_main] File size: 3056702 bytes
+2026-10-15 15:08:27,140 INFO [YouTube] Upload complete: https://youtu.be/b4B0cktqem8 (privacy=public)
+2026-10-15 15:08:27,141 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/b4B0cktqem8
+2026-10-15 15:08:27,141 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:27,141 INFO [Channel trailers_bollywood_main] Instagram source: 17992822179103515 (VIDEO)
+2026-10-15 15:08:27,141 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:27,389 WARNING [Instagram] 18121636525928693 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:27,393 WARNING [Channel trailers_bollywood_main] No usable media URL for 18121636525928693 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:27,623 INFO [Instagram] 18099372053644889 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:28,349 INFO [Instagram] Downloaded 1533098 bytes for 18099372053644889
+2026-10-15 15:08:28,350 INFO [Channel trailers_bollywood_main] READY: Instagram 18099372053644889 (VIDEO) -> instagram-18099372053644889.mp4
+2026-10-15 15:08:28,350 INFO [Channel trailers_bollywood_main] File size: 1533098 bytes
+2026-10-15 15:08:30,731 INFO [YouTube] Upload complete: https://youtu.be/v3eu0eRUtbU (privacy=public)
+2026-10-15 15:08:30,732 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/v3eu0eRUtbU
+2026-10-15 15:08:30,732 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:30,733 INFO [Channel trailers_bollywood_main] Instagram source: 18099372053644889 (VIDEO)
+2026-10-15 15:08:30,733 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:31,043 INFO [Instagram] 18128724715891309 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:31,803 INFO [Instagram] Downloaded 1522295 bytes for 18128724715891309
+2026-10-15 15:08:31,804 INFO [Channel trailers_bollywood_main] READY: Instagram 18128724715891309 (VIDEO) -> instagram-18128724715891309.mp4
+2026-10-15 15:08:31,805 INFO [Channel trailers_bollywood_main] File size: 1522295 bytes
+2026-10-15 15:08:33,966 INFO [YouTube] Upload complete: https://youtu.be/5psM4e83j0M (privacy=public)
+2026-10-15 15:08:33,967 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/5psM4e83j0M
+2026-10-15 15:08:33,967 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:33,967 INFO [Channel trailers_bollywood_main] Instagram source: 18128724715891309 (VIDEO)
+2026-10-15 15:08:33,967 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:35,319 INFO [Instagram] 18336238405260776 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:35,919 INFO [Instagram] Downloaded 2007233 bytes for 18336238405260776
+2026-10-15 15:08:35,920 INFO [Channel trailers_bollywood_main] READY: Instagram 18336238405260776 (VIDEO) -> instagram-18336238405260776.mp4
+2026-10-15 15:08:35,920 INFO [Channel trailers_bollywood_main] File size: 2007233 bytes
+2026-10-15 15:08:37,673 INFO [YouTube] Upload complete: https://youtu.be/wiCnBkhsHUc (privacy=public)
+2026-10-15 15:08:37,674 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/wiCnBkhsHUc
+2026-10-15 15:08:37,674 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:37,674 INFO [Channel trailers_bollywood_main] Instagram source: 18336238405260776 (VIDEO)
+2026-10-15 15:08:37,674 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:37,932 INFO [Instagram] 18128696608821396 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:38,501 INFO [Instagram] Downloaded 1202567 bytes for 18128696608821396
+2026-10-15 15:08:38,502 INFO [Channel trailers_bollywood_main] READY: Instagram 18128696608821396 (VIDEO) -> instagram-18128696608821396.mp4
+2026-10-15 15:08:38,502 INFO [Channel trailers_bollywood_main] File size: 1202567 bytes
+2026-10-15 15:08:40,340 INFO [YouTube] Upload complete: https://youtu.be/5Jk3DmY_1b8 (privacy=public)
+2026-10-15 15:08:40,341 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/5Jk3DmY_1b8
+2026-10-15 15:08:40,341 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:40,341 INFO [Channel trailers_bollywood_main] Instagram source: 18128696608821396 (VIDEO)
+2026-10-15 15:08:40,341 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:40,634 INFO [Instagram] 18084921269318466 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:41,176 INFO [Instagram] Downloaded 1234700 bytes for 18084921269318466
+2026-10-15 15:08:41,177 INFO [Channel trailers_bollywood_main] READY: Instagram 18084921269318466 (VIDEO) -> instagram-18084921269318466.mp4
+2026-10-15 15:08:41,177 INFO [Channel trailers_bollywood_main] File size: 1234700 bytes
+2026-10-15 15:08:43,278 INFO [YouTube] Upload complete: https://youtu.be/73yMQw3_V4M (privacy=public)
+2026-10-15 15:08:43,279 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/73yMQw3_V4M
+2026-10-15 15:08:43,279 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:43,279 INFO [Channel trailers_bollywood_main] Instagram source: 18084921269318466 (VIDEO)
+2026-10-15 15:08:43,279 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:43,643 INFO [Instagram] 18498929383099564 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:44,193 INFO [Instagram] Downloaded 2215315 bytes for 18498929383099564
+2026-10-15 15:08:44,194 INFO [Channel trailers_bollywood_main] READY: Instagram 18498929383099564 (VIDEO) -> instagram-18498929383099564.mp4
+2026-10-15 15:08:44,194 INFO [Channel trailers_bollywood_main] File size: 2215315 bytes
+2026-10-15 15:08:47,006 INFO [YouTube] Upload complete: https://youtu.be/rjYr2zMLPf4 (privacy=public)
+2026-10-15 15:08:47,007 INFO [Channel trailers_bollywood_main] SUCCESS https://youtu.be/rjYr2zMLPf4
+2026-10-15 15:08:47,007 INFO [Channel trailers_bollywood_main] YouTube channel: trailers bollywood (UCh7Mjux-jmT8ywtrs-ZFxDg)
+2026-10-15 15:08:47,007 INFO [Channel trailers_bollywood_main] Instagram source: 18498929383099564 (VIDEO)
+2026-10-15 15:08:47,007 INFO [Channel trailers_bollywood_main] Playlist: not configured / not added
+2026-10-15 15:08:47,378 INFO [Instagram] 18054574721581992 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:47,763 INFO [Instagram] Downloaded 230012 bytes for 18054574721581992
+2026-10-15 15:08:47,764 INFO [Channel trailers_bollywood_main] READY: Instagram 18054574721581992 (VIDEO) -> instagram-18054574721581992.mp4
+2026-10-15 15:08:47,764 INFO [Channel trailers_bollywood_main] File size: 230012 bytes
+2026-10-15 15:08:47,973 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18054574721581992: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:48,372 INFO [Instagram] 18233597398324136 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:49,200 INFO [Instagram] Downloaded 2701484 bytes for 18233597398324136
+2026-10-15 15:08:49,201 INFO [Channel trailers_bollywood_main] READY: Instagram 18233597398324136 (VIDEO) -> instagram-18233597398324136.mp4
+2026-10-15 15:08:49,201 INFO [Channel trailers_bollywood_main] File size: 2701484 bytes
+2026-10-15 15:08:49,474 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18233597398324136: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:49,752 INFO [Instagram] 18091023077690491 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:50,332 INFO [Instagram] Downloaded 1468654 bytes for 18091023077690491
+2026-10-15 15:08:50,333 INFO [Channel trailers_bollywood_main] READY: Instagram 18091023077690491 (VIDEO) -> instagram-18091023077690491.mp4
+2026-10-15 15:08:50,333 INFO [Channel trailers_bollywood_main] File size: 1468654 bytes
+2026-10-15 15:08:50,564 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18091023077690491: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:51,261 INFO [Instagram] 18074984474471034 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:51,704 INFO [Instagram] Downloaded 1336633 bytes for 18074984474471034
+2026-10-15 15:08:51,705 INFO [Channel trailers_bollywood_main] READY: Instagram 18074984474471034 (VIDEO) -> instagram-18074984474471034.mp4
+2026-10-15 15:08:51,705 INFO [Channel trailers_bollywood_main] File size: 1336633 bytes
+2026-10-15 15:08:51,849 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18074984474471034: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:52,128 INFO [Instagram] 18105472511207003 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:52,775 INFO [Instagram] Downloaded 2960059 bytes for 18105472511207003
+2026-10-15 15:08:52,777 INFO [Channel trailers_bollywood_main] READY: Instagram 18105472511207003 (VIDEO) -> instagram-18105472511207003.mp4
+2026-10-15 15:08:52,777 INFO [Channel trailers_bollywood_main] File size: 2960059 bytes
+2026-10-15 15:08:52,915 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18105472511207003: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:53,329 INFO [Instagram] 18126707392860506 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:53,998 INFO [Instagram] Downloaded 3007173 bytes for 18126707392860506
+2026-10-15 15:08:53,999 INFO [Channel trailers_bollywood_main] READY: Instagram 18126707392860506 (VIDEO) -> instagram-18126707392860506.mp4
+2026-10-15 15:08:53,999 INFO [Channel trailers_bollywood_main] File size: 3007173 bytes
+2026-10-15 15:08:54,261 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18126707392860506: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:54,776 WARNING [Instagram] 17871391104640634 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:54,777 WARNING [Channel trailers_bollywood_main] No usable media URL for 17871391104640634 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:55,070 INFO [Instagram] 17876603694633454 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:55,698 INFO [Instagram] Downloaded 270444 bytes for 17876603694633454
+2026-10-15 15:08:55,699 INFO [Channel trailers_bollywood_main] READY: Instagram 17876603694633454 (VIDEO) -> instagram-17876603694633454.mp4
+2026-10-15 15:08:55,699 INFO [Channel trailers_bollywood_main] File size: 270444 bytes
+2026-10-15 15:08:55,872 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 17876603694633454: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:56,121 INFO [Instagram] 18443810734131029 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:56,935 INFO [Instagram] Downloaded 3645262 bytes for 18443810734131029
+2026-10-15 15:08:56,936 INFO [Channel trailers_bollywood_main] READY: Instagram 18443810734131029 (VIDEO) -> instagram-18443810734131029.mp4
+2026-10-15 15:08:56,936 INFO [Channel trailers_bollywood_main] File size: 3645262 bytes
+2026-10-15 15:08:57,154 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18443810734131029: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:57,528 INFO [Instagram] 18137841925636222 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:58,238 INFO [Instagram] Downloaded 3731337 bytes for 18137841925636222
+2026-10-15 15:08:58,239 INFO [Channel trailers_bollywood_main] READY: Instagram 18137841925636222 (VIDEO) -> instagram-18137841925636222.mp4
+2026-10-15 15:08:58,239 INFO [Channel trailers_bollywood_main] File size: 3731337 bytes
+2026-10-15 15:08:58,500 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18137841925636222: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:08:58,844 WARNING [Instagram] 18027062363884106 -> No media_url after refresh (unavailable/unsupported/permissions)
+2026-10-15 15:08:58,845 WARNING [Channel trailers_bollywood_main] No usable media URL for 18027062363884106 (VIDEO); retry eligible after 24 hours
+2026-10-15 15:08:59,215 INFO [Instagram] 18056186816596469 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:08:59,854 INFO [Instagram] Downloaded 2873196 bytes for 18056186816596469
+2026-10-15 15:08:59,855 INFO [Channel trailers_bollywood_main] READY: Instagram 18056186816596469 (VIDEO) -> instagram-18056186816596469.mp4
+2026-10-15 15:08:59,855 INFO [Channel trailers_bollywood_main] File size: 2873196 bytes
+2026-10-15 15:09:00,140 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18056186816596469: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:09:00,778 INFO [Instagram] 18096983183411793 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:09:01,665 INFO [Instagram] Downloaded 3330549 bytes for 18096983183411793
+2026-10-15 15:09:01,666 INFO [Channel trailers_bollywood_main] READY: Instagram 18096983183411793 (VIDEO) -> instagram-18096983183411793.mp4
+2026-10-15 15:09:01,666 INFO [Channel trailers_bollywood_main] File size: 3330549 bytes
+2026-10-15 15:09:01,840 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18096983183411793: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:09:02,193 INFO [Instagram] 17920518792446578 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:09:02,995 INFO [Instagram] Downloaded 2359895 bytes for 17920518792446578
+2026-10-15 15:09:02,997 INFO [Channel trailers_bollywood_main] READY: Instagram 17920518792446578 (VIDEO) -> instagram-17920518792446578.mp4
+2026-10-15 15:09:02,997 INFO [Channel trailers_bollywood_main] File size: 2359895 bytes
+2026-10-15 15:09:03,250 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 17920518792446578: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:09:03,528 INFO [Instagram] 18064658531786751 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:09:04,415 INFO [Instagram] Downloaded 3222868 bytes for 18064658531786751
+2026-10-15 15:09:04,416 INFO [Channel trailers_bollywood_main] READY: Instagram 18064658531786751 (VIDEO) -> instagram-18064658531786751.mp4
+2026-10-15 15:09:04,416 INFO [Channel trailers_bollywood_main] File size: 3222868 bytes
+2026-10-15 15:09:04,582 ERROR [Channel trailers_bollywood_main] FAILED for Instagram item 18064658531786751: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+Traceback (most recent call last):
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 697, in process_asset
+    video_id = upload_video(youtube, item, channel, video_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/insta-to-youtube-sync-bhavychildhood/insta-to-youtube-sync-bhavychildhood/src/main.py", line 578, in upload_video
+    status, response = request.next_chunk()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:09:04,870 INFO [Instagram] 18078911867383717 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Reached max upload attempts per run=20
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Final history summary: {'UPLOADED': 17, 'SKIPPED_NO_MEDIA': 40, 'SKIPPED_UNSUPPORTED_MEDIA': 6, 'FAILED': 13}
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Run summary: {'uploads_succeeded': 7, 'upload_attempts': 20, 'images_converted': 0, 'carousel_children_seen': 0, 'no_media': 26, 'unsupported': 0, 'failed': 13, 'skipped_already_uploaded': 10, 'deferred_by_retry': 14}
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Upload attempts this run: 20/20
+2026-10-15 15:09:04,871 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 15:09:04,871 INFO [Run] Finished.
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/googleapiclient/http.py", line 1102, in next_chunk
+    raise ResumableUploadError(resp, content)
+googleapiclient.errors.ResumableUploadError: <HttpError 400 when requesting None returned "The user has exceeded the number of videos they may upload.". Details: "[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]">
+2026-10-15 15:09:04,870 INFO [Instagram] 18078911867383717 -> Fresh media_url OK (refreshed latest)
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Reached max upload attempts per run=20
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Final history summary: {'UPLOADED': 17, 'SKIPPED_NO_MEDIA': 40, 'SKIPPED_UNSUPPORTED_MEDIA': 6, 'FAILED': 13}
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Run summary: {'uploads_succeeded': 7, 'upload_attempts': 20, 'images_converted': 0, 'carousel_children_seen': 0, 'no_media': 26, 'unsupported': 0, 'failed': 13, 'skipped_already_uploaded': 10, 'deferred_by_retry': 14}
+2026-10-15 15:09:04,871 INFO [Channel trailers_bollywood_main] Upload attempts this run: 20/20
+2026-10-15 15:09:04,871 INFO [Config] bhavychildhood_main: disabled
+2026-10-15 15:09:04,871 INFO [Run] Finished.
