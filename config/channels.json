@@ -20,9 +20,9 @@
   },
   {
     "id": "bhavychildhood_main",
-    "channel_id": "YOUR_SECOND_YOUTUBE_CHANNEL_ID",
+    "channel_id": "UCwXgJ9WyTh9BgMP6csXjHRA",
     "env_prefix": "YT2",
-    "enabled": false,
+    "enabled": true,
     "privacy": "public",
     "category_id": "24",
     "made_for_kids": false,
@@ -34,6 +34,7 @@
     "playlist_id": "",
     "playlist_required": false,
     "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
-    "max_items_per_run": 20
+    "max_items_per_run": 20,
+    "playlist_title": "bhavychildhood"
   }
 ]
