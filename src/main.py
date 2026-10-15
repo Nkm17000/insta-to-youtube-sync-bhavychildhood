@@ -671,7 +671,7 @@ def add_to_playlist(youtube, video_id: str, playlist_id: str) -> None:
     LOGGER.info("[YouTube] Added video %s to playlist %s", video_id, playlist_id)
 
 
-def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> None:
+def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summary: dict[str, Any]) -> None:
     channel_key = str(channel["id"])
     configured_channel_id = str(channel["channel_id"])
     LOGGER.info("=" * 70)
@@ -687,9 +687,13 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
     youtube = youtube_service(channel)
     actual_id, actual_title = verify_youtube_channel(youtube, configured_channel_id)
     LOGGER.info("[Channel %s] OAuth verified destination: %s (%s)", channel_key, actual_title, actual_id)
+    summary["youtube_channel_id"] = actual_id
+    summary["youtube_channel_title"] = actual_title
 
     # Resolve and validate the required playlist BEFORE any video upload API call.
     playlist_id = resolve_playlist_id(youtube, channel)
+    summary["playlist_id"] = playlist_id or ""
+    summary["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}" if playlist_id else ""
     present_in_playlist: set[str] = set()
     if playlist_id:
         LOGGER.info("[Channel %s] All new and previously uploaded videos will target playlist: https://www.youtube.com/playlist?list=%s",
@@ -714,11 +718,13 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
                 saved_record["updated_at"] = iso_now()
                 history["items"][history_key] = saved_record
                 backfilled += 1
+                summary["playlist_backfilled_video_ids"].append(saved_video_id)
             except Exception as playlist_exc:
                 saved_record["playlist_error"] = str(playlist_exc)
                 saved_record["updated_at"] = iso_now()
                 history["items"][history_key] = saved_record
                 backfill_failed += 1
+                summary["playlist_add_failed_video_ids"].append(saved_video_id)
                 LOGGER.exception("[Channel %s] Could not add previous upload %s to required playlist %s",
                                  channel_key, saved_video_id, playlist_id)
         if backfilled or backfill_failed:
@@ -831,6 +837,12 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
             history["items"][history_key] = record
             save_history(channel, history)
             run_stats["uploads_succeeded"] += 1
+            summary["uploaded_video_ids"].append(video_id)
+            summary["uploaded_video_urls"].append(video_url)
+            if record.get("playlist_error"):
+                summary["playlist_add_failed_video_ids"].append(video_id)
+            elif playlist_id:
+                summary["playlist_added_video_ids"].append(video_id)
             LOGGER.info("[Channel %s] SUCCESS %s", channel_key, video_url)
             LOGGER.info("[Channel %s] YouTube channel: %s (%s)", channel_key, actual_title, actual_id)
             LOGGER.info("[Channel %s] Instagram source: %s (%s)", channel_key, asset_id, media_type)
@@ -956,16 +968,73 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]]) -> Non
     LOGGER.info("[Channel %s] Final history summary: %s", channel_key, counts)
     LOGGER.info("[Channel %s] Run summary: %s", channel_key, run_stats)
     LOGGER.info("[Channel %s] Upload attempts this run: %d/%d", channel_key, upload_attempts, max_upload_attempts)
+    summary["status"] = "upload_limit_reached" if stop_for_limit else "completed"
+    summary["uploads_succeeded"] = len(summary["uploaded_video_ids"])
+    summary["run_stats"] = run_stats
+
+
+def log_final_run_summary(summaries: list[dict[str, Any]], overall_status: str) -> None:
+    """Print an easy-to-scan per-channel result, including YouTube video IDs."""
+    LOGGER.info("=" * 80)
+    LOGGER.info("[FINAL STATUS] Overall run status: %s", overall_status.upper())
+    if not summaries:
+        LOGGER.info("[FINAL STATUS] No channel runs were attempted.")
+    for item in summaries:
+        LOGGER.info(
+            "[FINAL STATUS] Channel config=%s | status=%s | YouTube channel=%s (%s) | "
+            "uploaded successfully this run=%d | playlist=%s",
+            item.get("channel_config_id", "unknown"), item.get("status", "not_started"),
+            item.get("youtube_channel_title", "not verified"), item.get("youtube_channel_id", "unknown"),
+            len(item.get("uploaded_video_ids", [])), item.get("playlist_url") or "not configured",
+        )
+        video_ids = item.get("uploaded_video_ids", [])
+        video_urls = item.get("uploaded_video_urls", [])
+        if video_ids:
+            LOGGER.info("[FINAL STATUS] Newly uploaded video IDs: %s", ", ".join(video_ids))
+            for video_id, video_url in zip(video_ids, video_urls):
+                LOGGER.info("[FINAL STATUS] Video: ID=%s URL=%s", video_id, video_url)
+        else:
+            LOGGER.info("[FINAL STATUS] Newly uploaded video IDs: none")
+        LOGGER.info(
+            "[FINAL STATUS] Newly uploaded videos successfully in playlist=%d (%s); "
+            "old videos backfilled=%d (%s); playlist additions failed=%d (%s)",
+            len(item.get("playlist_added_video_ids", [])),
+            ", ".join(item.get("playlist_added_video_ids", [])) or "none",
+            len(item.get("playlist_backfilled_video_ids", [])),
+            ", ".join(item.get("playlist_backfilled_video_ids", [])) or "none",
+            len(item.get("playlist_add_failed_video_ids", [])),
+            ", ".join(item.get("playlist_add_failed_video_ids", [])) or "none",
+        )
+        if item.get("error"):
+            LOGGER.info("[FINAL STATUS] Channel error: %s", item["error"])
+        if item.get("run_stats"):
+            LOGGER.info("[FINAL STATUS] Processing stats: %s", item["run_stats"])
+    LOGGER.info("=" * 80)
 
 
 def main() -> int:
     setup_logging()
+    summaries: list[dict[str, Any]] = []
+    overall_status = "failed"
     try:
         channels = load_config()
         enabled = [ch for ch in channels if bool(ch.get("enabled", False))]
+        for ch in channels:
+            summaries.append({
+                "channel_config_id": str(ch.get("id", "unknown")),
+                "status": "disabled" if not ch.get("enabled", False) else "not_started",
+                "youtube_channel_id": str(ch.get("channel_id", "unknown")),
+                "youtube_channel_title": "not verified",
+                "playlist_id": "", "playlist_url": "",
+                "uploaded_video_ids": [], "uploaded_video_urls": [],
+                "playlist_added_video_ids": [], "playlist_backfilled_video_ids": [],
+                "playlist_add_failed_video_ids": [],
+            })
         if not enabled:
             LOGGER.warning("[Config] No enabled YouTube channels.")
-            return 0
+            overall_status = "no_enabled_channels"
+            return_code = 0
+            return return_code
         ig_user_id = os.getenv("IG_USER_ID", "").strip()
         if not ig_user_id or not os.getenv("IG_ACCESS_TOKEN", "").strip():
             raise RuntimeError("IG_USER_ID and IG_ACCESS_TOKEN must be configured.")
@@ -976,36 +1045,52 @@ def main() -> int:
         if items:
             LOGGER.info("[Instagram] Oldest: %s @ %s", items[0].get("id"), items[0].get("timestamp"))
             LOGGER.info("[Instagram] Newest: %s @ %s", items[-1].get("id"), items[-1].get("timestamp"))
+        summary_by_id = {entry["channel_config_id"]: entry for entry in summaries}
         for ch in channels:
             if not ch.get("enabled", False):
                 LOGGER.info("[Config] %s: disabled", ch.get("id"))
                 continue
+            summary = summary_by_id[str(ch.get("id", "unknown"))]
             prefix = str(ch.get("env_prefix", ""))
             missing = [f"{prefix}_{suffix}" for suffix in
                        ("CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN") if not os.getenv(f"{prefix}_{suffix}")]
             if missing:
+                message = ", ".join(missing)
+                summary["status"] = "skipped_missing_credentials"
+                summary["error"] = f"Missing credentials: {message}"
                 LOGGER.error("[Config] %s enabled but missing credentials: %s; skipping this channel only",
-                             ch.get("id"), ", ".join(missing))
+                             ch.get("id"), message)
                 continue
             LOGGER.info("[Config] %s: enabled", ch["id"])
+            summary["status"] = "running"
             try:
-                process_channel(ch, items)
-            except UploadLimitExceeded:
-                # This is a hard stop for the full workflow, not just this channel.
-                # Avoid trying another configured channel after YouTube has explicitly
-                # said that uploads are over the allowed limit.
+                process_channel(ch, items, summary)
+            except UploadLimitExceeded as exc:
+                summary["status"] = "upload_limit_reached"
+                summary["error"] = str(exc)
+                overall_status = "stopped_upload_limit"
                 LOGGER.critical(
                     "[Run] Stopped because YouTube uploadLimitExceeded was returned. "
                     "No more channels or videos will be attempted in this run."
                 )
+                log_final_run_summary(summaries, overall_status)
                 return 1
-            except Exception:
+            except Exception as exc:
+                summary["status"] = "failed"
+                summary["error"] = str(exc)
                 LOGGER.exception("[Channel %s] Channel failed; continuing to other channels", ch["id"])
+        overall_status = "completed_with_errors" if any(
+            item.get("status") in {"failed", "skipped_missing_credentials", "upload_limit_reached"}
+            for item in summaries
+        ) else "completed"
         LOGGER.info("[Run] Finished.")
-        return 0
-    except Exception:
+        return 1 if overall_status == "completed_with_errors" else 0
+    except Exception as exc:
         LOGGER.exception("[Run] Fatal error")
+        overall_status = f"fatal_error: {exc}"
         return 1
+    finally:
+        log_final_run_summary(summaries, overall_status)
 
 
 if __name__ == "__main__":
