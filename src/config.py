@@ -1,40 +1,47 @@
-import os, json
+import json
+import os
 from dotenv import load_dotenv
+
 load_dotenv()
+
 class Config:
-    IG_USER_ID = os.getenv("IG_USER_ID")
-    IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
-    PLAYLIST_TITLE = os.getenv("YOUTUBE_PLAYLIST_TITLE", "trailers bollywood")
-    PLAYLIST_DESC = os.getenv("YOUTUBE_PLAYLIST_DESCRIPTION", "All videos")
-    PRIVACY = os.getenv("YOUTUBE_PRIVACY_STATUS", "public")
-    VIDEOS_PER_RUN = int(os.getenv("VIDEOS_PER_RUN", "1"))
-    HISTORY_FILE = "data/uploaded_history.json"
-    PLAYLIST_FILE = "data/playlist_info.json"
-    COUNTER_FILE = "data/bhavy_counter.json"
-    TEMP_DIR = "data/temp"
-    CHANNELS_CONFIG = "config/channels.json"
-    # Retry SKIPPED_NO_MEDIA after X hours
+    IG_USER_ID = os.getenv("IG_USER_ID", "").strip()
+    IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN", "").strip()
+    PRIVACY = os.getenv("YOUTUBE_PRIVACY_STATUS", "public").strip().lower()
     SKIPPED_RETRY_HOURS = int(os.getenv("SKIPPED_RETRY_HOURS", "24"))
-    @staticmethod
-    def load_channels():
-        try:
-            with open(Config.CHANNELS_CONFIG, 'r') as f: channels = json.load(f)
-        except: channels = [{"id": "trailers_bollywood_main", "env_prefix": "YT1", "enabled": True, "playlist_title": Config.PLAYLIST_TITLE}]
-        valid=[]
-        for ch in channels:
-            prefix=ch.get("env_prefix")
-            if not prefix: continue
-            enabled=ch.get("enabled", True)
-            raw=os.getenv(f"{prefix}_ENABLED")
-            if raw is not None and raw.strip()!="":
-                enabled=raw.strip().lower() in ['true','1','yes','enabled','on']
-            if not enabled: continue
-            cid=os.getenv(f"{prefix}_CLIENT_ID") or os.getenv("YOUTUBE_CLIENT_ID")
-            csec=os.getenv(f"{prefix}_CLIENT_SECRET") or os.getenv("YOUTUBE_CLIENT_SECRET")
-            rtok=os.getenv(f"{prefix}_REFRESH_TOKEN") or os.getenv("YOUTUBE_REFRESH_TOKEN")
-            if not (cid and csec and rtok and cid.strip()): continue
-            ch['client_id']=cid.strip(); ch['client_secret']=csec.strip(); ch['refresh_token']=rtok.strip()
-            ch['playlist_title']=ch.get('playlist_title', Config.PLAYLIST_TITLE)
-            valid.append(ch)
-        print(f"[Config] Loaded {len(valid)} channel(s), VIDEOS_PER_RUN={Config.VIDEOS_PER_RUN}, SKIPPED_RETRY_HOURS={Config.SKIPPED_RETRY_HOURS}")
-        return valid
+    TEMP_DIR = os.getenv("TEMP_DIR", "data/temp")
+    CHANNELS_CONFIG = os.getenv("CHANNELS_CONFIG", "config/channels.json")
+    HISTORY_DIR = os.getenv("HISTORY_DIR", "data/channel_history")
+
+    @classmethod
+    def load_channels(cls):
+        with open(cls.CHANNELS_CONFIG, encoding="utf-8") as f:
+            configs = json.load(f)
+        enabled = []
+        for item in configs:
+            if not item.get("enabled", False):
+                print(f"[Config] {item.get('id', '<missing>')}: disabled")
+                continue
+            channel_id = str(item.get("channel_id", "")).strip()
+            prefix = str(item.get("env_prefix", "")).strip()
+            if not item.get("id") or not channel_id or not prefix:
+                print(f"[Config] Skipping invalid channel config: {item.get('id', '<missing>')} (id, channel_id, env_prefix required)")
+                continue
+            # No shared credential fallback: channel isolation is intentional.
+            client_id = os.getenv(f"{prefix}_CLIENT_ID", "").strip()
+            client_secret = os.getenv(f"{prefix}_CLIENT_SECRET", "").strip()
+            refresh_token = os.getenv(f"{prefix}_REFRESH_TOKEN", "").strip()
+            if not all((client_id, client_secret, refresh_token)):
+                print(f"[Config] {item['id']}: enabled but credentials missing; skipping")
+                continue
+            enabled.append({
+                **item,
+                "channel_id": channel_id,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "refresh_token": refresh_token,
+                "privacy": item.get("privacy", cls.PRIVACY),
+                "history_file": os.path.join(cls.HISTORY_DIR, f"{item['id']}.json"),
+            })
+        print(f"[Config] {len(enabled)} enabled channel(s) with complete credentials")
+        return enabled

@@ -1,14 +1,28 @@
 [
   {
     "id": "trailers_bollywood_main",
+    "channel_id": "UCh7Mjux-jmT8ywtrs-ZFxDg",
     "env_prefix": "YT1",
     "enabled": true,
-    "playlist_title": "bhavychildhood"
+    "privacy": "public",
+    "category_id": "24",
+    "made_for_kids": false,
+    "tags": [
+      "trailers bollywood",
+      "bhavychildhood"
+    ]
   },
   {
     "id": "bhavychildhood_main",
+    "channel_id": "UCwXgJ9WyTh9BgMP6csXjHRA",
     "env_prefix": "YT2",
-    "enabled": true,
-    "playlist_title": "bhavychildhood"
+    "enabled": false,
+    "privacy": "public",
+    "category_id": "24",
+    "made_for_kids": false,
+    "tags": [
+      "bhavychildhood",
+      "kids"
+    ]
   }
 ]
