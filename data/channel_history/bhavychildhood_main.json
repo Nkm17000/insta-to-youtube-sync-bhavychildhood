@@ -1,0 +1,39 @@
+{
+  "channel_id": "UCwXgJ9WyTh9BgMP6csXjHRA",
+  "items": {
+    "18061341392792119": {
+      "instagram_media_id": "18061341392792119",
+      "last_attempt_at": "2026-10-15T16:06:09.709950+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFKWahTzFR/",
+      "instagram_timestamp": "2026-10-04T17:23:46+0000",
+      "status": "SKIPPED_NO_MEDIA",
+      "last_error": "Instagram returned no usable media_url/thumbnail_url after refresh",
+      "retry_after_hours": 24,
+      "updated_at": "2026-10-15T16:06:09.879497+00:00"
+    },
+    "18104043491571042": {
+      "instagram_media_id": "18104043491571042",
+      "last_attempt_at": "2026-10-15T16:06:09.879934+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFK1DjTwEv/",
+      "instagram_timestamp": "2026-10-04T17:27:42+0000",
+      "status": "SKIPPED_NO_MEDIA",
+      "last_error": "Instagram returned no usable media_url/thumbnail_url after refresh",
+      "retry_after_hours": 24,
+      "updated_at": "2026-10-15T16:06:10.047754+00:00"
+    },
+    "17933205381406684": {
+      "instagram_media_id": "17933205381406684",
+      "last_attempt_at": "2026-10-15T16:06:10.048319+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeFK-OMTKv7/",
+      "instagram_timestamp": "2026-10-04T17:28:53+0000",
+      "status": "FAILED_UPLOAD_LIMIT",
+      "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
+      "updated_at": "2026-10-15T16:06:10.513564+00:00"
+    }
+  },
+  "upload_limit_blocked_day": "2026-10-15",
+  "upload_limit_error": "YouTube returned uploadLimitExceeded for channel bhavychildhood_main; stopped immediately."
+}

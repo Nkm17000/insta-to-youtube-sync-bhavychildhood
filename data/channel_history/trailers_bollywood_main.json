@@ -1001,6 +1001,18 @@
       "status": "FAILED_UPLOAD_LIMIT",
       "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
       "updated_at": "2026-10-15T15:41:05.905670+00:00"
+    },
+    "18117331289101988": {
+      "instagram_media_id": "18117331289101988",
+      "last_attempt_at": "2026-10-15T16:06:30.885068+00:00",
+      "attempt_count": 1,
+      "instagram_permalink": "https://www.instagram.com/reel/DeSCjyVzDC-/",
+      "instagram_timestamp": "2026-10-09T17:25:30+0000",
+      "status": "FAILED_UPLOAD_LIMIT",
+      "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
+      "updated_at": "2026-10-15T16:06:32.655307+00:00"
     }
-  }
+  },
+  "upload_limit_blocked_day": "2026-10-15",
+  "upload_limit_error": "YouTube returned uploadLimitExceeded for channel trailers_bollywood_main; stopped immediately."
 }
