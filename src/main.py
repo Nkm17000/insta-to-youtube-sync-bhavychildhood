@@ -821,16 +821,9 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
         if existing.get("status") == "UPLOADED":
             run_stats["skipped_already_uploaded"] += 1
             return "skipped"
-        # Old versions marked still images and carousel parents unsupported. Revisit those
-        # immediately now that image-to-video and carousel-child handling are supported.
+        # Retry every item that has not successfully uploaded on each run.
+        # Keep the UPLOADED guard above to avoid duplicate YouTube uploads.
         current_type = str(asset.get("media_type", "")).upper()
-        legacy_unsupported_now_supported = (
-            existing.get("status") == "SKIPPED_UNSUPPORTED_MEDIA"
-            and current_type in {"IMAGE", "VIDEO", "CAROUSEL_ALBUM"}
-        )
-        if not legacy_unsupported_now_supported and not should_retry(existing, retry_hours):
-            run_stats["deferred_by_retry"] += 1
-            return "skipped"
 
         now = iso_now()
         record = {**existing, "instagram_media_id": asset_id, "last_attempt_at": now,
@@ -926,19 +919,18 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
             return "uploaded"
         except Exception as exc:
             if is_upload_limit_error(exc):
-                # Do not keep trying: YouTube will reject every subsequent upload until its
-                # account/channel upload allowance resets or is otherwise resolved.
+                # Do not abort or mark the whole channel as blocked. Record this item as
+                # failed and continue the run; a later run can retry it.
+                run_stats["failed"] += 1
                 record.update(status="FAILED_UPLOAD_LIMIT", last_error=str(exc), updated_at=iso_now())
                 history["items"][history_key] = record
                 save_history(channel, history)
-                LOGGER.critical(
+                LOGGER.warning(
                     "[Channel %s] YouTube upload limit reached for Instagram item %s. "
-                    "Stopping the entire workflow immediately; no further YouTube uploads will be attempted.",
+                    "Recording this item as failed and continuing the workflow.",
                     channel_key, asset_id,
                 )
-                raise UploadLimitExceeded(
-                    f"YouTube returned uploadLimitExceeded for channel {channel_key}; stopped immediately."
-                ) from exc
+                return "failed"
             run_stats["failed"] += 1
             LOGGER.exception("[Channel %s] FAILED for Instagram item %s: %s", channel_key, asset_id, exc)
             record.update(status="FAILED", last_error=str(exc), updated_at=iso_now())
@@ -974,13 +966,8 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
         parent_existing = history["items"].get(media_id, {})
         if isinstance(parent_existing, dict) and parent_existing.get("status") == "UPLOADED":
             continue
-        parent_status = parent_existing.get("status") if isinstance(parent_existing, dict) else None
-        legacy_unsupported_carousel = parent_status == "SKIPPED_UNSUPPORTED_MEDIA"
-        pending_carousel = parent_status == "PENDING_CAROUSEL_CHILDREN"
-        if (not legacy_unsupported_carousel and not pending_carousel
-                and isinstance(parent_existing, dict) and not should_retry(parent_existing, retry_hours)):
-            run_stats["deferred_by_retry"] += 1
-            continue
+        # Revisit every carousel that is not fully processed on each run.
+        # Successfully uploaded child assets remain protected by process_asset's UPLOADED guard.
         try:
             parent = refresh_media_metadata(original)
             children = fetch_carousel_children(media_id)
@@ -1119,37 +1106,11 @@ def main() -> int:
             overall_status = "no_enabled_channels"
             return 0
 
-        # Suppress only the channel that hit uploadLimitExceeded, through the rest of the
-        # current Asia/Kolkata calendar day. Each channel has its own history and marker.
+        # Always run enabled channels, even if a previous run encountered uploadLimitExceeded.
         eligible: list[dict[str, Any]] = []
         summary_by_id = {entry["channel_config_id"]: entry for entry in summaries}
-        today = upload_limit_day()
         for ch in enabled:
-            summary = summary_by_id[str(ch["id"])]
-            try:
-                history = load_history(ch)
-                blocked_day = str(history.get("upload_limit_blocked_day", ""))
-                if blocked_day == today:
-                    summary["status"] = "skipped_upload_limit_blocked_today"
-                    summary["error"] = (f"This channel reached YouTube's upload limit earlier today ({today}, Asia/Kolkata); "
-                                         "skipping it until the next local day.")
-                    LOGGER.warning("[Channel %s] %s", ch["id"], summary["error"])
-                    continue
-                if blocked_day and blocked_day != today:
-                    history.pop("upload_limit_blocked_day", None)
-                    history.pop("upload_limit_error", None)
-                    save_history(ch, history)
-                    LOGGER.info("[Channel %s] Previous upload-limit block expired (%s); retrying on %s.",
-                                ch["id"], blocked_day, today)
-                eligible.append(ch)
-            except Exception as exc:
-                summary["status"] = "failed"
-                summary["error"] = str(exc)
-                LOGGER.exception("[Channel %s] Could not check per-channel upload-limit state", ch["id"])
-
-        if not eligible:
-            overall_status = "all_channels_skipped_or_failed"
-            return 1 if any(x.get("status") == "failed" for x in summaries) else 0
+            eligible.append(ch)
 
         ig_user_id = os.getenv("IG_USER_ID", "").strip()
         if not ig_user_id or not os.getenv("IG_ACCESS_TOKEN", "").strip():
@@ -1180,29 +1141,13 @@ def main() -> int:
             summary["status"] = "running"
             try:
                 process_channel(ch, items, summary)
-            except UploadLimitExceeded as exc:
-                # Persist the suppression marker in THIS channel's independent history. Other
-                # matrix jobs are unaffected and continue processing their own channel.
-                summary["status"] = "upload_limit_reached"
-                summary["error"] = str(exc)
-                try:
-                    history = load_history(ch)
-                    history["upload_limit_blocked_day"] = upload_limit_day()
-                    history["upload_limit_error"] = str(exc)
-                    save_history(ch, history)
-                    LOGGER.critical("[Channel %s] Marked blocked for the remainder of %s (Asia/Kolkata).",
-                                    ch["id"], history["upload_limit_blocked_day"])
-                except Exception:
-                    LOGGER.exception("[Channel %s] Could not persist upload-limit suppression marker", ch["id"])
-                # Do not return: in local multi-channel runs, continue to the next channel.
-                continue
             except Exception as exc:
                 summary["status"] = "failed"
                 summary["error"] = str(exc)
                 LOGGER.exception("[Channel %s] Channel failed; other channels will continue", ch["id"])
 
         overall_status = "completed_with_errors" if any(
-            item.get("status") in {"failed", "skipped_missing_credentials", "upload_limit_reached"}
+            item.get("status") in {"failed", "skipped_missing_credentials"}
             for item in summaries
         ) else "completed"
         LOGGER.info("[Run] Finished channel job.")

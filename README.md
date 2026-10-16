@@ -158,3 +158,13 @@ The program does not automatically load `.env`; export the variables in your she
 `trailers_bollywood_main` (YT1) uploads to its channel and targets `https://www.youtube.com/playlist?list=PLN_W_X8ML6AU` using YT1 OAuth. `bhavychildhood_main` (YT2) uploads to its channel and targets `https://www.youtube.com/playlist?list=PLDIFVPTnQdbM` using YT2 OAuth. The workflow logs a confirmed playlist insertion or a specific failure, retries short-lived YouTube API errors, and backfills videos previously uploaded but missing from the relevant channel playlist on later runs. A video may appear under the YouTube Shorts tab and still also belong to a playlist; Shorts classification is separate from playlist membership.
 
 The YouTube description template for both channels appends the Smart Learning Lab Instagram, Bhavy Childhood Instagram, both YouTube channel links, Facebook page, EduApp, and the source Instagram permalink.
+
+
+## Retry behavior (updated)
+
+Items that have not successfully uploaded are retried on every workflow run, including items previously marked `FAILED`, `SKIPPED_NO_MEDIA`, or `SKIPPED_UNSUPPORTED_MEDIA`. This removes the timed/deferred skip behavior for pending items. Items already marked `UPLOADED` are still skipped intentionally to prevent duplicate uploads to YouTube. Items whose media is still unavailable or whose format cannot be processed will remain unuploaded until Instagram exposes usable media or the format becomes supported.
+
+
+## Upload-limit handling (updated)
+
+The workflow no longer marks a channel as blocked for the rest of the day and no longer skips a later run because a previous run reached YouTube's upload limit. If YouTube returns `uploadLimitExceeded` for an item, that item is recorded as `FAILED_UPLOAD_LIMIT` and the current run continues to the next item. The next scheduled/manual run also starts normally. YouTube may still reject upload attempts while the channel limit remains in effect. Pending items are retried on each run, while successfully uploaded items remain protected from duplicate uploads.
