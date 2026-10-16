@@ -12,11 +12,13 @@
       "bhavychildhood"
     ],
     "title_prefix": "",
-    "playlist_id": "",
+    "playlist_id": "PLN_W_X8ML6AU",
     "playlist_required": true,
-    "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
+    "description_template": "{caption}\n\nFollow us:\nInstagram (Smart Learning Lab): https://www.instagram.com/smartlearninglab247/\nInstagram (Bhavy Childhood): https://www.instagram.com/bhavychildhood/\nYouTube (Trailers Bollywood): https://www.youtube.com/channel/UCh7Mjux-jmT8ywtrs-ZFxDg\nYouTube (Bhavy Childhood): https://www.youtube.com/channel/UCwXgJ9WyTh9BgMP6csXjHRA\nFacebook: https://www.facebook.com/smartlearninglab247/\nEduApp: https://smartlearninglab-react.pages.dev/\n\nSource Instagram: {permalink}",
     "max_items_per_run": 20,
-    "playlist_title": "bhavychildhood"
+    "playlist_title": "bhavychildhood",
+    "playlist_env_prefix": "YT1",
+    "playlist_owner_channel_id": "UCh7Mjux-jmT8ywtrs-ZFxDg"
   },
   {
     "id": "bhavychildhood_main",
@@ -31,12 +33,12 @@
       "kids"
     ],
     "title_prefix": "",
-    "playlist_id": "",
+    "playlist_id": "PLDIFVPTnQdbM",
     "playlist_required": true,
-    "description_template": "{caption}\\n\\nSource Instagram: {permalink}",
+    "description_template": "{caption}\n\nFollow us:\nInstagram (Smart Learning Lab): https://www.instagram.com/smartlearninglab247/\nInstagram (Bhavy Childhood): https://www.instagram.com/bhavychildhood/\nYouTube (Trailers Bollywood): https://www.youtube.com/channel/UCh7Mjux-jmT8ywtrs-ZFxDg\nYouTube (Bhavy Childhood): https://www.youtube.com/channel/UCwXgJ9WyTh9BgMP6csXjHRA\nFacebook: https://www.facebook.com/smartlearninglab247/\nEduApp: https://smartlearninglab-react.pages.dev/\n\nSource Instagram: {permalink}",
     "max_items_per_run": 20,
-    "playlist_title": "bhavychildhood",
-    "playlist_env_prefix": "YT1",
-    "playlist_owner_channel_id": "UCh7Mjux-jmT8ywtrs-ZFxDg"
+    "playlist_title": "Channel 2 playlist",
+    "playlist_env_prefix": "YT2",
+    "playlist_owner_channel_id": "UCwXgJ9WyTh9BgMP6csXjHRA"
   }
 ]

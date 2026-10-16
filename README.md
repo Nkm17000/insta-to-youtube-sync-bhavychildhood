@@ -61,8 +61,10 @@ Edit `config/channels.json`. For each channel:
 - `env_prefix`: prefix used to read the channel's OAuth secrets.
 - `enabled`: `true` or `false`.
 - `privacy`: `public`, `unlisted`, or `private`.
-- `playlist_id`: optional explicit playlist ID (the value after `list=` in a playlist URL).
-- `playlist_title`: exact playlist title to resolve when `playlist_id` is empty.
+- `playlist_id`: explicit playlist ID (the value after `list=` in a playlist URL). Channel 1 uses `PLN_W_X8ML6AU`; channel 2 uses `PLDIFVPTnQdbM`.
+- `playlist_title`: descriptive label for the configured playlist.
+- `playlist_env_prefix`: OAuth credential prefix for the account that owns/manages that channel’s playlist. Channel 1 uses `YT1`; channel 2 uses `YT2`.
+- `playlist_owner_channel_id`: expected owner channel ID, checked before playlist operations.
 - `playlist_required`: if true, playlist resolution must succeed before any upload begins.
 - `max_items_per_run`: maximum eligible items attempted for that channel each run.
 
@@ -70,11 +72,12 @@ Do not enable the second sample channel until its channel ID and all `YT2_*` sec
 
 ### Playlist configuration
 
-The supplied config targets the playlist titled `bhavychildhood`:
+Each channel has its own playlist ID and its own playlist-manager OAuth account in the supplied config:
 
 ```json
-"playlist_id": "",
-"playlist_title": "bhavychildhood",
+"playlist_id": "PLN_W_X8ML6AU",
+"playlist_env_prefix": "YT1",
+"playlist_owner_channel_id": "UCh7Mjux-jmT8ywtrs-ZFxDg",
 "playlist_required": true
 ```
 
@@ -145,6 +148,13 @@ The program does not automatically load `.env`; export the variables in your she
 - GitHub Actions builds a matrix from every `enabled: true` entry in `config/channels.json`. Each enabled channel runs in its own parallel job and sets `CHANNEL_CONFIG_ID`, so a failure in one channel cannot stop the other channel's job.
 - Per-channel histories are written to `data/channel_history/<config-id>.json`. The workflow collects each channel's history artifact and commits all changed histories once after every channel job finishes, avoiding concurrent Git pushes.
 - If YouTube returns `uploadLimitExceeded`, that channel is marked blocked for the remainder of the current **Asia/Kolkata calendar day** in its own history. Later scheduled runs that day skip that channel; the next local day the marker expires and the channel can try again. YouTube's actual quota reset is controlled by YouTube and may not match midnight exactly, so the next-day retry can still receive the same error.
-- The `bhavychildhood` playlist is managed with the `YT1` OAuth credentials for both configured channels. The second channel can upload with `YT2` credentials, while playlist insertion is performed with the `YT1` account that owns the playlist. The `playlist_owner_channel_id` setting is checked before uploads. Keep the YT1 OAuth account authorized to manage the playlist.
+- Each channel uses its own playlist-manager OAuth credentials: YT1 manages channel 1 playlist `PLN_W_X8ML6AU`; YT2 manages channel 2 playlist `PLDIFVPTnQdbM`. The `playlist_owner_channel_id` setting verifies the expected account before playlist operations.
 - Required GitHub secrets: `IG_USER_ID`, `IG_ACCESS_TOKEN`, `YT1_CLIENT_ID`, `YT1_CLIENT_SECRET`, `YT1_REFRESH_TOKEN`, `YT2_CLIENT_ID`, `YT2_CLIENT_SECRET`, and `YT2_REFRESH_TOKEN`. A channel job skips/fails independently if its credentials are missing or point to the wrong YouTube channel.
 
+
+
+### Separate per-channel playlist behavior
+
+`trailers_bollywood_main` (YT1) uploads to its channel and targets `https://www.youtube.com/playlist?list=PLN_W_X8ML6AU` using YT1 OAuth. `bhavychildhood_main` (YT2) uploads to its channel and targets `https://www.youtube.com/playlist?list=PLDIFVPTnQdbM` using YT2 OAuth. The workflow logs a confirmed playlist insertion or a specific failure, retries short-lived YouTube API errors, and backfills videos previously uploaded but missing from the relevant channel playlist on later runs. A video may appear under the YouTube Shorts tab and still also belong to a playlist; Shorts classification is separate from playlist membership.
+
+The YouTube description template for both channels appends the Smart Learning Lab Instagram, Bhavy Childhood Instagram, both YouTube channel links, Facebook page, EduApp, and the source Instagram permalink.

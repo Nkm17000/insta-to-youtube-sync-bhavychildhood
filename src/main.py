@@ -667,14 +667,55 @@ def playlist_video_ids(youtube, playlist_id: str) -> set[str]:
 
 
 def add_to_playlist(youtube, video_id: str, playlist_id: str) -> None:
-    youtube.playlistItems().insert(
-        part="snippet",
-        body={"snippet": {
-            "playlistId": playlist_id,
-            "resourceId": {"kind": "youtube#video", "videoId": video_id},
-        }},
-    ).execute()
-    LOGGER.info("[YouTube] Added video %s to playlist %s", video_id, playlist_id)
+    """Add a video to the configured playlist, retrying short-lived YouTube API failures.
+
+    Shorts are still normal YouTube videos for playlist purposes. A video appearing in
+    the Shorts tab does not mean it cannot also be in a playlist.
+    """
+    body = {"snippet": {
+        "playlistId": playlist_id,
+        "resourceId": {"kind": "youtube#video", "videoId": video_id},
+    }}
+    max_attempts = 4
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = youtube.playlistItems().insert(part="snippet", body=body).execute()
+            returned_playlist = str(response.get("snippet", {}).get("playlistId", "")).strip()
+            returned_video = str(
+                response.get("snippet", {}).get("resourceId", {}).get("videoId", "")
+            ).strip()
+            if returned_playlist and returned_playlist != playlist_id:
+                raise RuntimeError(
+                    f"YouTube inserted video {video_id} into unexpected playlist {returned_playlist}; "
+                    f"expected {playlist_id}."
+                )
+            if returned_video and returned_video != video_id:
+                raise RuntimeError(
+                    f"YouTube returned unexpected video ID {returned_video}; expected {video_id}."
+                )
+            LOGGER.info(
+                "[YouTube] PLAYLIST INSERT CONFIRMED: video=%s playlist=%s url=https://www.youtube.com/playlist?list=%s",
+                video_id, playlist_id, playlist_id,
+            )
+            return
+        except HttpError as exc:
+            status = getattr(exc.resp, "status", None)
+            message = str(exc).lower()
+            transient = status in {404, 409, 429, 500, 502, 503, 504} or any(
+                token in message for token in ("videonotfound", "processingfailure", "backenderror")
+            )
+            if not transient or attempt == max_attempts:
+                LOGGER.error(
+                    "[YouTube] PLAYLIST INSERT FAILED: video=%s playlist=%s attempt=%d/%d status=%s error=%s",
+                    video_id, playlist_id, attempt, max_attempts, status, exc,
+                )
+                raise
+            delay = min(2 ** attempt, 10)
+            LOGGER.warning(
+                "[YouTube] Playlist insert not ready yet for video=%s playlist=%s; retry %d/%d in %ds: %s",
+                video_id, playlist_id, attempt + 1, max_attempts, delay, exc,
+            )
+            time.sleep(delay)
 
 
 def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summary: dict[str, Any]) -> None:
@@ -712,6 +753,12 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
 
     # Resolve and validate the required playlist BEFORE any video upload API call.
     playlist_id = resolve_playlist_id(playlist_youtube, channel)
+    LOGGER.info(
+        "[Channel %s] REQUIRED PLAYLIST TARGET: title=%s id=%s manager_prefix=%s; "
+        "Shorts classification does not prevent playlist membership.",
+        channel_key, channel.get("playlist_title", "bhavychildhood"), playlist_id,
+        playlist_env_prefix or upload_env_prefix,
+    )
     summary["playlist_id"] = playlist_id or ""
     summary["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}" if playlist_id else ""
     present_in_playlist: set[str] = set()
@@ -849,6 +896,10 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
                     record["playlist_id"] = playlist_id
                     record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
                     record.pop("playlist_error", None)
+                    LOGGER.info(
+                        "[Channel %s] PLAYLIST SUCCESS: video=%s playlist=%s",
+                        channel_key, video_id, record["playlist_url"],
+                    )
                 except Exception as playlist_exc:
                     # Preserve the successful upload in history; next run retries playlist insertion.
                     record["playlist_error"] = str(playlist_exc)
