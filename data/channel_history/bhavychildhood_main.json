@@ -3,35 +3,35 @@
   "items": {
     "18061341392792119": {
       "instagram_media_id": "18061341392792119",
-      "last_attempt_at": "2026-10-16T12:04:22.705249+00:00",
-      "attempt_count": 5,
+      "last_attempt_at": "2026-10-16T17:09:49.423710+00:00",
+      "attempt_count": 6,
       "instagram_permalink": "https://www.instagram.com/reel/DeFKWahTzFR/",
       "instagram_timestamp": "2026-10-04T17:23:46+0000",
       "status": "SKIPPED_NO_MEDIA",
       "last_error": "Instagram returned no usable media_url/thumbnail_url after refresh",
       "retry_after_hours": 24,
-      "updated_at": "2026-10-16T12:04:22.867631+00:00"
+      "updated_at": "2026-10-16T17:09:49.838682+00:00"
     },
     "18104043491571042": {
       "instagram_media_id": "18104043491571042",
-      "last_attempt_at": "2026-10-16T12:04:22.869222+00:00",
-      "attempt_count": 5,
+      "last_attempt_at": "2026-10-16T17:09:49.840701+00:00",
+      "attempt_count": 6,
       "instagram_permalink": "https://www.instagram.com/reel/DeFK1DjTwEv/",
       "instagram_timestamp": "2026-10-04T17:27:42+0000",
       "status": "SKIPPED_NO_MEDIA",
       "last_error": "Instagram returned no usable media_url/thumbnail_url after refresh",
       "retry_after_hours": 24,
-      "updated_at": "2026-10-16T12:04:23.022309+00:00"
+      "updated_at": "2026-10-16T17:09:50.189988+00:00"
     },
     "17933205381406684": {
       "instagram_media_id": "17933205381406684",
-      "last_attempt_at": "2026-10-16T12:04:23.023719+00:00",
-      "attempt_count": 5,
+      "last_attempt_at": "2026-10-16T17:09:50.191526+00:00",
+      "attempt_count": 6,
       "instagram_permalink": "https://www.instagram.com/reel/DeFK-OMTKv7/",
       "instagram_timestamp": "2026-10-04T17:28:53+0000",
       "status": "FAILED_UPLOAD_LIMIT",
       "last_error": "<HttpError 400 when requesting None returned \"The user has exceeded the number of videos they may upload.\". Details: \"[{'message': 'The user has exceeded the number of videos they may upload.', 'domain': 'youtube.video', 'reason': 'uploadLimitExceeded'}]\">",
-      "updated_at": "2026-10-16T12:04:25.984836+00:00"
+      "updated_at": "2026-10-16T17:09:51.527133+00:00"
     },
     "17870424810641956": {
       "instagram_media_id": "17870424810641956",
