@@ -76,13 +76,19 @@ def load_config() -> list[dict[str, Any]]:
     if not isinstance(data, list):
         raise ValueError("config/channels.json must contain a JSON array.")
     ids = set()
+    safe_ids = set()
     for ch in data:
         for key in ("id", "channel_id", "env_prefix", "enabled"):
             if key not in ch:
                 raise ValueError(f"Channel entry missing required key: {key}")
-        if ch["id"] in ids:
-            raise ValueError(f"Duplicate channel config id: {ch['id']}")
-        ids.add(ch["id"])
+        channel_config_id = str(ch["id"])
+        if channel_config_id in ids:
+            raise ValueError(f"Duplicate channel config id: {channel_config_id}")
+        sanitized_id = safe_id(channel_config_id)
+        if sanitized_id in safe_ids:
+            raise ValueError(f"Channel config IDs collide after filename sanitization: {channel_config_id}")
+        ids.add(channel_config_id)
+        safe_ids.add(sanitized_id)
     return data
 
 
@@ -408,6 +414,19 @@ def load_history(channel: dict[str, Any]) -> dict[str, Any]:
     except Exception as exc:
         # Keep the original file intact; a malformed history must not be silently replaced.
         raise RuntimeError(f"Cannot parse history JSON {path}: {exc}") from exc
+
+    # Never silently reuse a history file whose declared YouTube channel differs from
+    # this config entry. That could make one channel's uploads suppress another's.
+    configured_channel_id = str(channel["channel_id"])
+    stored_channel_id = str(value.get("channel_id", "")).strip() if isinstance(value, dict) else ""
+    if stored_channel_id and stored_channel_id != configured_channel_id:
+        backup = path.with_name(path.name + ".wrong-channel-backup")
+        if not backup.exists():
+            backup.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        raise RuntimeError(
+            f"History file {path} belongs to YouTube channel {stored_channel_id}, but this config expects "
+            f"{configured_channel_id}. Original history was preserved at {backup.name}; refusing to mix channels."
+        )
 
     normalized = _normalize_history(value, channel)
     if normalized is not None:
@@ -737,9 +756,8 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
     summary["youtube_channel_id"] = actual_id
     summary["youtube_channel_title"] = actual_title
 
-    # Playlist management can use a different OAuth account from the upload destination.
-    # This lets each channel upload independently while the playlist owner (YT1) adds every
-    # successful public video to the one shared bhavychildhood playlist.
+    # Playlist management uses the credentials configured for this channel's playlist.
+    # Upload OAuth and playlist-owner OAuth are independently configurable per channel.
     playlist_env_prefix = str(channel.get("playlist_env_prefix", channel.get("env_prefix", ""))).strip()
     upload_env_prefix = str(channel.get("env_prefix", "")).strip()
     playlist_youtube = youtube
@@ -770,17 +788,34 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
         # This repairs earlier runs where upload succeeded but playlist insertion was never configured.
         backfilled = 0
         backfill_failed = 0
+        metadata_repaired = 0
+        expected_playlist_url = f"https://www.youtube.com/playlist?list={playlist_id}"
         for history_key, saved_record in history["items"].items():
             if not isinstance(saved_record, dict) or saved_record.get("status") != "UPLOADED":
                 continue
             saved_video_id = str(saved_record.get("youtube_video_id", "")).strip()
-            if not saved_video_id or saved_video_id in present_in_playlist:
+            if not saved_video_id:
                 continue
+
+            # A video already in the target playlist needs no insert, but its saved history
+            # still must be corrected if an earlier run recorded another playlist.
+            if saved_video_id in present_in_playlist:
+                if (saved_record.get("playlist_id") != playlist_id
+                        or saved_record.get("playlist_url") != expected_playlist_url
+                        or saved_record.get("playlist_error")):
+                    saved_record["playlist_id"] = playlist_id
+                    saved_record["playlist_url"] = expected_playlist_url
+                    saved_record.pop("playlist_error", None)
+                    saved_record["updated_at"] = iso_now()
+                    history["items"][history_key] = saved_record
+                    metadata_repaired += 1
+                continue
+
             try:
                 add_to_playlist(playlist_youtube, saved_video_id, playlist_id)
                 present_in_playlist.add(saved_video_id)
                 saved_record["playlist_id"] = playlist_id
-                saved_record["playlist_url"] = f"https://www.youtube.com/playlist?list={playlist_id}"
+                saved_record["playlist_url"] = expected_playlist_url
                 saved_record.pop("playlist_error", None)
                 saved_record["updated_at"] = iso_now()
                 history["items"][history_key] = saved_record
@@ -794,10 +829,10 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
                 summary["playlist_add_failed_video_ids"].append(saved_video_id)
                 LOGGER.exception("[Channel %s] Could not add previous upload %s to required playlist %s",
                                  channel_key, saved_video_id, playlist_id)
-        if backfilled or backfill_failed:
+        if backfilled or backfill_failed or metadata_repaired:
             save_history(channel, history)
-        LOGGER.info("[Channel %s] Playlist backfill complete: added=%d failed=%d already_present=%d",
-                    channel_key, backfilled, backfill_failed, len(present_in_playlist))
+        LOGGER.info("[Channel %s] Playlist backfill complete: added=%d failed=%d already_present=%d metadata_repaired=%d",
+                    channel_key, backfilled, backfill_failed, len(present_in_playlist), metadata_repaired)
 
     retry_hours = int(os.getenv("SKIPPED_RETRY_HOURS", "24"))
     max_upload_attempts = max(1, int(channel.get("max_items_per_run", os.getenv("MAX_ITEMS_PER_RUN", "20"))))
@@ -807,10 +842,11 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
                  "carousel_children_seen": 0, "no_media": 0, "unsupported": 0,
                  "failed": 0, "skipped_already_uploaded": 0, "deferred_by_retry": 0}
     stop_for_limit = False
+    youtube_upload_limit_reached = False
 
     def process_asset(asset: dict[str, Any], history_key: str, *, parent_id: str | None = None) -> str:
         """Process one video/image. Returns uploaded, skipped, failed, or limit."""
-        nonlocal upload_attempts, stop_for_limit
+        nonlocal upload_attempts, stop_for_limit, youtube_upload_limit_reached
         asset_id = str(asset.get("id", ""))
         if not asset_id:
             run_stats["unsupported"] += 1
@@ -819,8 +855,27 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
         if not isinstance(existing, dict):
             existing = {}
         if existing.get("status") == "UPLOADED":
-            run_stats["skipped_already_uploaded"] += 1
-            return "skipped"
+            record_channel_id = str(existing.get("youtube_channel_id", "")).strip()
+            if record_channel_id and record_channel_id != actual_id:
+                # A record from another channel must never suppress this channel's upload.
+                LOGGER.error(
+                    "[Channel %s] History mismatch for Instagram item %s: saved YouTube channel=%s, "
+                    "current channel=%s. Treating this item as not uploaded on the current channel.",
+                    channel_key, asset_id, record_channel_id, actual_id,
+                )
+                existing = {
+                    "instagram_media_id": asset_id,
+                    "status": "HISTORY_CHANNEL_MISMATCH",
+                    "previous_youtube_channel_id": record_channel_id,
+                    "previous_youtube_video_id": existing.get("youtube_video_id", ""),
+                    "last_error": "History record belonged to a different YouTube channel; current channel will process independently.",
+                    "updated_at": iso_now(),
+                }
+                history["items"][history_key] = existing
+                save_history(channel, history)
+            else:
+                run_stats["skipped_already_uploaded"] += 1
+                return "skipped"
         # Retry every item that has not successfully uploaded on each run.
         # Keep the UPLOADED guard above to avoid duplicate YouTube uploads.
         current_type = str(asset.get("media_type", "")).upper()
@@ -919,18 +974,23 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
             return "uploaded"
         except Exception as exc:
             if is_upload_limit_error(exc):
-                # Do not abort or mark the whole channel as blocked. Record this item as
-                # failed and continue the run; a later run can retry it.
+                # Stop attempts for THIS channel in THIS run: continuing would waste time
+                # repeating the same channel-level rejection for every remaining item.
+                # The item remains retryable on a later scheduled/manual run, and the
+                # workflow matrix keeps the other channel's job independent.
+                stop_for_limit = True
+                youtube_upload_limit_reached = True
                 run_stats["failed"] += 1
                 record.update(status="FAILED_UPLOAD_LIMIT", last_error=str(exc), updated_at=iso_now())
                 history["items"][history_key] = record
                 save_history(channel, history)
                 LOGGER.warning(
                     "[Channel %s] YouTube upload limit reached for Instagram item %s. "
-                    "Recording this item as failed and continuing the workflow.",
+                    "Stopping further upload attempts for this channel in this run only; "
+                    "remaining items will be retried on a later run.",
                     channel_key, asset_id,
                 )
-                return "failed"
+                return "limit"
             run_stats["failed"] += 1
             LOGGER.exception("[Channel %s] FAILED for Instagram item %s: %s", channel_key, asset_id, exc)
             record.update(status="FAILED", last_error=str(exc), updated_at=iso_now())
@@ -954,7 +1014,11 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
         if not media_id:
             continue
         if stop_for_limit:
-            LOGGER.info("[Channel %s] Reached max upload attempts per run=%s", channel_key, max_upload_attempts)
+            LOGGER.info(
+                "[Channel %s] Stopping this channel's remaining items for this run "
+                "(upload_limit_reached or max upload attempts=%s). They remain eligible for a later run.",
+                channel_key, max_upload_attempts,
+            )
             break
         original_type = str(original.get("media_type", "")).upper()
         if original_type != "CAROUSEL_ALBUM":
@@ -1026,7 +1090,12 @@ def process_channel(channel: dict[str, Any], items: list[dict[str, Any]], summar
     LOGGER.info("[Channel %s] Final history summary: %s", channel_key, counts)
     LOGGER.info("[Channel %s] Run summary: %s", channel_key, run_stats)
     LOGGER.info("[Channel %s] Upload attempts this run: %d/%d", channel_key, upload_attempts, max_upload_attempts)
-    summary["status"] = "upload_limit_reached" if stop_for_limit else "completed"
+    if youtube_upload_limit_reached:
+        summary["status"] = "upload_limit_reached"
+    elif stop_for_limit:
+        summary["status"] = "max_items_reached"
+    else:
+        summary["status"] = "completed"
     summary["uploads_succeeded"] = len(summary["uploaded_video_ids"])
     summary["run_stats"] = run_stats
 

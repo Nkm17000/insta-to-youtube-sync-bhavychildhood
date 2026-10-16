@@ -110,7 +110,8 @@ The program does not automatically load `.env`; export the variables in your she
 ## 6. Where to see results
 
 - `data/last_run.log`: latest run log.
-- `data/channel_history/<channel-id>.json`: per-channel history.
+- `data/channel_history/trailers_bollywood_main.json`: history for Trailers Bollywood only.
+- `data/channel_history/bhavychildhood_main.json`: history for Bhavy Childhood only.
 - A successful record includes `youtube_video_url`, `youtube_channel_title`, `youtube_channel_id`, `privacy_status`, and `playlist_url` if it was added.
 - `SKIPPED_NO_MEDIA`: API did not return a media URL after re-query; retried after `SKIPPED_RETRY_HOURS`.
 - `FAILED`: processing/upload failed; retried on the next run.
@@ -147,7 +148,7 @@ The program does not automatically load `.env`; export the variables in your she
 
 - GitHub Actions builds a matrix from every `enabled: true` entry in `config/channels.json`. Each enabled channel runs in its own parallel job and sets `CHANNEL_CONFIG_ID`, so a failure in one channel cannot stop the other channel's job.
 - Per-channel histories are written to `data/channel_history/<config-id>.json`. The workflow collects each channel's history artifact and commits all changed histories once after every channel job finishes, avoiding concurrent Git pushes.
-- If YouTube returns `uploadLimitExceeded`, that channel is marked blocked for the remainder of the current **Asia/Kolkata calendar day** in its own history. Later scheduled runs that day skip that channel; the next local day the marker expires and the channel can try again. YouTube's actual quota reset is controlled by YouTube and may not match midnight exactly, so the next-day retry can still receive the same error.
+- If YouTube returns `uploadLimitExceeded`, the current channel records `FAILED_UPLOAD_LIMIT` and stops making further upload attempts for that channel in that run. It does not create a permanent or day-long block; pending items are eligible on the next scheduled/manual run. The other channel runs in a separate matrix job and continues independently. YouTube must lift its channel-level limit before a new upload can succeed.
 - Each channel uses its own playlist-manager OAuth credentials: YT1 manages channel 1 playlist `PLN_W_X8ML6AU`; YT2 manages channel 2 playlist `PLDIFVPTnQdbM`. The `playlist_owner_channel_id` setting verifies the expected account before playlist operations.
 - Required GitHub secrets: `IG_USER_ID`, `IG_ACCESS_TOKEN`, `YT1_CLIENT_ID`, `YT1_CLIENT_SECRET`, `YT1_REFRESH_TOKEN`, `YT2_CLIENT_ID`, `YT2_CLIENT_SECRET`, and `YT2_REFRESH_TOKEN`. A channel job skips/fails independently if its credentials are missing or point to the wrong YouTube channel.
 
@@ -167,4 +168,4 @@ Items that have not successfully uploaded are retried on every workflow run, inc
 
 ## Upload-limit handling (updated)
 
-The workflow no longer marks a channel as blocked for the rest of the day and no longer skips a later run because a previous run reached YouTube's upload limit. If YouTube returns `uploadLimitExceeded` for an item, that item is recorded as `FAILED_UPLOAD_LIMIT` and the current run continues to the next item. The next scheduled/manual run also starts normally. YouTube may still reject upload attempts while the channel limit remains in effect. Pending items are retried on each run, while successfully uploaded items remain protected from duplicate uploads.
+The workflow does not mark a channel as blocked for the rest of the day and does not skip later runs because a previous run reached YouTube's upload limit. If YouTube returns `uploadLimitExceeded`, the current item is recorded as `FAILED_UPLOAD_LIMIT` and further upload attempts stop for that channel in the current run to avoid repeated rejected requests. Pending items are retried on the next scheduled/manual run; successfully uploaded items remain protected from duplicate uploads. The other channel's job is independent. YouTube may still reject a later retry until its channel-level upload limit clears.
